@@ -1,0 +1,129 @@
+{
+  "$meta": {
+    "name": "Dating POC Design Tokens",
+    "version": "0.1.0",
+    "direction": "溫暖真誠 × 熱情活力：以李子紫墨色與暖白為底，珊瑚粉到杏桃橘只留給「喜歡／配對」等情感動作",
+    "deviceStrategy": "desktop-first + RWD（基礎樣式為桌機，以 max-width 往下覆寫）",
+    "cssPrefix": "dp-",
+    "note": "所有 HTML/CSS 只能引用 theme.css 的變數，禁止寫死色碼、px 間距、字級。修改 token 須同步更新 theme.css 與 THEME_GUIDE.md"
+  },
+
+  "brand": {
+    "name": "TBD",
+    "nameZh": "TBD",
+    "logo": "TBD（暫以文字 Logo：字級 h3、display 字族、color.text.primary）",
+    "tagline": "TBD"
+  },
+
+  "color": {
+    "primitive": {
+      "plum":    { "900": "#2B1D27", "700": "#4A2F42", "500": "#7A5670", "300": "#B8A0B1", "100": "#EDE3EA" },
+      "coral":   { "700": "#C42B45", "600": "#D63651", "500": "#FF5A6E", "400": "#FF7F8E", "100": "#FFE3E6" },
+      "apricot": { "800": "#9A4A12", "500": "#FF9F6B", "300": "#FFC6A5", "100": "#FFEEE3" },
+      "sage":    { "800": "#3F6B4E", "600": "#4F7A5E", "500": "#7FA98B", "100": "#E4EFE7" },
+      "mist":    { "0": "#FFFFFF", "50": "#FCF7F8", "100": "#F6EEF0", "200": "#EADFE3", "400": "#BFAFB6", "500": "#8A7880", "600": "#6E5C64" },
+      "status":  { "danger": "#B3261E", "dangerBg": "#FBE4E2", "warning": "#8A5A00", "warningBg": "#FFF1D6", "info": "#2F5DB8", "infoBg": "#E3ECFB" }
+    },
+    "semantic": {
+      "bg.canvas":        "{color.primitive.mist.50}",
+      "bg.surface":       "{color.primitive.mist.0}",
+      "bg.subtle":        "{color.primitive.mist.100}",
+      "bg.inverse":       "{color.primitive.plum.900}",
+      "border.default":   "{color.primitive.mist.200}",
+      "border.strong":    "{color.primitive.mist.400}",
+      "text.primary":     "{color.primitive.plum.900}",
+      "text.secondary":   "{color.primitive.mist.600}",
+      "text.placeholder": "{color.primitive.mist.500}",
+      "text.inverse":     "{color.primitive.mist.0}",
+      "text.accent":      "{color.primitive.plum.500}",
+      "action.primary.bg":        "{color.primitive.coral.600}",
+      "action.primary.bgHover":   "{color.primitive.coral.700}",
+      "action.primary.text":      "{color.primitive.mist.0}",
+      "action.secondary.bg":      "{color.primitive.plum.100}",
+      "action.secondary.bgHover": "#E2D3DE",
+      "action.secondary.text":    "{color.primitive.plum.700}",
+      "emotion.like":      "linear-gradient(135deg, #FF5A6E 0%, #FF9F6B 100%)",
+      "emotion.likeSolid": "{color.primitive.coral.500}",
+      "emotion.superLike": "{color.primitive.apricot.500}",
+      "emotion.pass":      "{color.primitive.plum.500}",
+      "state.online":      "{color.primitive.sage.500}",
+      "state.verified":    "{color.primitive.sage.600}",
+      "focus.ring":        "{color.primitive.plum.500}"
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "display": "'LXGW WenKai TC', 'Noto Serif TC', serif",
+      "body": "'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif"
+    },
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap",
+    "fontWeight": { "regular": 400, "medium": 500, "bold": 700 },
+    "scale": {
+      "display": { "desktop": "2.5rem",   "mobile": "2rem",     "lineHeight": 1.25, "family": "display", "weight": 700 },
+      "h1":      { "desktop": "2rem",     "mobile": "1.625rem", "lineHeight": 1.3,  "family": "display", "weight": 700 },
+      "h2":      { "desktop": "1.5rem",   "mobile": "1.375rem", "lineHeight": 1.35, "family": "display", "weight": 700 },
+      "h3":      { "desktop": "1.25rem",  "mobile": "1.125rem", "lineHeight": 1.4,  "family": "body",    "weight": 700 },
+      "bodyLg":  { "desktop": "1.125rem", "mobile": "1.0625rem","lineHeight": 1.75, "family": "body",    "weight": 400 },
+      "body":    { "desktop": "1rem",     "mobile": "1rem",     "lineHeight": 1.7,  "family": "body",    "weight": 400 },
+      "sm":      { "desktop": "0.875rem", "mobile": "0.875rem", "lineHeight": 1.6,  "family": "body",    "weight": 400 },
+      "xs":      { "desktop": "0.75rem",  "mobile": "0.75rem",  "lineHeight": 1.5,  "family": "body",    "weight": 500 }
+    },
+    "maxLineLength": "36em"
+  },
+
+  "space": {
+    "0": "0", "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px",
+    "6": "24px", "8": "32px", "10": "40px", "12": "48px", "16": "64px", "20": "80px"
+  },
+
+  "radius": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "14px",
+    "lg": "24px",
+    "pill": "999px",
+    "bubble": "20px",
+    "bubbleTail": "6px",
+    "$usage": "xs=徽章內元素、sm=輸入框、md=面板與清單、lg=個人檔案卡片（唯一大圓角）、pill=按鈕與標籤"
+  },
+
+  "shadow": {
+    "sm": "0 1px 2px rgba(43, 29, 39, 0.06)",
+    "md": "0 6px 16px rgba(43, 29, 39, 0.08)",
+    "lg": "0 18px 40px rgba(74, 47, 66, 0.16)",
+    "like": "0 8px 24px rgba(255, 90, 110, 0.35)",
+    "$usage": "陰影一律帶李子紫色調，不使用純灰；lg 僅限個人檔案卡片與 Modal"
+  },
+
+  "motion": {
+    "duration": { "fast": "120ms", "base": "200ms", "slow": "320ms" },
+    "easing": {
+      "standard": "cubic-bezier(0.2, 0, 0, 1)",
+      "spring": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "$usage": "spring 只用在喜歡、配對成功；其餘用 standard。必須支援 prefers-reduced-motion"
+  },
+
+  "breakpoint": {
+    "desktop": { "min": "1280px", "note": "基礎樣式，三欄：側欄 + 主內容 + 右側面板" },
+    "laptop":  { "max": "1279px", "note": "右側面板收合" },
+    "tablet":  { "max": "1023px", "note": "側欄縮為圖示列" },
+    "mobile":  { "max": "767px",  "note": "單欄，導覽改為底部分頁列" }
+  },
+
+  "layout": {
+    "containerMax": "1440px",
+    "sidebarWidth": "248px",
+    "railWidth": "76px",
+    "asideWidth": "340px",
+    "contentMax": "760px",
+    "profileCardWidth": "420px",
+    "bottomTabHeight": "64px",
+    "topbarHeight": "64px"
+  },
+
+  "zIndex": {
+    "base": 0, "sticky": 100, "nav": 200, "dropdown": 300, "modal": 1000, "toast": 1100
+  }
+}
