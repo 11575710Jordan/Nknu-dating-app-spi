@@ -122,3 +122,37 @@ test('模擬資料：預設評分都在上限內且為 5 的倍數', () => {
     assert.ok(r.points > 0 && r.points <= L.capFor(from, to, r.kind), `評分 ${r.from}->${r.to} 超過上限`);
   }
 });
+
+const validPet = {
+  name: '湯圓', species: '貓', breed: '布偶貓', gender: '母', age: '2', size: '中型',
+  personality: ['親人'], appearance: '藍眼長毛', bio: '',
+};
+
+test('新增寵物：合法資料沒有錯誤，並把年齡轉成數字', () => {
+  const { errors, pet } = L.validatePet(validPet);
+  assert.deepEqual(errors, {});
+  assert.equal(pet.age, 2);
+  assert.equal(pet.name, '湯圓');
+});
+
+test('新增寵物：必填欄位、長度、範圍與選項都要檢查', () => {
+  const { errors } = L.validatePet({
+    ...validPet, name: ' ', species: '恐龍', breed: '', gender: '', age: '31', size: '超大', personality: [],
+  });
+  assert.deepEqual(Object.keys(errors).sort(), ['age', 'breed', 'gender', 'name', 'personality', 'size', 'species']);
+  assert.match(L.validatePet({ ...validPet, name: '一二三四五六七八九十一二三' }).errors.name, /12/);
+  assert.match(L.validatePet({ ...validPet, age: '1.5' }).errors.age, /整數/);
+  assert.match(L.validatePet({ ...validPet, personality: ['a', 'b', 'c', 'd', 'e', 'f'] }).errors.personality, /5/);
+  assert.match(L.validatePet({ ...validPet, bio: '字'.repeat(61) }).errors.bio, /60/);
+});
+
+test('新增寵物：照片只收圖片且不超過 10 MB', () => {
+  assert.equal(L.validatePhoto({ type: 'image/jpeg', size: 3 * 1024 * 1024 }), null);
+  assert.match(L.validatePhoto({ type: 'application/pdf', size: 100 }), /圖片/);
+  assert.match(L.validatePhoto({ type: 'image/png', size: 11 * 1024 * 1024 }), /10 MB/);
+});
+
+test('新增寵物：id 接在現有最大編號之後', () => {
+  assert.equal(L.nextPetId([{ id: 'p01' }, { id: 'p12' }, { id: 'p03' }]), 'p13');
+  assert.equal(L.nextPetId([]), 'p01');
+});

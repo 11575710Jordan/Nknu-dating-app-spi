@@ -107,8 +107,60 @@ const MatchLogic = (() => {
     });
   }
 
+  const PET_SPECIES = ['狗', '貓', '兔', '其他'];
+  const PET_GENDERS = ['公', '母'];
+  const PET_SIZES = ['小型', '中型', '大型'];
+  const PHOTO_MAX_MB = 10;
+
+  /**
+   * 驗證新增寵物表單。回傳 { errors: {欄位: 訊息}, pet: 整理後的資料 }
+   * errors 為空物件代表可以儲存。
+   */
+  function validatePet(input) {
+    const pet = {
+      name: String(input.name || '').trim(),
+      species: input.species,
+      breed: String(input.breed || '').trim(),
+      gender: input.gender,
+      age: Number(input.age),
+      size: input.size,
+      personality: input.personality || [],
+      appearance: String(input.appearance || '').trim(),
+      bio: String(input.bio || '').trim(),
+    };
+    const errors = {};
+    if (!pet.name) errors.name = '請輸入寵物的名字。';
+    else if (pet.name.length > 12) errors.name = '名字最多 12 個字。';
+    if (!PET_SPECIES.includes(pet.species)) errors.species = '請選擇種類。';
+    if (!pet.breed) errors.breed = '請輸入品種，不確定可以寫「米克斯」。';
+    else if (pet.breed.length > 20) errors.breed = '品種最多 20 個字。';
+    if (!PET_GENDERS.includes(pet.gender)) errors.gender = '請選擇性別。';
+    if (input.age === '' || input.age == null || Number.isNaN(pet.age)) errors.age = '請輸入年齡。';
+    else if (!Number.isInteger(pet.age)) errors.age = '年齡請輸入整數，未滿 1 歲請填 0。';
+    else if (pet.age < 0 || pet.age > 30) errors.age = '年齡請介於 0 到 30 歲。';
+    if (!PET_SIZES.includes(pet.size)) errors.size = '請選擇體型。';
+    if (pet.personality.length === 0) errors.personality = '至少選一個個性。';
+    else if (pet.personality.length > 5) errors.personality = '個性最多選 5 個。';
+    if (pet.appearance.length > 30) errors.appearance = '外觀描述最多 30 個字。';
+    if (pet.bio.length > 60) errors.bio = '介紹最多 60 個字。';
+    return { errors, pet };
+  }
+
+  /** file: { type, size }；合法回傳 null，否則回傳錯誤訊息 */
+  function validatePhoto(file) {
+    if (!file.type.startsWith('image/')) return '只能上傳圖片檔（JPG、PNG 等）。';
+    if (file.size > PHOTO_MAX_MB * 1024 * 1024) return `檔案超過 ${PHOTO_MAX_MB} MB，請壓縮後再試一次。`;
+    return null;
+  }
+
+  function nextPetId(pets) {
+    const max = pets.reduce((m, p) => Math.max(m, Number(p.id.slice(1)) || 0), 0);
+    return `p${String(max + 1).padStart(2, '0')}`;
+  }
+
   return {
-    STEP, SENIOR_AGE,
+    STEP, SENIOR_AGE, PET_SPECIES, PET_GENDERS, PET_SIZES,
+    validatePet, validatePhoto, nextPetId,
     capFor, canIncrease, canDecrease, applyDelta, canLeaveMessage,
     relationshipScore, isMatched, isSeniorEligible, defaultMode,
     distanceKm, sharedInterests, filterPeople, allPets, filterPets,

@@ -16,10 +16,7 @@
     { id: 'senior', label: '長輩', icon: 'i-sun' },
   ];
   const GENDER_LABEL = { female: '女', male: '男' };
-
-  const usersById = new Map(MOCK_DB.users.map((u) => [u.id, u]));
-  const pets = L.allPets(MOCK_DB.users);
-  const petsById = new Map(pets.map((p) => [p.id, p]));
+  const PHOTO_EDGE = 800; // 上傳照片縮到長邊 800px 再存，避免塞爆 localStorage
 
   const $ = (id) => document.getElementById(id);
   const el = {
@@ -36,13 +33,24 @@
   /* ---------- 狀態 ---------- */
   const saved = loadSaved();
   const state = {
-    meId: saved && usersById.has(saved.meId) ? saved.meId : MOCK_DB.currentUserId,
+    meId: saved && MOCK_DB.users.some((u) => u.id === saved.meId) ? saved.meId : MOCK_DB.currentUserId,
     ratings: saved ? saved.ratings : structuredClone(MOCK_DB.ratings),
+    addedPets: (saved && saved.addedPets) || {}, // { userId: [寵物] }，使用者在頁面上新增的寵物
     mode: 'person',
     petId: null,
     index: 0,
     filters: null,
   };
+
+  /* 模擬資料 + 新增的寵物合併後的索引；新增寵物後要重建 */
+  let users, usersById, pets, petsById;
+  function rebuildIndex() {
+    users = MOCK_DB.users.map((u) => ({ ...u, pets: [...u.pets, ...(state.addedPets[u.id] || [])] }));
+    usersById = new Map(users.map((u) => [u.id, u]));
+    pets = L.allPets(users);
+    petsById = new Map(pets.map((p) => [p.id, p]));
+  }
+  rebuildIndex();
 
   function loadSaved() {
     try {
@@ -54,11 +62,14 @@
     }
   }
 
+  /** 寫入成功回傳 true；失敗（例如容量不足）回傳 false 讓呼叫端決定怎麼處理 */
   function save() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ meId: state.meId, ratings: state.ratings }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ meId: state.meId, ratings: state.ratings, addedPets: state.addedPets }));
+      return true;
     } catch (err) {
-      console.warn('[match] 無法寫入 localStorage，重新整理後評分會消失', err);
+      console.warn('[match] 無法寫入 localStorage，重新整理後資料會消失', err);
+      return false;
     }
   }
 
@@ -119,7 +130,7 @@
   function basePool(mode) {
     const me = currentUser();
     if (mode === 'pet') return L.filterPets(pets, me.id, {});
-    return L.filterPeople(MOCK_DB.users, me, { seniorOnly: mode === 'senior' });
+    return L.filterPeople(users, me, { seniorOnly: mode === 'senior' });
   }
 
   function currentPool() {
@@ -130,7 +141,7 @@
         .sort((a, b) => distanceTo(usersById.get(a.ownerId)) - distanceTo(usersById.get(b.ownerId)));
     }
     const f = state.mode === 'senior' ? { ...state.filters.senior, seniorOnly: true } : state.filters.person;
-    return L.filterPeople(MOCK_DB.users, me, f).sort((a, b) => distanceTo(a) - distanceTo(b));
+    return L.filterPeople(users, me, f).sort((a, b) => distanceTo(a) - distanceTo(b));
   }
 
   /* ---------- 小工具 ---------- */
@@ -191,7 +202,8 @@
     if (!show) return;
     el.petPicker.innerHTML = `<span class="dp-sm dp-muted">用哪隻寵物配對：</span>` + me.pets
       .map((p) => `<button class="dp-tag" type="button" data-pet="${p.id}" aria-pressed="${state.petId === p.id}">${esc(p.name)}・${esc(p.breed)}</button>`)
-      .join('');
+      .join('')
+      + `<button class="dp-tag" type="button" data-action="add-pet">${icon('i-plus')}新增寵物</button>`;
   }
 
   /* ---------- 篩選 ---------- */
@@ -232,7 +244,6 @@
           ${distanceField(f.maxKm)}
         </div>`;
     } else {
-      const users = MOCK_DB.users;
       html = `<div class="match-filter__grid">
           ${selectField('f-gender', '想認識', f.gender, genderOptions)}
           <div class="dp-field">
@@ -419,8 +430,8 @@
     if (state.mode === 'pet' && !state.petId) {
       el.stage.innerHTML = `<div class="dp-panel dp-empty">
         <h2 class="dp-h3">你還沒有新增寵物</h2>
-        <p class="dp-sm dp-muted dp-prose">在「我的檔案」新增寵物的品種、個性和照片後，就能用寵物身分配對。</p>
-        <a class="dp-btn dp-btn--secondary dp-btn--sm" href="#">前往我的檔案新增寵物</a>
+        <p class="dp-sm dp-muted dp-prose">填好寵物的品種、個性和照片，就能用寵物身分配對。</p>
+        <button class="dp-btn dp-btn--secondary dp-btn--sm" type="button" data-action="add-pet">新增寵物</button>
       </div>`;
       return;
     }
@@ -509,7 +520,9 @@
   }
 
   el.modalRoot.addEventListener('click', (e) => {
-    if (e.target.matches('[data-backdrop]') || e.target.closest('[data-close]')) closeModal();
+    // 表單彈窗（data-keep-open）點背景不關閉，避免誤觸清掉填到一半的內容
+    const onBackdrop = e.target.matches('[data-backdrop]') && !el.modalRoot.querySelector('[data-keep-open]');
+    if (onBackdrop || e.target.closest('[data-close]')) closeModal();
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && el.modalRoot.firstChild) closeModal();
@@ -581,6 +594,174 @@
       </div>`, (dialog) => dialog.querySelector('.dp-btn--primary').focus());
   }
 
+  /* ---------- 新增寵物 ---------- */
+  /** 把圖片縮到長邊 PHOTO_EDGE 並轉成 JPEG data URL */
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, PHOTO_EDGE / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('這張圖片無法讀取，請換一張照片再試一次。'));
+      };
+      img.src = url;
+    });
+  }
+
+  function formField(id, label, control, optional = false) {
+    return `<div class="dp-field">
+      <label class="dp-label" for="${id}">${label}${optional ? '<span class="dp-muted">（選填）</span>' : ''}</label>
+      ${control}
+      <p class="dp-help dp-help--error" id="${id}-error" hidden></p>
+    </div>`;
+  }
+
+  function formSelect(id, options) {
+    return `<select class="dp-input" id="${id}" name="${id}" aria-describedby="${id}-error">
+      <option value="">請選擇</option>${options.map((o) => `<option value="${esc(o)}">${esc(o)}</option>`).join('')}
+    </select>`;
+  }
+
+  function openPetForm() {
+    const me = currentUser();
+    const personalityOptions = unique(pets.flatMap((p) => p.personality));
+    let photoData = null;
+
+    openModal(`<div class="dp-modal match-modal--form" role="dialog" aria-modal="true" aria-labelledby="pet-form-title" data-keep-open>
+        <h2 class="dp-h2" id="pet-form-title">新增寵物</h2>
+        <p class="dp-sm dp-muted">新增後就能用牠的身分在寵物模式配對。</p>
+        <form class="match-pet-form" novalidate>
+          <div class="dp-alert dp-alert--danger" id="pet-form-alert" role="alert" hidden></div>
+          ${formField('pet-name', '名字', `<input class="dp-input" id="pet-name" name="pet-name" maxlength="12" autocomplete="off" placeholder="例如：湯圓" aria-describedby="pet-name-error">`)}
+          <div class="match-pet-form__grid">
+            ${formField('pet-species', '種類', formSelect('pet-species', L.PET_SPECIES))}
+            ${formField('pet-breed', '品種', `<input class="dp-input" id="pet-breed" name="pet-breed" maxlength="20" autocomplete="off" placeholder="例如：柴犬、米克斯" aria-describedby="pet-breed-error">`)}
+            ${formField('pet-gender', '性別', formSelect('pet-gender', L.PET_GENDERS))}
+            ${formField('pet-age', '年齡（歲）', `<input class="dp-input" id="pet-age" name="pet-age" type="number" min="0" max="30" step="1" inputmode="numeric" placeholder="未滿 1 歲填 0" aria-describedby="pet-age-error">`)}
+            ${formField('pet-size', '體型', formSelect('pet-size', L.PET_SIZES))}
+          </div>
+          <div class="dp-field" role="group" aria-labelledby="pet-personality-label">
+            <span class="dp-label" id="pet-personality-label">個性（1～5 個）</span>
+            <div class="dp-tag-list" id="pet-personality">
+              ${personalityOptions.map((o) => `<button class="dp-tag" type="button" data-value="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join('')}
+            </div>
+            <p class="dp-help dp-help--error" id="pet-personality-error" hidden></p>
+          </div>
+          ${formField('pet-appearance', '外觀', `<input class="dp-input" id="pet-appearance" name="pet-appearance" maxlength="30" autocomplete="off" placeholder="例如：白底灰斑、捲尾巴" aria-describedby="pet-appearance-error">`, true)}
+          ${formField('pet-bio', '介紹', `<input class="dp-input" id="pet-bio" name="pet-bio" maxlength="60" autocomplete="off" placeholder="一句話介紹牠的小習慣" aria-describedby="pet-bio-error">`, true)}
+          <div class="dp-field">
+            <label class="dp-label" for="pet-photo">照片<span class="dp-muted">（選填，10 MB 以內）</span></label>
+            <div class="match-pet-form__photo">
+              <div class="match-pet-form__preview match-tone-${me.photoTone}" id="pet-photo-preview" aria-hidden="true">${icon('i-paw')}</div>
+              <input class="dp-input" id="pet-photo" name="pet-photo" type="file" accept="image/*" aria-describedby="pet-photo-error">
+            </div>
+            <p class="dp-help dp-help--error" id="pet-photo-error" hidden></p>
+          </div>
+          <div class="match-modal__actions">
+            <button class="dp-btn dp-btn--primary" type="submit">新增寵物</button>
+            <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-close>取消</button>
+          </div>
+        </form>
+      </div>`, (dialog) => {
+      const form = dialog.querySelector('form');
+      const alertBox = dialog.querySelector('#pet-form-alert');
+      const personalityBox = dialog.querySelector('#pet-personality');
+      const photoInput = dialog.querySelector('#pet-photo');
+      const preview = dialog.querySelector('#pet-photo-preview');
+      const fieldIds = ['name', 'species', 'breed', 'gender', 'age', 'size', 'personality', 'appearance', 'bio'];
+
+      function setError(field, message) {
+        const help = dialog.querySelector(`#pet-${field}-error`);
+        const control = dialog.querySelector(`#pet-${field}`);
+        help.hidden = !message;
+        help.textContent = message || '';
+        if (control.matches('input, select')) {
+          if (message) control.setAttribute('aria-invalid', 'true');
+          else control.removeAttribute('aria-invalid');
+        }
+      }
+
+      dialog.querySelector('#pet-name').focus();
+
+      personalityBox.addEventListener('click', (e) => {
+        const tag = e.target.closest('[data-value]');
+        if (!tag) return;
+        tag.setAttribute('aria-pressed', String(tag.getAttribute('aria-pressed') !== 'true'));
+        setError('personality', '');
+      });
+
+      form.addEventListener('input', (e) => {
+        if (e.target.id && e.target.id !== 'pet-photo') setError(e.target.id.replace('pet-', ''), '');
+      });
+
+      photoInput.addEventListener('change', async () => {
+        const file = photoInput.files[0];
+        photoData = null;
+        preview.innerHTML = icon('i-paw');
+        setError('photo', '');
+        if (!file) return;
+        const problem = L.validatePhoto(file);
+        if (problem) {
+          setError('photo', problem);
+          photoInput.value = '';
+          return;
+        }
+        try {
+          photoData = await compressImage(file);
+          preview.innerHTML = `<img src="${photoData}" alt="">`;
+        } catch (err) {
+          console.warn('[match] 照片處理失敗', err);
+          setError('photo', err.message);
+          photoInput.value = '';
+        }
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alertBox.hidden = true;
+        const read = (name) => form.elements[`pet-${name}`].value;
+        const { errors, pet } = L.validatePet({
+          name: read('name'), species: read('species'), breed: read('breed'), gender: read('gender'),
+          age: read('age'), size: read('size'), appearance: read('appearance'), bio: read('bio'),
+          personality: [...personalityBox.querySelectorAll('[aria-pressed="true"]')].map((t) => t.dataset.value),
+        });
+        fieldIds.forEach((f) => setError(f, errors[f]));
+        const firstInvalid = fieldIds.find((f) => errors[f]);
+        if (firstInvalid) {
+          const target = dialog.querySelector(`#pet-${firstInvalid}`);
+          (target.matches('input, select') ? target : target.querySelector('button')).focus();
+          return;
+        }
+
+        const newPet = { id: L.nextPetId(pets), ...pet, photo: photoData };
+        const previous = state.addedPets[me.id] || [];
+        state.addedPets[me.id] = [...previous, newPet];
+        if (!save()) {
+          state.addedPets[me.id] = previous;
+          alertBox.textContent = '瀏覽器的儲存空間不夠，請換一張較小的照片，或先不附照片。';
+          alertBox.hidden = false;
+          alertBox.scrollIntoView({ block: 'nearest' });
+          return;
+        }
+        rebuildIndex();
+        state.mode = 'pet';
+        state.petId = newPet.id;
+        state.index = 0;
+        closeModal();
+        renderAll();
+      });
+    });
+  }
+
   /* ---------- 加減分 ---------- */
   function currentTargetId() {
     return currentPool()[state.index].id;
@@ -636,6 +817,7 @@
       prev: () => step(-1),
       next: () => step(1),
       'clear-filters': clearFilters,
+      'add-pet': openPetForm,
     };
     actions[button.dataset.action]();
   });
@@ -649,6 +831,10 @@
   });
 
   el.petPicker.addEventListener('click', (e) => {
+    if (e.target.closest('[data-action="add-pet"]')) {
+      openPetForm();
+      return;
+    }
     const button = e.target.closest('[data-pet]');
     if (!button) return;
     state.petId = button.dataset.pet;
@@ -698,7 +884,10 @@
 
   el.demoReset.addEventListener('click', () => {
     state.ratings = structuredClone(MOCK_DB.ratings);
+    state.addedPets = {};
+    rebuildIndex();
     save();
+    resetForUser();
     renderAll();
   });
 

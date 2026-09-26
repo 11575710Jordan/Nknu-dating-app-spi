@@ -3,6 +3,10 @@
    規則：只引用 theme.css 的 var(--*)；class 一律加 match- 前綴
    ========================================================= */
 
+/* theme.css 的 base 只對 button/input/textarea 設了 font:inherit，select 會用瀏覽器預設字級。
+   先在頁面補上，已記錄待提給主題負責人。 */
+select.dp-input { font:inherit; color:inherit; }
+
 /* ---------- 頁首、模式切換、篩選 ---------- */
 .match-head {
   display:flex; align-items:flex-start; justify-content:space-between; gap:var(--sp-4);
@@ -13,7 +17,7 @@
   margin-top:var(--sp-4);
 }
 .match-modes .dp-tag, .match-pet-picker .dp-tag { min-height:var(--sp-10); padding:var(--sp-2) var(--sp-4); }
-.match-modes svg { width:var(--sp-5); height:var(--sp-5); }
+.match-modes svg, .match-pet-picker svg { width:var(--sp-5); height:var(--sp-5); }
 
 .match-filter { margin-top:var(--sp-4); display:grid; gap:var(--sp-5); }
 .match-filter[hidden], .match-pet-picker[hidden] { display:none; }
@@ -101,6 +105,24 @@ button.dp-list-item { width:100%; border:0; background:transparent; text-align:l
 .match-modal__actions { display:grid; gap:var(--sp-2); width:100%; }
 .match-modal__counter { justify-self:end; }
 
+/* 新增寵物表單：內容較長，彈窗本身可捲動 */
+.match-modal--form {
+  max-height:calc(100vh - var(--sp-12));
+  overflow-y:auto;
+  text-align:left; justify-items:stretch;
+}
+.match-pet-form { display:grid; gap:var(--sp-4); }
+.match-pet-form__grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--sp-4); align-items:start; }
+.match-pet-form__photo { display:flex; align-items:center; gap:var(--sp-3); }
+.match-pet-form__photo .dp-input { flex:1; min-width:0; }
+.match-pet-form__preview {
+  flex:none; width:var(--sp-16); aspect-ratio:4 / 5;
+  border-radius:var(--r-sm); overflow:hidden;
+  display:grid; place-items:center;
+}
+.match-pet-form__preview svg { width:var(--sp-6); height:var(--sp-6); }
+.match-pet-form__preview img { width:100%; height:100%; object-fit:cover; }
+
 /* ---------- 長輩模式：放大字級與按鈕 ----------
    主題字級皆為 rem，放大 html 根字級即可整頁等比放大。
    125% 為本頁自訂值（主題尚無對應 token），已記錄待提給主題負責人。 */
@@ -116,7 +138,7 @@ html.match--senior { font-size:125%; }
   .match-filter__grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
 }
 @media (max-width: 767px) {
-  .match-filter__grid { grid-template-columns:minmax(0,1fr); }
+  .match-filter__grid, .match-pet-form__grid { grid-template-columns:minmax(0,1fr); }
   .match-stage { margin-top:var(--sp-4); }
   .match-photo { font-size:calc(var(--fs-display) * 2); }
   .match-head .dp-btn { margin-left:auto; }
