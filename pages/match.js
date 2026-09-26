@@ -2,13 +2,13 @@
    配對頁畫面邏輯
    依賴：../data/mock-data.js（MOCK_DB）、../js/match-logic.js（MatchLogic）
    - 登入者：網址 ?user=u01 > localStorage 記住的帳號 > MOCK_DB.currentUserId
-   - 評分、寵物的新增／編輯／刪除存在 localStorage，模擬「後端已保存」
+   - 評分、寵物異動、點數與解鎖紀錄存在 localStorage，模擬「後端已保存」
    ========================================================= */
 (() => {
   'use strict';
 
   const L = MatchLogic;
-  const STORAGE_KEY = 'nknu-match-demo-v2';
+  const STORAGE_KEY = 'nknu-match-demo-v3';
   const MESSAGE_MAX = 40;
   const DISTANCE_MAX = 30;
   const PHOTO_EDGE = 800; // 上傳照片縮到長邊 800px 再存，避免塞爆 localStorage
@@ -24,8 +24,9 @@
     accountForm: $('account-form'), accountInput: $('account-input'),
     accountList: $('account-list'), accountHelp: $('account-help'), demoReset: $('demo-reset'),
     modes: $('mode-switch'), petPicker: $('pet-picker'),
+    pointsToggle: $('points-toggle'),
     filterToggle: $('filter-toggle'), filter: $('filter-panel'),
-    stage: $('match-stage'),
+    stage: $('match-stage'), live: $('match-live'),
     modalRoot: $('modal-root'),
   };
 
@@ -39,9 +40,12 @@
     meId: (urlUser || savedUser || { id: MOCK_DB.currentUserId }).id,
     ratings: saved ? saved.ratings : structuredClone(MOCK_DB.ratings),
     petOverrides: (saved && saved.petOverrides) || {}, // { userId: 完整寵物清單 }，有改過寵物的用戶才會有
+    wallets: (saved && saved.wallets) || {},           // { userId: { points, unlocked[] } }，有動過點數的用戶才會有
     mode: 'person',
     petId: null,
     index: 0,
+    photoIndex: 0,
+    expanded: false,
     filters: null,
   };
 
@@ -68,7 +72,9 @@
   /** 寫入成功回傳 true；失敗（例如容量不足）回傳 false 讓呼叫端決定怎麼處理 */
   function save() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ meId: state.meId, ratings: state.ratings, petOverrides: state.petOverrides }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        meId: state.meId, ratings: state.ratings, petOverrides: state.petOverrides, wallets: state.wallets,
+      }));
       return true;
     } catch (err) {
       console.warn('[match] 無法寫入 localStorage，重新整理後資料會消失', err);
@@ -85,12 +91,19 @@
     };
   }
 
+  /** 換對象時卡片回到第一張照片、收合狀態 */
+  function resetCardView() {
+    state.photoIndex = 0;
+    state.expanded = false;
+  }
+
   function resetForUser() {
     const me = currentUser();
     state.mode = L.defaultMode(me);
     state.petId = me.pets.length ? me.pets[0].id : null;
     state.index = 0;
     state.filters = defaultFilters();
+    resetCardView();
   }
 
   const currentUser = () => usersById.get(state.meId);
@@ -98,6 +111,26 @@
 
   /** 目前「我方」的 id：一般／長輩模式是自己，寵物模式是選中的寵物 */
   const myEntityId = () => (state.mode === 'pet' ? state.petId : state.meId);
+
+  function myWallet() {
+    const me = currentUser();
+    return state.wallets[me.id] || { points: me.points, unlocked: [] };
+  }
+
+  /** 更新錢包並儲存；失敗會還原並回傳 false */
+  function commitWallet(next) {
+    const meId = state.meId;
+    const prev = state.wallets[meId];
+    state.wallets[meId] = next;
+    if (save()) return true;
+    if (prev) state.wallets[meId] = prev;
+    else delete state.wallets[meId];
+    return false;
+  }
+
+  function announce(text) {
+    el.live.textContent = text;
+  }
 
   /* ---------- 評分資料存取 ---------- */
   function findRating(kind, from, to) {
@@ -158,11 +191,6 @@
     return `<span class="dp-avatar match-tone-${ownerOf(kind, id).photoTone} ${extraClass}">${lastChar(displayName(kind, id))}</span>`;
   }
 
-  function photo(entity, tone) {
-    if (entity.photo) return `<img src="${esc(entity.photo)}" alt="${esc(entity.name)}的照片">`;
-    return `<div class="match-photo match-tone-${tone}" aria-hidden="true">${lastChar(entity.name)}</div>`;
-  }
-
   /* ---------- 測試帳號 ---------- */
   function renderAccount(problem) {
     const me = currentUser();
@@ -205,20 +233,28 @@
   el.demoReset.addEventListener('click', () => {
     state.ratings = structuredClone(MOCK_DB.ratings);
     state.petOverrides = {};
+    state.wallets = {};
     rebuildIndex();
     save();
     resetForUser();
     renderAll();
+    announce('示範資料已重設。');
   });
 
-  /* ---------- 模式、寵物選擇 ---------- */
+  /* ---------- 工具列：模式、點數、寵物選擇 ---------- */
   function renderModes() {
     const me = currentUser();
     el.modes.innerHTML = MODES
       .filter((m) => m.id !== 'senior' || L.isSeniorEligible(me))
-      .map((m) => `<button class="dp-tag" type="button" data-mode="${m.id}" aria-pressed="${state.mode === m.id}">${icon(m.icon)}${m.label}模式</button>`)
+      .map((m) => `<button class="dp-tag" type="button" data-mode="${m.id}" aria-pressed="${state.mode === m.id}">${icon(m.icon)}${m.label}</button>`)
       .join('');
     document.documentElement.classList.toggle('match--senior', state.mode === 'senior');
+  }
+
+  function renderPointsToggle() {
+    const { points } = myWallet();
+    el.pointsToggle.innerHTML = `${icon('i-coin')}<span>${points}<span class="match-hide-mobile"> 點</span></span>`;
+    el.pointsToggle.setAttribute('aria-label', `我的點數：${points} 點，開啟加值`);
   }
 
   function renderPetPicker() {
@@ -227,15 +263,13 @@
     el.petPicker.hidden = !show;
     if (!show) return;
     const myPet = petsById.get(state.petId);
-    el.petPicker.innerHTML = `<div class="match-pet-picker__pets">
-        <span class="dp-sm dp-muted">用哪隻寵物配對：</span>
-        ${me.pets.map((p) => `<button class="dp-tag" type="button" data-pet="${p.id}" aria-pressed="${state.petId === p.id}">${esc(p.name)}・${esc(p.breed)}</button>`).join('')}
-      </div>
-      <div class="match-pet-picker__actions">
-        <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-action="edit-pet">${icon('i-edit')}編輯${esc(myPet.name)}</button>
-        <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-action="delete-pet">${icon('i-trash')}刪除${esc(myPet.name)}</button>
-        <button class="dp-btn dp-btn--secondary dp-btn--sm" type="button" data-action="add-pet">${icon('i-plus')}新增寵物</button>
-      </div>`;
+    el.petPicker.innerHTML = `<span class="dp-sm dp-muted match-hide-mobile">用哪隻寵物配對：</span>
+      ${me.pets.map((p) => `<button class="dp-tag" type="button" data-pet="${p.id}" aria-pressed="${state.petId === p.id}">${esc(p.name)}</button>`).join('')}
+      <span class="match-pet-picker__actions">
+        <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-action="edit-pet" aria-label="編輯${esc(myPet.name)}">${icon('i-edit')}<span class="match-hide-mobile">編輯</span></button>
+        <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-action="delete-pet" aria-label="刪除${esc(myPet.name)}">${icon('i-trash')}<span class="match-hide-mobile">刪除</span></button>
+        <button class="dp-btn dp-btn--secondary dp-btn--sm" type="button" data-action="add-pet" aria-label="新增寵物">${icon('i-plus')}<span class="match-hide-mobile">新增寵物</span></button>
+      </span>`;
   }
 
   /* ---------- 篩選（浮動面板，按「確定」才套用） ---------- */
@@ -265,7 +299,7 @@
 
   function renderFilterToggle() {
     const count = L.activeFilterCount(state.filters[state.mode], defaultFilters()[state.mode]);
-    el.filterToggle.innerHTML = `${icon('i-filter')}篩選${count ? `<span class="dp-badge">${count}</span>` : ''}`;
+    el.filterToggle.innerHTML = `${icon('i-filter')}<span class="match-hide-mobile">篩選</span>${count ? `<span class="dp-badge">${count}</span>` : ''}`;
     el.filterToggle.setAttribute('aria-label', count ? `篩選，已設定 ${count} 個條件` : '篩選');
   }
 
@@ -392,9 +426,11 @@
     if (!readDraft()) return;
     state.filters[state.mode] = draft;
     state.index = 0;
+    resetCardView();
     closeFilter();
     renderFilterToggle();
     renderStage();
+    announce(`已套用篩選，共 ${currentPool().length} 個對象。`);
   });
 
   // 點面板外面或按 Esc：不套用，直接關閉
@@ -407,11 +443,47 @@
   function clearFilters() {
     state.filters[state.mode] = defaultFilters()[state.mode];
     state.index = 0;
+    resetCardView();
     renderFilterToggle();
     renderStage();
   }
 
-  /* ---------- 卡片 ---------- */
+  /* ---------- 卡片：照片輪播 ---------- */
+  /** 沒有照片時仍給一張佔位圖，讓卡片版面一致 */
+  const photosOf = (entity) => (entity.photos && entity.photos.length ? entity.photos : [{ src: null, caption: '' }]);
+
+  /**
+   * veil：照片霧化程度（0～1，見 L.photoVeil）。人的照片隨關係分數變清楚，寵物照片傳 0。
+   * 霧化程度用 CSS 變數交給 match.css 換算成模糊半徑，JS 不寫死 px。
+   */
+  function gallery(entity, tone, badges, veil = 0) {
+    const list = photosOf(entity);
+    const i = L.stepPhoto(state.photoIndex, 0, list.length);
+    const current = list[i];
+    const veiled = veil > 0;
+    const label = `${esc(entity.name)}的照片 ${i + 1}／${list.length}${current.caption ? `：${esc(current.caption)}` : ''}${veiled ? '（尚未完全清晰）' : ''}`;
+    const veilAttr = veiled ? ` style="--match-veil:${veil}"` : '';
+    const veilClass = veiled ? ' match-veiled' : '';
+    const slide = current.src
+      ? `<img class="${veilClass.trim()}" src="${esc(current.src)}" alt="${label}"${veilAttr}>`
+      : `<div class="match-photo match-tone-${(tone + i) % 4}${veilClass}" role="img" aria-label="${label}"${veilAttr}>
+          <span class="match-photo__char" aria-hidden="true">${lastChar(entity.name)}</span>
+          ${current.caption ? `<span class="match-photo__caption" aria-hidden="true">${esc(current.caption)}</span>` : ''}
+        </div>`;
+    const multi = list.length > 1;
+    return `${slide}
+      ${multi ? `<div class="match-gallery__bars" aria-hidden="true">${list.map((_, n) => `<span${n === i ? ' class="is-active"' : ''}></span>`).join('')}</div>
+        <button class="match-gallery__nav match-gallery__nav--prev" type="button" data-action="photo-prev" aria-label="上一張照片"${i === 0 ? ' disabled' : ''}></button>
+        <button class="match-gallery__nav match-gallery__nav--next" type="button" data-action="photo-next" aria-label="下一張照片"${i === list.length - 1 ? ' disabled' : ''}></button>` : ''}
+      <div class="match-photo__badges">${badges}</div>`;
+  }
+
+  /* ---------- 卡片：內容 ---------- */
+  function incomingPill(kind, theirId, myId) {
+    const points = pointsOf(kind, theirId, myId);
+    return points ? `<span class="dp-tag dp-tag--shared dp-xs match-photo__badge-end">${icon('i-heart')}給${kind === 'pet' ? esc(displayName(kind, myId)) : '你'} +${points}</span>` : '';
+  }
+
   function incomingBlock(kind, theirId, myId) {
     const record = findRating(kind, theirId, myId);
     if (!record || record.points === 0) return '';
@@ -423,12 +495,64 @@
     return `<dl class="match-facts">${rows.filter(([, v]) => v).map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`;
   }
 
+  function momentsBlock(kind, target) {
+    const key = L.momentKey(kind, target.id);
+    const wallet = myWallet();
+    const count = target.moments.length;
+    const unlocked = L.isUnlocked(wallet, key);
+    const heading = `<h3 class="dp-h3 match-moments__title">${unlocked ? '' : icon('i-lock')}動態<span class="dp-sm dp-muted">${count} 則</span></h3>`;
+
+    if (unlocked) {
+      return `<section class="match-moments" aria-label="${esc(target.name)}的動態">
+        ${heading}
+        <ol class="match-moments__list">
+          ${target.moments.map((m) => `<li class="match-moments__item"><time class="dp-xs dp-muted" datetime="${esc(m.date)}">${esc(m.date.slice(5).replace('-', '/'))}</time><p>${esc(m.text)}</p></li>`).join('')}
+        </ol>
+      </section>`;
+    }
+
+    const enough = wallet.points >= L.UNLOCK_COST;
+    return `<section class="match-moments match-moments--locked" aria-label="${esc(target.name)}的動態（未解鎖）">
+      ${heading}
+      <div class="match-moments__teaser" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p class="dp-sm">用 ${L.UNLOCK_COST} 點解鎖${esc(target.name)}的 ${count} 則動態，解鎖後永久可看。</p>
+      ${enough
+        ? `<button class="dp-btn dp-btn--primary dp-btn--sm" type="button" data-action="unlock">${icon('i-lock')}用 ${L.UNLOCK_COST} 點解鎖（你有 ${wallet.points} 點）</button>`
+        : `<p class="dp-sm dp-muted">你目前有 ${wallet.points} 點，還差 ${L.UNLOCK_COST - wallet.points} 點。</p>
+           <button class="dp-btn dp-btn--secondary dp-btn--sm" type="button" data-action="open-points">${icon('i-coin')}加值點數</button>`}
+    </section>`;
+  }
+
+  /**
+   * 點卡片空白處切換展開／收合（見 el.stage 的 click）。
+   * 另放一顆只有鍵盤聚焦時才看得到的按鈕，讓鍵盤與螢幕閱讀器也能操作。
+   */
+  function cardToggle() {
+    return `<button class="match-card__toggle" type="button" data-action="toggle-expand" aria-expanded="${state.expanded}">${state.expanded ? '收合完整資料' : '展開完整資料'}</button>`;
+  }
+
+  /** 收合時只露出一排標籤＋提示箭頭；展開時顯示完整資料 */
+  function cardBody(summaryTags, detailHtml) {
+    if (!state.expanded) {
+      return `<div class="dp-profile-card__body match-card__summary">
+        ${cardToggle()}
+        <div class="match-card__tags">${summaryTags}</div>
+        <span class="match-card__hint" aria-hidden="true">${icon('i-expand')}</span>
+      </div>`;
+    }
+    return `<div class="dp-profile-card__body">
+      ${cardToggle()}
+      ${detailHtml}
+      <span class="match-card__hint match-card__hint--up" aria-hidden="true">${icon('i-expand')}</span>
+    </div>`;
+  }
+
   function personCard(u) {
     const me = currentUser();
     const shared = L.sharedInterests(u.interests, me.interests);
-    const tags = [
+    const tagHtml = [
       u.verified ? `<span class="dp-tag dp-tag--verified">${icon('i-check')}已驗證</span>` : '',
-      ...shared.map((i) => `<span class="dp-tag dp-tag--shared">${esc(i)}（共同興趣）</span>`),
+      ...shared.map((i) => `<span class="dp-tag dp-tag--shared">${esc(i)}</span>`),
       ...u.interests.filter((i) => !shared.includes(i)).map((i) => `<span class="dp-tag">${esc(i)}</span>`),
     ].join('');
     const prompts = u.prompts.map((p) => `<div class="dp-profile-card__prompt">
@@ -439,26 +563,37 @@
         <p class="match-section-label">養的寵物</p>
         <div class="dp-tag-list">${u.pets.map((p) => `<span class="dp-tag">${icon('i-paw')}${esc(p.name)}・${esc(p.breed)}</span>`).join('')}</div>
       </div>` : '';
+    const sharedNote = shared.length ? `<p class="dp-xs dp-muted">杏色標籤是你們的共同興趣</p>` : '';
 
-    return `<article class="dp-profile-card" aria-label="${esc(u.name)}的個人檔案">
-      <div class="dp-profile-card__photo">
-        ${photo(u, u.photoTone)}
-        ${u.online ? `<div class="match-photo__badges"><span class="dp-tag dp-xs"><span class="match-online-dot"></span>在線上</span></div>` : ''}
+    const detail = `${incomingBlock('person', u.id, me.id)}
+      <div class="dp-tag-list">${tagHtml}</div>${sharedNote}
+      ${facts([
+        ['性別', GENDER_LABEL[u.gender]], ['學校', u.school], ['學歷', u.education], ['身高', `${u.height} 公分`],
+        ['星座', u.zodiac], ['想找的關係', u.relationshipGoal], ['地區', u.area], ['喝酒', u.drinking], ['抽菸', u.smoking],
+      ])}
+      ${prompts}
+      ${petTags}
+      ${momentsBlock('person', u)}`;
+
+    const badges = (u.online ? `<span class="dp-tag dp-xs"><span class="match-online-dot"></span>在線上</span>` : '')
+      + incomingPill('person', u.id, me.id);
+
+    // 照片隨雙方加總的關係分數變清楚，到 PHOTO_CLEAR_SCORE 才完全清晰
+    const score = pairInfo('person', me.id, u.id).total;
+    const veil = L.photoVeil(score);
+    const veilNote = veil > 0
+      ? `<div class="match-photo__veil-note">${icon('i-lock')}關係分數 ${L.PHOTO_CLEAR_SCORE}% 照片完全清晰（目前 ${score}%）</div>` : '';
+
+    return `<article class="dp-profile-card match-card" aria-label="${esc(u.name)}的個人檔案">
+      <div class="dp-profile-card__photo match-gallery">
+        ${gallery(u, u.photoTone, badges, veil)}
         <div class="dp-profile-card__overlay">
           <div class="dp-profile-card__name">${esc(u.name)}，${u.age}</div>
           <div class="dp-profile-card__meta">${esc(u.job)}　距離 ${distanceTo(u).toFixed(1)} 公里</div>
+          ${veilNote}
         </div>
       </div>
-      <div class="dp-profile-card__body">
-        ${incomingBlock('person', u.id, me.id)}
-        <div class="dp-tag-list">${tags}</div>
-        ${facts([
-          ['性別', GENDER_LABEL[u.gender]], ['學校', u.school], ['學歷', u.education], ['身高', `${u.height} 公分`],
-          ['星座', u.zodiac], ['想找的關係', u.relationshipGoal], ['地區', u.area], ['喝酒', u.drinking], ['抽菸', u.smoking],
-        ])}
-        ${prompts}
-        ${petTags}
-      </div>
+      ${cardBody(tagHtml, detail)}
     </article>`;
   }
 
@@ -466,80 +601,83 @@
     const owner = usersById.get(p.ownerId);
     const myPet = petsById.get(state.petId);
     const shared = L.sharedInterests(p.personality, myPet.personality);
-    const tags = p.personality.map((t) => `<span class="dp-tag${shared.includes(t) ? ' dp-tag--shared' : ''}">${esc(t)}${shared.includes(t) ? `（和${esc(myPet.name)}一樣）` : ''}</span>`).join('');
+    const tagHtml = p.personality.map((t) => `<span class="dp-tag${shared.includes(t) ? ' dp-tag--shared' : ''}">${esc(t)}</span>`).join('');
+    const sharedNote = shared.length ? `<p class="dp-xs dp-muted">杏色標籤是和${esc(myPet.name)}一樣的個性</p>` : '';
     const bio = p.bio ? `<div class="dp-profile-card__prompt">
           <p class="dp-profile-card__prompt-q">關於${esc(p.name)}</p>
           <p class="dp-profile-card__prompt-a">${esc(p.bio)}</p>
         </div>` : '';
 
-    return `<article class="dp-profile-card" aria-label="${esc(p.name)}的寵物檔案">
-      <div class="dp-profile-card__photo">
-        ${photo(p, owner.photoTone)}
-        <div class="match-photo__badges"><span class="dp-tag dp-xs">${icon('i-paw')}${esc(p.species)}</span></div>
+    const detail = `${incomingBlock('pet', p.id, myPet.id)}
+      <div class="dp-tag-list">${tagHtml}</div>${sharedNote}
+      ${facts([
+        ['品種', p.breed], ['性別', p.gender], ['體型', p.size], ['外觀', p.appearance],
+        ['主人', `${owner.name}（${GENDER_LABEL[owner.gender]}，${owner.age}）`], ['地區', owner.area],
+      ])}
+      ${bio}
+      ${momentsBlock('pet', p)}`;
+
+    const badges = `<span class="dp-tag dp-xs">${icon('i-paw')}${esc(p.species)}</span>` + incomingPill('pet', p.id, myPet.id);
+
+    return `<article class="dp-profile-card match-card" aria-label="${esc(p.name)}的寵物檔案">
+      <div class="dp-profile-card__photo match-gallery">
+        ${gallery(p, owner.photoTone, badges)}
         <div class="dp-profile-card__overlay">
           <div class="dp-profile-card__name">${esc(p.name)}，${p.age} 歲</div>
           <div class="dp-profile-card__meta">${esc(p.breed)}・${esc(p.size)}　距離 ${distanceTo(owner).toFixed(1)} 公里</div>
         </div>
       </div>
-      <div class="dp-profile-card__body">
-        ${incomingBlock('pet', p.id, myPet.id)}
-        <div class="dp-tag-list">${tags}</div>
-        ${facts([
-          ['品種', p.breed], ['性別', p.gender], ['體型', p.size], ['外觀', p.appearance],
-          ['主人', `${owner.name}（${GENDER_LABEL[owner.gender]}，${owner.age}）`], ['地區', owner.area],
-        ])}
-        ${bio}
-      </div>
+      ${cardBody(tagHtml, detail)}
     </article>`;
   }
 
-  /* ---------- 評分區 ---------- */
-  function ratingBlock(kind, myId, theirId) {
+  /* ---------- 評分欄（桌機在卡片右側，手機在卡片下方一列） ---------- */
+  function ratingBlock(kind, myId, theirId, total) {
     const info = pairInfo(kind, myId, theirId);
     const myRecord = findRating(kind, myId, theirId);
     const myLabel = kind === 'pet' ? displayName(kind, myId) : '你';
     const theirLabel = displayName(kind, theirId);
 
     let hint = '';
-    if (info.matched) hint = '你們已配對成功，可以開始聊天了。';
-    else if (info.mine === 0) hint = L.canLeaveMessage(myRecord) ? '按 + 給對方加分，第一次加分可以留一句話。' : '按 + 給對方加分。';
-    else hint = `等${esc(theirLabel)}也加分，就會配對成功。`;
+    if (info.matched) hint = '已配對成功，可以開始聊天了。';
+    else if (info.mine === 0) hint = L.canLeaveMessage(myRecord) ? '按 + 加分，第一次加分可以留一句話。' : '按 + 給對方加分。';
+    else hint = `等${esc(theirLabel)}也加分就會配對成功。`;
 
     const sent = myRecord && myRecord.message
       ? `<p class="match-rating__sent">${esc(myLabel)}留言：「${esc(myRecord.message)}」</p>` : '';
 
-    return `<section class="match-rating" aria-label="評分">
-      <div class="match-rating__head">
-        <span class="dp-sm dp-muted">關係分數</span>
-        <span class="match-rating__value">${info.total}%</span>
+    return `<aside class="match-rating" aria-label="評分">
+      <div class="match-rating__summary">
+        <div class="match-rating__head">
+          <span class="dp-xs dp-muted match-hide-mobile">關係分數</span>
+          <span class="match-rating__value">${info.total}%</span>
+        </div>
+        <div class="match-rating__bar" role="img" aria-label="${esc(myLabel)} ${info.mine} 分（上限 ${info.myCap}），${esc(theirLabel)} ${info.theirs} 分（上限 ${info.theirCap}）">
+          <div class="match-rating__seg" style="flex-grow:${info.myCap}"><div class="match-rating__fill" style="width:${(info.mine / info.myCap) * 100}%"></div></div>
+          <div class="match-rating__seg match-rating__seg--them" style="flex-grow:${info.theirCap}"><div class="match-rating__fill" style="width:${(info.theirs / info.theirCap) * 100}%"></div></div>
+        </div>
+        <div class="match-rating__legend">
+          <span><span class="match-hide-mobile">${esc(myLabel)} </span><strong>+${info.mine}</strong>/${info.myCap}</span>
+          <span><span class="match-hide-mobile">${esc(theirLabel)} </span><strong>+${info.theirs}</strong>/${info.theirCap}</span>
+        </div>
       </div>
-      <div class="match-rating__bar" role="img" aria-label="${esc(myLabel)} ${info.mine} 分（上限 ${info.myCap}），${esc(theirLabel)} ${info.theirs} 分（上限 ${info.theirCap}）">
-        <div class="match-rating__seg" style="flex-grow:${info.myCap}"><div class="match-rating__fill" style="width:${(info.mine / info.myCap) * 100}%"></div></div>
-        <div class="match-rating__seg match-rating__seg--them" style="flex-grow:${info.theirCap}"><div class="match-rating__fill" style="width:${(info.theirs / info.theirCap) * 100}%"></div></div>
-      </div>
-      <div class="match-rating__legend">
-        <span>${esc(myLabel)} <strong>+${info.mine}</strong> / ${info.myCap}</span>
-        <span>${esc(theirLabel)} <strong>+${info.theirs}</strong> / ${info.theirCap}</span>
-      </div>
-      <div class="dp-actions">
-        <button class="dp-action dp-action--pass" type="button" data-action="minus" aria-label="扣 ${L.STEP} 分"${L.canDecrease(info.mine) ? '' : ' disabled'}>${icon('i-minus')}</button>
-        <button class="dp-action dp-action--like" type="button" data-action="plus" aria-label="加 ${L.STEP} 分"${L.canIncrease(info.mine, info.myCap) ? '' : ' disabled'}>${icon('i-plus')}</button>
+      <div class="match-rating__buttons">
+        <button class="dp-action dp-action--pass match-rating__minus" type="button" data-action="minus" aria-label="扣 ${L.STEP} 分"${L.canDecrease(info.mine) ? '' : ' disabled'}>${icon('i-minus')}</button>
+        <button class="dp-action dp-action--like match-rating__plus" type="button" data-action="plus" aria-label="加 ${L.STEP} 分"${L.canIncrease(info.mine, info.myCap) ? '' : ' disabled'}>${icon('i-plus')}</button>
       </div>
       <p class="match-rating__hint">${hint}</p>
       ${sent}
-    </section>`;
-  }
-
-  function pager(total) {
-    return `<div class="match-pager">
-      <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-action="prev" aria-label="上一位">${icon('i-chevron-left')}上一位</button>
-      <span class="dp-sm dp-muted">${state.index + 1} / ${total}</span>
-      <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-action="next" aria-label="下一位">下一位${icon('i-chevron-right')}</button>
-    </div>`;
+      <div class="match-pager">
+        <button class="dp-btn dp-btn--ghost dp-btn--sm match-pager__prev" type="button" data-action="prev" aria-label="上一位">${icon('i-chevron-left')}</button>
+        <span class="dp-sm dp-muted match-pager__count">${state.index + 1} / ${total}</span>
+        <button class="dp-btn dp-btn--ghost dp-btn--sm match-pager__next" type="button" data-action="next" aria-label="下一位">${icon('i-chevron-right')}</button>
+      </div>
+    </aside>`;
   }
 
   function renderStage() {
     const pool = currentPool();
+    let fit = false;
 
     if (state.mode === 'pet' && !state.petId) {
       el.stage.innerHTML = `<div class="dp-panel dp-empty">
@@ -547,23 +685,24 @@
         <p class="dp-sm dp-muted dp-prose">填好寵物的品種、個性和照片，就能用寵物身分配對。</p>
         <button class="dp-btn dp-btn--secondary dp-btn--sm" type="button" data-action="add-pet">新增寵物</button>
       </div>`;
-      return;
-    }
-    if (!pool.length) {
+    } else if (!pool.length) {
       el.stage.innerHTML = `<div class="dp-panel dp-empty">
         <h2 class="dp-h3">沒有符合條件的${state.mode === 'pet' ? '寵物' : '人'}</h2>
         <p class="dp-sm dp-muted dp-prose">放寬距離或少選幾個條件，就會出現更多對象。</p>
         <button class="dp-btn dp-btn--secondary dp-btn--sm" type="button" data-action="clear-filters">清除篩選條件</button>
       </div>`;
-      return;
+    } else {
+      state.index = Math.min(state.index, pool.length - 1);
+      const target = pool[state.index];
+      const kind = kindOf(state.mode);
+      el.stage.innerHTML = `<div class="match-layout">
+          <div class="match-card-col">${kind === 'pet' ? petCard(target) : personCard(target)}</div>
+          ${ratingBlock(kind, myEntityId(), target.id, pool.length)}
+        </div>`;
+      fit = !state.expanded;
     }
-
-    state.index = Math.min(state.index, pool.length - 1);
-    const target = pool[state.index];
-    const kind = kindOf(state.mode);
-    el.stage.innerHTML = (kind === 'pet' ? petCard(target) : personCard(target))
-      + ratingBlock(kind, myEntityId(), target.id)
-      + pager(pool.length);
+    // 收合時整頁鎖在一個畫面高；展開時恢復正常捲動
+    document.documentElement.classList.toggle('match--fit', fit);
   }
 
   /* ---------- 彈窗 ---------- */
@@ -658,6 +797,143 @@
       </div>`, (dialog) => dialog.querySelector('.dp-btn--primary').focus());
   }
 
+  /* ---------- 點數：加值與解鎖 ---------- */
+  function openPointsModal() {
+    openModal(`<div class="dp-modal match-modal--form" role="dialog" aria-modal="true" aria-labelledby="points-title">
+        <h2 class="dp-h2" id="points-title">我的點數</h2>
+        <p class="match-points__balance"><span id="points-balance">${myWallet().points}</span> 點</p>
+        <p class="dp-sm dp-muted">解鎖一位對象的動態需要 ${L.UNLOCK_COST} 點，解鎖後永久可看。</p>
+        <div class="dp-alert dp-alert--success" id="points-alert" role="status" hidden></div>
+
+        <section class="match-points__section" aria-labelledby="topup-title">
+          <h3 class="dp-h3" id="topup-title">加值方案</h3>
+          <ul class="match-points__plans">
+            ${L.TOPUP_PLANS.map((plan) => `<li class="match-points__plan" data-plan="${plan.id}">
+              <span><strong>${plan.points} 點</strong><span class="dp-sm dp-muted">　NT$${plan.price}</span></span>
+              <span class="match-points__plan-actions">
+                <button class="dp-btn dp-btn--secondary dp-btn--sm" type="button" data-buy="${plan.id}">購買</button>
+              </span>
+            </li>`).join('')}
+          </ul>
+          <p class="dp-xs dp-muted">示範用的模擬付款，不會真的扣款。</p>
+        </section>
+
+        <form class="match-points__section" id="points-manual" novalidate>
+          <h3 class="dp-h3">示範用：手動增加點數</h3>
+          <p class="dp-xs dp-muted">任務系統之後由其他組員製作，目前先在這裡輸入數字模擬。</p>
+          <div class="match-points__manual">
+            <label class="match-sr-only" for="points-amount">要增加的點數</label>
+            <input class="dp-input" id="points-amount" inputmode="numeric" autocomplete="off" placeholder="例如：50" aria-describedby="points-amount-error">
+            <button class="dp-btn dp-btn--ghost dp-btn--sm" type="submit">加入</button>
+          </div>
+          <p class="dp-help dp-help--error" id="points-amount-error" hidden></p>
+        </form>
+
+        <div class="match-modal__actions">
+          <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-close>關閉</button>
+        </div>
+      </div>`, (dialog) => {
+      const alertBox = dialog.querySelector('#points-alert');
+      const amountInput = dialog.querySelector('#points-amount');
+      const amountError = dialog.querySelector('#points-amount-error');
+
+      function credit(amount, source) {
+        if (!commitWallet(L.addPoints(myWallet(), amount))) {
+          alertBox.className = 'dp-alert dp-alert--danger';
+          alertBox.textContent = '無法寫入瀏覽器儲存空間，點數沒有加入，請重新整理後再試一次。';
+          alertBox.hidden = false;
+          return;
+        }
+        const total = myWallet().points;
+        dialog.querySelector('#points-balance').textContent = total;
+        alertBox.className = 'dp-alert dp-alert--success';
+        alertBox.textContent = `${source}：已加入 ${amount} 點，目前共 ${total} 點。`;
+        alertBox.hidden = false;
+        renderPointsToggle();
+        renderStage(); // 解鎖按鈕的狀態會跟著點數變
+      }
+
+      dialog.querySelector('.match-points__plans').addEventListener('click', (e) => {
+        const row = e.target.closest('[data-plan]');
+        if (!row) return;
+        const plan = L.TOPUP_PLANS.find((p) => p.id === row.dataset.plan);
+        const actions = row.querySelector('.match-points__plan-actions');
+        if (e.target.closest('[data-buy]')) {
+          // 在同一列換成付款確認，不另開彈窗
+          actions.innerHTML = `<button class="dp-btn dp-btn--primary dp-btn--sm" type="button" data-pay>確認付款 NT$${plan.price}</button>
+            <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-cancel-pay>取消</button>`;
+          actions.querySelector('[data-pay]').focus();
+          return;
+        }
+        if (e.target.closest('[data-pay]') || e.target.closest('[data-cancel-pay]')) {
+          const paid = Boolean(e.target.closest('[data-pay]'));
+          actions.innerHTML = `<button class="dp-btn dp-btn--secondary dp-btn--sm" type="button" data-buy="${plan.id}">購買</button>`;
+          actions.querySelector('[data-buy]').focus();
+          if (paid) credit(plan.points, `購買 ${plan.points} 點方案`);
+        }
+      });
+
+      dialog.querySelector('#points-manual').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const { value, error } = L.parsePointsInput(amountInput.value);
+        amountError.hidden = !error;
+        amountError.textContent = error || '';
+        if (error) {
+          amountInput.setAttribute('aria-invalid', 'true');
+          amountInput.focus();
+          return;
+        }
+        amountInput.removeAttribute('aria-invalid');
+        amountInput.value = '';
+        credit(value, '手動增加');
+      });
+
+      dialog.querySelector('[data-buy]').focus();
+    });
+  }
+
+  function openUnlockModal() {
+    const kind = kindOf(state.mode);
+    const target = currentPool()[state.index];
+    const wallet = myWallet();
+    openModal(`<div class="dp-modal" role="dialog" aria-modal="true" aria-labelledby="unlock-title">
+        <h2 class="dp-h2" id="unlock-title">解鎖${esc(target.name)}的動態？</h2>
+        <p class="dp-sm">會花 ${L.UNLOCK_COST} 點，剩下 ${wallet.points - L.UNLOCK_COST} 點。解鎖後永久可看這 ${target.moments.length} 則動態。</p>
+        <div class="dp-alert dp-alert--danger" id="unlock-alert" role="alert" hidden></div>
+        <div class="match-modal__actions">
+          <button class="dp-btn dp-btn--primary" type="button" data-confirm>用 ${L.UNLOCK_COST} 點解鎖</button>
+          <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-close>取消</button>
+        </div>
+      </div>`, (dialog) => {
+      const confirm = dialog.querySelector('[data-confirm]');
+      confirm.focus();
+      confirm.addEventListener('click', () => {
+        const alertBox = dialog.querySelector('#unlock-alert');
+        let next;
+        try {
+          next = L.unlockMoments(myWallet(), L.momentKey(kind, target.id));
+        } catch (err) {
+          alertBox.textContent = err.message;
+          alertBox.hidden = false;
+          return;
+        }
+        if (!commitWallet(next)) {
+          alertBox.textContent = '無法寫入瀏覽器儲存空間，點數沒有扣除，請重新整理後再試一次。';
+          alertBox.hidden = false;
+          return;
+        }
+        closeModal();
+        renderPointsToggle();
+        renderStage();
+        announce(`已解鎖${target.name}的動態，剩下 ${next.points} 點。`);
+        const moments = el.stage.querySelector('.match-moments');
+        if (moments) moments.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
+
+  el.pointsToggle.addEventListener('click', openPointsModal);
+
   /* ---------- 寵物：新增／編輯／刪除 ---------- */
   /** 把圖片縮到長邊 PHOTO_EDGE 並轉成 JPEG data URL */
   function compressImage(file) {
@@ -675,7 +951,7 @@
       };
       img.onerror = () => {
         URL.revokeObjectURL(url);
-        reject(new Error('這張圖片無法讀取，請換一張照片再試一次。'));
+        reject(new Error(`「${file.name}」無法讀取，請換一張照片再試一次。`));
       };
       img.src = url;
     });
@@ -718,11 +994,10 @@
   /** existing 為 undefined 時是新增，否則是編輯該寵物 */
   function openPetForm(existing) {
     const me = currentUser();
-    const p = existing || { personality: [] };
+    const p = existing || { personality: [], photos: [], moments: [] };
     const personalityOptions = unique([...pets.flatMap((x) => x.personality), ...p.personality]);
-    let photoData = p.photo || null;
+    let photoList = [...(p.photos || [])];
     const title = existing ? `編輯${esc(p.name)}` : '新增寵物';
-    const previewHtml = () => (photoData ? `<img src="${photoData}" alt="">` : icon('i-paw'));
 
     openModal(`<div class="dp-modal match-modal--form" role="dialog" aria-modal="true" aria-labelledby="pet-form-title" data-keep-open>
         <h2 class="dp-h2" id="pet-form-title">${title}</h2>
@@ -747,12 +1022,9 @@
           ${formField('pet-appearance', '外觀', formInput('pet-appearance', p.appearance, 'maxlength="30" placeholder="例如：白底灰斑、捲尾巴"'), true)}
           ${formField('pet-bio', '介紹', formInput('pet-bio', p.bio, 'maxlength="60" placeholder="一句話介紹牠的小習慣"'), true)}
           <div class="dp-field">
-            <label class="dp-label" for="pet-photo">照片<span class="dp-muted">（選填，10 MB 以內）</span></label>
-            <div class="match-pet-form__photo">
-              <div class="match-pet-form__preview match-tone-${me.photoTone}" id="pet-photo-preview" aria-hidden="true">${previewHtml()}</div>
-              <input class="dp-input" id="pet-photo" name="pet-photo" type="file" accept="image/*" aria-describedby="pet-photo-error">
-            </div>
-            <button class="dp-btn dp-btn--ghost dp-btn--sm match-pet-form__remove-photo" type="button" id="pet-photo-remove"${photoData ? '' : ' hidden'}>移除照片</button>
+            <label class="dp-label" for="pet-photo">照片<span class="dp-muted">（選填，最多 ${L.PET_PHOTO_MAX} 張，每張 10 MB 以內）</span></label>
+            <ul class="match-pet-form__photos" id="pet-photo-list"></ul>
+            <input class="dp-input" id="pet-photo" name="pet-photo" type="file" accept="image/*" multiple aria-describedby="pet-photo-error">
             <p class="dp-help dp-help--error" id="pet-photo-error" hidden></p>
           </div>
           <div class="match-modal__actions">
@@ -765,8 +1037,7 @@
       const alertBox = dialog.querySelector('#pet-form-alert');
       const personalityBox = dialog.querySelector('#pet-personality');
       const photoInput = dialog.querySelector('#pet-photo');
-      const preview = dialog.querySelector('#pet-photo-preview');
-      const removePhoto = dialog.querySelector('#pet-photo-remove');
+      const photoListEl = dialog.querySelector('#pet-photo-list');
       const fieldIds = ['name', 'species', 'breed', 'gender', 'age', 'size', 'personality', 'appearance', 'bio'];
 
       function setError(field, message) {
@@ -780,10 +1051,15 @@
         }
       }
 
-      function showPhoto() {
-        preview.innerHTML = previewHtml();
-        removePhoto.hidden = !photoData;
+      function renderPhotoList() {
+        photoListEl.innerHTML = photoList.map((ph, i) => `<li class="match-pet-form__thumb match-tone-${(me.photoTone + i) % 4}">
+            ${ph.src ? `<img src="${esc(ph.src)}" alt="">` : `<span class="dp-xs">${esc(ph.caption || `照片 ${i + 1}`)}</span>`}
+            <button class="match-pet-form__thumb-remove" type="button" data-remove-photo="${i}" aria-label="移除第 ${i + 1} 張照片">${icon('i-minus')}</button>
+          </li>`).join('');
+        photoListEl.hidden = photoList.length === 0;
+        photoInput.disabled = photoList.length >= L.PET_PHOTO_MAX;
       }
+      renderPhotoList();
 
       dialog.querySelector('#pet-name').focus();
 
@@ -798,31 +1074,34 @@
         if (e.target.id && e.target.id !== 'pet-photo') setError(e.target.id.replace('pet-', ''), '');
       });
 
-      removePhoto.addEventListener('click', () => {
-        photoData = null;
-        photoInput.value = '';
-        showPhoto();
+      photoListEl.addEventListener('click', (e) => {
+        const remove = e.target.closest('[data-remove-photo]');
+        if (!remove) return;
+        photoList.splice(Number(remove.dataset.removePhoto), 1);
+        renderPhotoList();
         photoInput.focus();
       });
 
       photoInput.addEventListener('change', async () => {
-        const file = photoInput.files[0];
+        const files = [...photoInput.files];
         setError('photo', '');
-        if (!file) return;
-        const problem = L.validatePhoto(file);
+        if (!files.length) return;
+        const problem = L.validatePhotoCount(photoList.length, files.length)
+          || files.map((f) => L.validatePhoto(f)).find(Boolean);
         if (problem) {
           setError('photo', problem);
           photoInput.value = '';
           return;
         }
         try {
-          photoData = await compressImage(file);
-          showPhoto();
+          const srcs = await Promise.all(files.map(compressImage));
+          photoList = [...photoList, ...srcs.map((src) => ({ src, caption: '' }))];
+          renderPhotoList();
         } catch (err) {
           console.warn('[match] 照片處理失敗', err);
           setError('photo', err.message);
-          photoInput.value = '';
         }
+        photoInput.value = '';
       });
 
       form.addEventListener('submit', (e) => {
@@ -842,19 +1121,26 @@
           return;
         }
 
-        const saved = { id: existing ? existing.id : L.nextPetId(pets), ...pet, photo: photoData };
+        const savedPet = {
+          id: existing ? existing.id : L.nextPetId(pets),
+          ...pet,
+          photos: photoList,
+          moments: p.moments || [], // 動態由其他功能產生，表單不編輯
+        };
         const myPets = me.pets.map(({ ownerId, ...rest }) => rest); // 存檔不含 ownerId（由 allPets 補）
-        if (!commitMyPets(L.upsertPet(myPets, saved))) {
-          alertBox.textContent = '瀏覽器的儲存空間不夠，請換一張較小的照片，或先不附照片。';
+        if (!commitMyPets(L.upsertPet(myPets, savedPet))) {
+          alertBox.textContent = '瀏覽器的儲存空間不夠，請少放幾張照片再試一次。';
           alertBox.hidden = false;
           alertBox.scrollIntoView({ block: 'nearest' });
           return;
         }
         state.mode = 'pet';
-        state.petId = saved.id;
+        state.petId = savedPet.id;
         if (!existing) state.index = 0;
+        resetCardView();
         closeModal();
         renderAll();
+        announce(existing ? `已儲存${savedPet.name}的變更。` : `已新增${savedPet.name}。`);
       });
     });
   }
@@ -869,8 +1155,7 @@
           <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-close>取消</button>
         </div>
       </div>`, (dialog) => {
-      const cancel = dialog.querySelector('[data-close]');
-      cancel.focus(); // 破壞性動作預設聚焦在「取消」
+      dialog.querySelector('[data-close]').focus(); // 破壞性動作預設聚焦在「取消」
       dialog.querySelector('[data-confirm]').addEventListener('click', () => {
         const me = currentUser();
         const remaining = me.pets.filter((p) => p.id !== pet.id).map(({ ownerId, ...rest }) => rest);
@@ -882,8 +1167,10 @@
         }
         state.petId = remaining.length ? remaining[0].id : null;
         state.index = 0;
+        resetCardView();
         closeModal();
         renderAll();
+        announce(`已刪除${pet.name}。`);
       });
     });
   }
@@ -912,7 +1199,9 @@
     save();
     renderStage();
 
-    if (!before.matched && pairInfo(kind, myId, theirId).matched) openMatchModal(kind, myId, theirId);
+    const after = pairInfo(kind, myId, theirId);
+    announce(`${delta > 0 ? '加' : '扣'} ${L.STEP} 分，關係分數 ${after.total}%。`);
+    if (!before.matched && after.matched) openMatchModal(kind, myId, theirId);
   }
 
   function handlePlus() {
@@ -929,7 +1218,20 @@
   function step(offset) {
     const total = currentPool().length;
     state.index = (state.index + offset + total) % total;
+    resetCardView();
     renderStage();
+  }
+
+  function stepPhotoBy(delta) {
+    const target = currentPool()[state.index];
+    state.photoIndex = L.stepPhoto(state.photoIndex, delta, photosOf(target).length);
+    renderStage();
+  }
+
+  function toggleExpand() {
+    state.expanded = !state.expanded;
+    renderStage();
+    if (!state.expanded) window.scrollTo({ top: 0 });
   }
 
   /* ---------- 事件 ---------- */
@@ -938,6 +1240,11 @@
     minus: () => changePoints(-1),
     prev: () => step(-1),
     next: () => step(1),
+    'photo-prev': () => stepPhotoBy(-1),
+    'photo-next': () => stepPhotoBy(1),
+    'toggle-expand': toggleExpand,
+    unlock: openUnlockModal,
+    'open-points': openPointsModal,
     'clear-filters': clearFilters,
     'add-pet': () => openPetForm(),
     'edit-pet': () => openPetForm(petsById.get(state.petId)),
@@ -947,10 +1254,29 @@
   function handleAction(e) {
     const button = e.target.closest('[data-action]');
     if (!button || button.disabled) return;
-    actions[button.dataset.action]();
+    const key = button.dataset.action;
+    actions[key]();
+    // 重畫後原按鈕已被換掉：把焦點放回同一個動作的新按鈕，鍵盤使用者才不會跳回頁首
+    if (!document.contains(button) && !el.modalRoot.firstChild) {
+      const again = document.querySelector(`[data-action="${key}"]:not([disabled])`);
+      if (again) again.focus({ preventScroll: true });
+    }
   }
 
-  el.stage.addEventListener('click', handleAction);
+  el.stage.addEventListener('click', (e) => {
+    if (e.target.closest('[data-action]')) {
+      handleAction(e);
+      return;
+    }
+    // 點卡片上非互動元素的地方＝切換展開；正在反白選字時不觸發
+    const onCard = e.target.closest('.match-card');
+    const interactive = e.target.closest('a, button, input, select, textarea, label');
+    if (onCard && !interactive && !window.getSelection().toString()) {
+      toggleExpand();
+      const toggle = el.stage.querySelector('.match-card__toggle');
+      if (toggle && e.detail === 0) toggle.focus({ preventScroll: true });
+    }
+  });
 
   el.petPicker.addEventListener('click', (e) => {
     const petButton = e.target.closest('[data-pet]');
@@ -960,6 +1286,7 @@
     }
     state.petId = petButton.dataset.pet;
     state.index = 0;
+    resetCardView();
     renderAll();
   });
 
@@ -968,6 +1295,7 @@
     if (!button || button.dataset.mode === state.mode) return;
     state.mode = button.dataset.mode;
     state.index = 0;
+    resetCardView();
     closeFilter({ restoreFocus: false });
     renderAll();
   });
@@ -975,6 +1303,7 @@
   /* ---------- 初始化 ---------- */
   function renderAll() {
     renderModes();
+    renderPointsToggle();
     renderPetPicker();
     renderFilterToggle();
     renderStage();

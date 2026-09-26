@@ -189,3 +189,71 @@ test('已啟用的篩選條件數：和預設值不同的欄位才算', () => {
   assert.equal(L.activeFilterCount({ ...defaults, gender: 'female', interests: ['登山'] }, defaults), 2);
   assert.equal(L.activeFilterCount({ ...defaults, maxKm: 10 }, defaults), 1);
 });
+
+test('照片切換：不循環，停在第一張和最後一張', () => {
+  assert.equal(L.stepPhoto(0, 1, 3), 1);
+  assert.equal(L.stepPhoto(2, 1, 3), 2);
+  assert.equal(L.stepPhoto(0, -1, 3), 0);
+  assert.equal(L.stepPhoto(5, -1, 3), 1, '索引超出範圍時先收斂再移動');
+});
+
+test('寵物照片最多 4 張', () => {
+  assert.equal(L.validatePhotoCount(2, 2), null);
+  assert.match(L.validatePhotoCount(3, 2), /4 張/);
+});
+
+test('點數輸入：只接受 1~10000 的正整數', () => {
+  assert.deepEqual(L.parsePointsInput(' 50 '), { value: 50 });
+  assert.match(L.parsePointsInput('').error, /輸入/);
+  assert.match(L.parsePointsInput('0').error, /1/);
+  assert.match(L.parsePointsInput('2.5').error, /整數/);
+  assert.match(L.parsePointsInput('abc').error, /整數/);
+  assert.match(L.parsePointsInput('10001').error, /10000/);
+});
+
+test('加點數：回傳新錢包，不改動原本的', () => {
+  const wallet = { points: 40, unlocked: [] };
+  assert.deepEqual(L.addPoints(wallet, 100), { points: 140, unlocked: [] });
+  assert.equal(wallet.points, 40);
+});
+
+test('解鎖動態：每個對象 30 點、永久解鎖、點數不足或重複解鎖都要擋下', () => {
+  const key = L.momentKey('person', 'u02');
+  assert.equal(key, 'person:u02');
+  const after = L.unlockMoments({ points: 40, unlocked: [] }, key);
+  assert.deepEqual(after, { points: 10, unlocked: ['person:u02'] });
+  assert.equal(L.isUnlocked(after, key), true);
+  assert.equal(L.isUnlocked(after, 'pet:p05'), false);
+  assert.throws(() => L.unlockMoments(after, key), /已解鎖/);
+  assert.throws(() => L.unlockMoments(after, 'pet:p05'), /點數不足/);
+  assert.equal(L.UNLOCK_COST, 30);
+});
+
+test('課金方案：價格與點數皆為正整數', () => {
+  assert.ok(L.TOPUP_PLANS.length >= 3);
+  for (const plan of L.TOPUP_PLANS) {
+    assert.ok(Number.isInteger(plan.price) && plan.price > 0);
+    assert.ok(Number.isInteger(plan.points) && plan.points > 0);
+  }
+});
+
+test('模擬資料：每位用戶與寵物都有多張照片與動態，用戶有初始點數', () => {
+  for (const u of DB.users) {
+    assert.ok(u.photos.length >= 2, `${u.id} 照片少於 2 張`);
+    assert.ok(u.moments.length >= 1, `${u.id} 沒有動態`);
+    assert.ok(Number.isInteger(u.points) && u.points >= 0, `${u.id} 點數不正確`);
+    for (const p of u.pets) {
+      assert.ok(p.photos.length >= 2, `${p.id} 照片少於 2 張`);
+      assert.ok(p.moments.length >= 1, `${p.id} 沒有動態`);
+    }
+  }
+});
+
+test('照片清晰度：關係分數 0% 最模糊、隨分數線性變清楚、60% 以上完全清晰', () => {
+  assert.equal(L.PHOTO_CLEAR_SCORE, 60);
+  assert.equal(L.photoVeil(0), 1);
+  assert.equal(L.photoVeil(30), 0.5);
+  assert.equal(L.photoVeil(55), 1 / 12);
+  assert.equal(L.photoVeil(60), 0);
+  assert.equal(L.photoVeil(100), 0);
+});

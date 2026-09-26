@@ -23,9 +23,14 @@
   <symbol id="i-edit" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
   <symbol id="i-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><path stroke-linecap="round" d="M12 7.5v9M9.5 9.5c0-1 1.1-1.8 2.5-1.8s2.5.8 2.5 1.8-1.1 1.6-2.5 1.9-2.5.9-2.5 1.9 1.1 1.8 2.5 1.8 2.5-.8 2.5-1.8"/></g></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></g></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></symbol>
   <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></symbol>
 </svg>
 
+<div class="match-page">
 <!-- 測試用：還沒有登入頁，先用輸入框指定登入者 -->
 <header class="match-account">
   <form class="match-account__form" id="account-form" novalidate>
@@ -33,9 +38,9 @@
     <input class="dp-input" id="account-input" list="account-list" autocomplete="off" placeholder="輸入 u01～u14 或姓名" aria-describedby="account-help">
     <datalist id="account-list"></datalist>
     <button class="dp-btn dp-btn--secondary dp-btn--sm" type="submit">切換帳號</button>
+    <button class="dp-btn dp-btn--ghost dp-btn--sm" id="demo-reset" type="button">重設</button>
   </form>
   <p class="dp-help" id="account-help" role="status"></p>
-  <button class="dp-btn dp-btn--ghost dp-btn--sm match-account__reset" id="demo-reset" type="button">重設示範資料</button>
 </header>
 
 <main class="match-main">
@@ -43,16 +48,21 @@
 
   <div class="match-toolbar">
     <div class="match-modes" id="mode-switch" role="group" aria-label="配對模式"></div>
-    <div class="match-filter-anchor">
-      <button class="dp-btn dp-btn--ghost dp-btn--sm" id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-panel"></button>
-      <form class="match-filter" id="filter-panel" role="dialog" aria-label="篩選條件" novalidate hidden></form>
+    <div class="match-toolbar__end">
+      <button class="dp-btn dp-btn--ghost dp-btn--sm" id="points-toggle" type="button" aria-haspopup="dialog"></button>
+      <div class="match-filter-anchor">
+        <button class="dp-btn dp-btn--ghost dp-btn--sm" id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-panel"></button>
+        <form class="match-filter" id="filter-panel" role="dialog" aria-label="篩選條件" novalidate hidden></form>
+      </div>
     </div>
   </div>
 
   <div class="match-pet-picker" id="pet-picker" hidden></div>
 
-  <section class="match-stage" id="match-stage" aria-live="polite"></section>
+  <section class="match-stage" id="match-stage"></section>
+  <p class="match-sr-only" id="match-live" aria-live="polite"></p>
 </main>
+</div>
 
 <div id="modal-root"></div>
 

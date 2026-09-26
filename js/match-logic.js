@@ -182,7 +182,67 @@ const MatchLogic = (() => {
     return Object.keys(defaults).filter((key) => JSON.stringify(filters[key]) !== JSON.stringify(defaults[key])).length;
   }
 
+  /* ---------- 照片 ---------- */
+  const PET_PHOTO_MAX = 4;
+
+  /** 照片輪播：不循環，停在頭尾 */
+  function stepPhoto(index, delta, total) {
+    const current = Math.min(Math.max(index, 0), total - 1);
+    return Math.min(Math.max(current + delta, 0), total - 1);
+  }
+
+  /** 關係分數達到這個值，對方照片才完全清晰 */
+  const PHOTO_CLEAR_SCORE = 60;
+
+  /** 照片霧化程度：1 = 最模糊（仍看得出輪廓），0 = 完全清晰；隨關係分數線性變清楚 */
+  function photoVeil(score) {
+    return Math.max(0, (PHOTO_CLEAR_SCORE - score) / PHOTO_CLEAR_SCORE);
+  }
+
+  function validatePhotoCount(existing, adding) {
+    return existing + adding > PET_PHOTO_MAX ? `照片最多 ${PET_PHOTO_MAX} 張，請先移除幾張再上傳。` : null;
+  }
+
+  /* ---------- 點數與動態 ---------- */
+  const UNLOCK_COST = 30;
+  const POINTS_INPUT_MAX = 10000;
+  const TOPUP_PLANS = [
+    { id: 'small', price: 30, points: 100 },
+    { id: 'medium', price: 90, points: 330 },
+    { id: 'large', price: 150, points: 600 },
+  ];
+
+  /** 把使用者輸入的點數字串轉成數字：{ value } 或 { error } */
+  function parsePointsInput(text) {
+    const raw = String(text ?? '').trim();
+    if (!raw) return { error: '請輸入要增加的點數。' };
+    if (!/^\d+$/.test(raw)) return { error: '點數請輸入整數。' };
+    const value = Number(raw);
+    if (value < 1) return { error: '點數至少要 1 點。' };
+    if (value > POINTS_INPUT_MAX) return { error: `一次最多增加 ${POINTS_INPUT_MAX} 點。` };
+    return { value };
+  }
+
+  function addPoints(wallet, amount) {
+    return { ...wallet, points: wallet.points + amount };
+  }
+
+  const momentKey = (kind, id) => `${kind}:${id}`;
+
+  function isUnlocked(wallet, key) {
+    return wallet.unlocked.includes(key);
+  }
+
+  /** 花 UNLOCK_COST 點永久解鎖某個對象的動態，回傳新錢包 */
+  function unlockMoments(wallet, key) {
+    if (isUnlocked(wallet, key)) throw new Error('已解鎖過這個對象的動態');
+    if (wallet.points < UNLOCK_COST) throw new Error(`點數不足，解鎖需要 ${UNLOCK_COST} 點`);
+    return { points: wallet.points - UNLOCK_COST, unlocked: [...wallet.unlocked, key] };
+  }
+
   return {
+    PET_PHOTO_MAX, stepPhoto, validatePhotoCount, PHOTO_CLEAR_SCORE, photoVeil,
+    UNLOCK_COST, TOPUP_PLANS, parsePointsInput, addPoints, momentKey, isUnlocked, unlockMoments,
     STEP, SENIOR_AGE, PET_SPECIES, PET_GENDERS, PET_SIZES,
     validatePet, validatePhoto, nextPetId,
     upsertPet, removeRatingsOf, resolveAccount, activeFilterCount,
