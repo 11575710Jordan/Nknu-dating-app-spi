@@ -1,0 +1,118 @@
+/* =========================================================
+   配對頁純邏輯（不碰 DOM，可在 Node 以 `npm test` 測試）
+   瀏覽器：<script src="../js/match-logic.js"> 後使用全域 MatchLogic
+   ========================================================= */
+const MatchLogic = (() => {
+  const STEP = 5;
+  const SENIOR_AGE = 65;
+
+  /**
+   * 評分者在這段關係中最多能給的分數。
+   * 寵物：雙方各 50；人：同性各 50，異性女 60 / 男 40。
+   */
+  function capFor(rater, target, kind) {
+    if (kind === 'pet') return 50;
+    if (rater.gender === target.gender) return 50;
+    return rater.gender === 'female' ? 60 : 40;
+  }
+
+  function canIncrease(points, cap) {
+    return points + STEP <= cap;
+  }
+
+  /** 初始（0 分）只能加分 */
+  function canDecrease(points) {
+    return points - STEP >= 0;
+  }
+
+  /** delta 只接受 +1 / -1，代表按一次 + 或 - */
+  function applyDelta(points, delta, cap) {
+    if (delta !== 1 && delta !== -1) throw new Error(`delta 只能是 1 或 -1，收到 ${delta}`);
+    if (delta === 1 && !canIncrease(points, cap)) throw new Error(`已達上限 ${cap}，不能再加分`);
+    if (delta === -1 && !canDecrease(points)) throw new Error('分數為 0 時不能扣分');
+    return points + delta * STEP;
+  }
+
+  /** 第一次按 + 才能留一句話，之後就算扣回 0 也不能再留 */
+  function canLeaveMessage(record) {
+    return !record || !record.messageUsed;
+  }
+
+  function relationshipScore(myPoints, theirPoints) {
+    return myPoints + theirPoints;
+  }
+
+  function isMatched(myPoints, theirPoints) {
+    return myPoints > 0 && theirPoints > 0;
+  }
+
+  function isSeniorEligible(user) {
+    return user.age >= SENIOR_AGE;
+  }
+
+  function defaultMode(user) {
+    return isSeniorEligible(user) ? 'senior' : 'person';
+  }
+
+  /** 兩點間直線距離（公里，Haversine 公式） */
+  function distanceKm(a, b) {
+    const R = 6371;
+    const rad = (deg) => (deg * Math.PI) / 180;
+    const dLat = rad(b.lat - a.lat);
+    const dLng = rad(b.lng - a.lng);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+
+  function sharedInterests(mine, theirs) {
+    return mine.filter((item) => theirs.includes(item));
+  }
+
+  const includesAll = (list, required) => required.every((item) => list.includes(item));
+
+  /**
+   * filters: { gender, ageMin, ageMax, maxKm, interests[], school, jobCategory, seniorOnly }
+   * 沒給的條件不過濾；interests 為「全部都要有」。
+   */
+  function filterPeople(users, me, filters) {
+    const f = filters || {};
+    return users.filter((u) => {
+      if (u.id === me.id) return false;
+      if (f.seniorOnly && !isSeniorEligible(u)) return false;
+      if (f.gender && f.gender !== 'all' && u.gender !== f.gender) return false;
+      if (f.ageMin != null && u.age < f.ageMin) return false;
+      if (f.ageMax != null && u.age > f.ageMax) return false;
+      if (f.maxKm != null && distanceKm(me, u) > f.maxKm) return false;
+      if (f.interests && !includesAll(u.interests, f.interests)) return false;
+      if (f.school && u.school !== f.school) return false;
+      if (f.jobCategory && u.jobCategory !== f.jobCategory) return false;
+      return true;
+    });
+  }
+
+  /** 攤平所有用戶的寵物，並補上 ownerId */
+  function allPets(users) {
+    return users.flatMap((u) => u.pets.map((p) => ({ ...p, ownerId: u.id })));
+  }
+
+  /** filters: { species, size, personality[] } */
+  function filterPets(pets, myId, filters) {
+    const f = filters || {};
+    return pets.filter((p) => {
+      if (p.ownerId === myId) return false;
+      if (f.species && p.species !== f.species) return false;
+      if (f.size && p.size !== f.size) return false;
+      if (f.personality && !includesAll(p.personality, f.personality)) return false;
+      return true;
+    });
+  }
+
+  return {
+    STEP, SENIOR_AGE,
+    capFor, canIncrease, canDecrease, applyDelta, canLeaveMessage,
+    relationshipScore, isMatched, isSeniorEligible, defaultMode,
+    distanceKm, sharedInterests, filterPeople, allPets, filterPets,
+  };
+})();
+
+if (typeof module !== 'undefined') module.exports = MatchLogic;

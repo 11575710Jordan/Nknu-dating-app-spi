@@ -1,0 +1,8 @@
+{
+  "name": "nknu-dating-app-spi",
+  "private": true,
+  "description": "軟體流程改善研究-交友軟體（純前端 demo）",
+  "scripts": {
+    "test": "node --test tests/"
+  }
+}
