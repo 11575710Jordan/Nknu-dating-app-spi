@@ -156,3 +156,36 @@ test('新增寵物：id 接在現有最大編號之後', () => {
   assert.equal(L.nextPetId([{ id: 'p01' }, { id: 'p12' }, { id: 'p03' }]), 'p13');
   assert.equal(L.nextPetId([]), 'p01');
 });
+
+test('測試帳號：可輸入 id（不分大小寫）或完整姓名，找不到回傳 null', () => {
+  const users = [{ id: 'u01', name: '陳彥廷' }, { id: 'u02', name: '林予晴' }];
+  assert.equal(L.resolveAccount(users, ' U02 ').id, 'u02');
+  assert.equal(L.resolveAccount(users, '陳彥廷').id, 'u01');
+  assert.equal(L.resolveAccount(users, 'u99'), null);
+  assert.equal(L.resolveAccount(users, ''), null);
+});
+
+test('寵物清單：同 id 取代（編輯），新 id 附加在最後（新增）', () => {
+  const list = [{ id: 'p01', name: '豆花' }, { id: 'p02', name: '麻糬' }];
+  assert.deepEqual(L.upsertPet(list, { id: 'p01', name: '豆花二號' }).map((p) => p.name), ['豆花二號', '麻糬']);
+  assert.deepEqual(L.upsertPet(list, { id: 'p03', name: '湯圓' }).map((p) => p.id), ['p01', 'p02', 'p03']);
+  assert.equal(list[0].name, '豆花', '不可改動原陣列');
+});
+
+test('刪除寵物時，移除牠給出與收到的寵物評分，人的評分不受影響', () => {
+  const ratings = [
+    { kind: 'pet', from: 'p01', to: 'p05' },
+    { kind: 'pet', from: 'p05', to: 'p01' },
+    { kind: 'pet', from: 'p05', to: 'p06' },
+    { kind: 'person', from: 'p01', to: 'u02' },
+  ];
+  const left = L.removeRatingsOf(ratings, 'pet', 'p01');
+  assert.deepEqual(left.map((r) => `${r.kind}:${r.from}>${r.to}`), ['pet:p05>p06', 'person:p01>u02']);
+});
+
+test('已啟用的篩選條件數：和預設值不同的欄位才算', () => {
+  const defaults = { gender: 'all', maxKm: 30, interests: [], school: '' };
+  assert.equal(L.activeFilterCount(defaults, defaults), 0);
+  assert.equal(L.activeFilterCount({ ...defaults, gender: 'female', interests: ['登山'] }, defaults), 2);
+  assert.equal(L.activeFilterCount({ ...defaults, maxKm: 10 }, defaults), 1);
+});

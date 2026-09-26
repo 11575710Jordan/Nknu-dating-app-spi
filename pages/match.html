@@ -13,75 +13,46 @@
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></symbol>
-  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M15.8 8.2l-2.2 5.4-5.4 2.2 2.2-5.4z"/></symbol>
-  <symbol id="i-hearts" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20s-7-4.3-8.9-8.6C1.8 8.3 3.7 5 7 5c2 0 3.4 1 5 2.8C13.6 6 15 5 17 5c3.3 0 5.2 3.3 3.9 6.4C19 15.7 12 20 12 20z"/></symbol>
-  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 5h16v11H9l-5 4z"/></symbol>
-  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 20c1.5-4 4.5-5.5 8-5.5s6.5 1.5 8 5.5"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-minus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" d="M5 12h14"/></symbol>
   <symbol id="i-paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="6" cy="10" rx="2" ry="2.6"/><ellipse cx="10" cy="6" rx="2" ry="2.6"/><ellipse cx="14" cy="6" rx="2" ry="2.6"/><ellipse cx="18" cy="10" rx="2" ry="2.6"/><path d="M12 11c-3 0-6 4.2-6 6.6 0 1.6 1.3 2.4 3 2.4 1.2 0 2-.6 3-.6s1.8.6 3 .6c1.7 0 3-.8 3-2.4C18 15.2 15 11 12 11z"/></g></symbol>
   <symbol id="i-people" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.6-5 6.5-5s5.5 1.5 6.5 5"/><circle cx="17" cy="9" r="2.8"/><path d="M17 14.5c2.3 0 4 1.3 4.8 4"/></g></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 6h16M7 12h10M10 18h4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
   <symbol id="i-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
   <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></symbol>
 </svg>
 
-<div class="dp-shell">
-  <nav class="dp-shell__nav" aria-label="主要導覽">
-    <div class="dp-logo">品牌名稱</div>
-    <a class="dp-nav-item" href="#"><svg><use href="#i-compass"/></svg><span>探索</span></a>
-    <a class="dp-nav-item" href="match.html" aria-current="page"><svg><use href="#i-hearts"/></svg><span>配對</span></a>
-    <a class="dp-nav-item" href="#"><svg><use href="#i-chat"/></svg><span>訊息</span></a>
-    <a class="dp-nav-item" href="#"><svg><use href="#i-user"/></svg><span>我的檔案</span></a>
-  </nav>
+<!-- 測試用：還沒有登入頁，先用輸入框指定登入者 -->
+<header class="match-account">
+  <form class="match-account__form" id="account-form" novalidate>
+    <label class="dp-label" for="account-input">測試帳號</label>
+    <input class="dp-input" id="account-input" list="account-list" autocomplete="off" placeholder="輸入 u01～u14 或姓名" aria-describedby="account-help">
+    <datalist id="account-list"></datalist>
+    <button class="dp-btn dp-btn--secondary dp-btn--sm" type="submit">切換帳號</button>
+  </form>
+  <p class="dp-help" id="account-help" role="status"></p>
+  <button class="dp-btn dp-btn--ghost dp-btn--sm match-account__reset" id="demo-reset" type="button">重設示範資料</button>
+</header>
 
-  <main class="dp-shell__main">
-    <div class="dp-shell__main-inner">
-      <header class="match-head">
-        <div>
-          <h1 class="dp-h1" id="match-title">今天想認識誰？</h1>
-          <p class="dp-muted" id="match-subtitle"></p>
-        </div>
-        <button class="dp-btn dp-btn--ghost dp-btn--sm" id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-panel">篩選條件</button>
-      </header>
+<main class="match-main">
+  <h1 class="match-sr-only">配對</h1>
 
-      <div class="match-modes" id="mode-switch" role="group" aria-label="配對模式"></div>
-      <div class="match-pet-picker" id="pet-picker" hidden></div>
-
-      <form class="dp-panel match-filter" id="filter-panel" hidden aria-label="篩選條件"></form>
-
-      <section class="match-stage" id="match-stage" aria-live="polite"></section>
-
-      <details class="dp-panel match-demo">
-        <summary class="dp-sm">示範工具：切換登入身分、重設資料</summary>
-        <div class="match-demo__body">
-          <div class="dp-field">
-            <label class="dp-label" for="demo-user">目前登入身分</label>
-            <select class="dp-input" id="demo-user"></select>
-            <p class="dp-help">切換成 65 歲以上的用戶，會自動進入長輩模式。</p>
-          </div>
-          <button class="dp-btn dp-btn--ghost dp-btn--sm" id="demo-reset" type="button">重設示範資料（評分與新增的寵物）</button>
-        </div>
-      </details>
+  <div class="match-toolbar">
+    <div class="match-modes" id="mode-switch" role="group" aria-label="配對模式"></div>
+    <div class="match-filter-anchor">
+      <button class="dp-btn dp-btn--ghost dp-btn--sm" id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-panel"></button>
+      <form class="match-filter" id="filter-panel" role="dialog" aria-label="篩選條件" novalidate hidden></form>
     </div>
-  </main>
+  </div>
 
-  <aside class="dp-shell__aside" aria-label="配對結果">
-    <div class="match-aside-title"><h2 class="dp-h3">配對成功</h2><span class="dp-xs dp-muted" id="matched-count"></span></div>
-    <ul class="dp-list" id="matched-list"></ul>
-    <div class="match-aside-title"><h2 class="dp-h3">對你加分</h2><span class="dp-xs dp-muted" id="incoming-count"></span></div>
-    <ul class="dp-list" id="incoming-list"></ul>
-  </aside>
-</div>
+  <div class="match-pet-picker" id="pet-picker" hidden></div>
 
-<nav class="dp-tabbar" aria-label="主要導覽">
-  <a class="dp-nav-item" href="#"><svg><use href="#i-compass"/></svg><span>探索</span></a>
-  <a class="dp-nav-item" href="match.html" aria-current="page"><svg><use href="#i-hearts"/></svg><span>配對</span></a>
-  <a class="dp-nav-item" href="#"><svg><use href="#i-chat"/></svg><span>訊息</span></a>
-  <a class="dp-nav-item" href="#"><svg><use href="#i-user"/></svg><span>我的檔案</span></a>
-</nav>
+  <section class="match-stage" id="match-stage" aria-live="polite"></section>
+</main>
 
 <div id="modal-root"></div>
 

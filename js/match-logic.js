@@ -158,9 +158,34 @@ const MatchLogic = (() => {
     return `p${String(max + 1).padStart(2, '0')}`;
   }
 
+  /** 同 id 取代（編輯），否則附加（新增）；回傳新陣列 */
+  function upsertPet(list, pet) {
+    return list.some((p) => p.id === pet.id)
+      ? list.map((p) => (p.id === pet.id ? pet : p))
+      : [...list, pet];
+  }
+
+  /** 移除某個對象（kind 相同）給出與收到的評分 */
+  function removeRatingsOf(ratings, kind, id) {
+    return ratings.filter((r) => r.kind !== kind || (r.from !== id && r.to !== id));
+  }
+
+  /** 以 id（不分大小寫）或完整姓名找測試帳號 */
+  function resolveAccount(users, input) {
+    const text = String(input || '').trim();
+    if (!text) return null;
+    return users.find((u) => u.id.toLowerCase() === text.toLowerCase() || u.name === text) || null;
+  }
+
+  /** 和預設值不同的篩選欄位數，給篩選按鈕上的數字用 */
+  function activeFilterCount(filters, defaults) {
+    return Object.keys(defaults).filter((key) => JSON.stringify(filters[key]) !== JSON.stringify(defaults[key])).length;
+  }
+
   return {
     STEP, SENIOR_AGE, PET_SPECIES, PET_GENDERS, PET_SIZES,
     validatePet, validatePhoto, nextPetId,
+    upsertPet, removeRatingsOf, resolveAccount, activeFilterCount,
     capFor, canIncrease, canDecrease, applyDelta, canLeaveMessage,
     relationshipScore, isMatched, isSeniorEligible, defaultMode,
     distanceKm, sharedInterests, filterPeople, allPets, filterPets,
