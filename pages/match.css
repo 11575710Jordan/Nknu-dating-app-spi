@@ -1,0 +1,123 @@
+/* =========================================================
+   配對頁 match.css
+   規則：只引用 theme.css 的 var(--*)；class 一律加 match- 前綴
+   ========================================================= */
+
+/* ---------- 頁首、模式切換、篩選 ---------- */
+.match-head {
+  display:flex; align-items:flex-start; justify-content:space-between; gap:var(--sp-4);
+  flex-wrap:wrap;
+}
+.match-modes, .match-pet-picker {
+  display:flex; flex-wrap:wrap; align-items:center; gap:var(--sp-2);
+  margin-top:var(--sp-4);
+}
+.match-modes .dp-tag, .match-pet-picker .dp-tag { min-height:var(--sp-10); padding:var(--sp-2) var(--sp-4); }
+.match-modes svg { width:var(--sp-5); height:var(--sp-5); }
+
+.match-filter { margin-top:var(--sp-4); display:grid; gap:var(--sp-5); }
+.match-filter[hidden], .match-pet-picker[hidden] { display:none; }
+.match-filter__grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--sp-4); }
+.match-filter__range { display:flex; align-items:center; gap:var(--sp-3); }
+.match-filter__range input { flex:1; accent-color:var(--action-primary-bg); }
+.match-filter__age { display:flex; align-items:center; gap:var(--sp-2); }
+.match-filter__foot { display:flex; justify-content:space-between; align-items:center; gap:var(--sp-3); flex-wrap:wrap; }
+
+/* ---------- 卡片 ---------- */
+.match-stage { margin-top:var(--sp-6); }
+
+/* 沒有照片時的佔位：大字顯示名字最後一字 */
+.match-photo {
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  font-family:var(--font-display); font-weight:var(--fw-bold);
+  font-size:calc(var(--fs-display) * 2.5);
+}
+.match-tone-0 { background:var(--plum-100);   color:var(--plum-500); }
+.match-tone-1 { background:var(--apricot-100); color:var(--apricot-800); }
+.match-tone-2 { background:var(--sage-100);    color:var(--sage-800); }
+.match-tone-3 { background:var(--coral-100);   color:var(--coral-700); }
+.match-photo__badges { position:absolute; top:var(--sp-4); left:var(--sp-4); display:flex; gap:var(--sp-2); }
+.match-photo__badges .dp-tag { background:var(--bg-surface); box-shadow:var(--shadow-sm); }
+.match-photo__badges svg { width:var(--sp-4); height:var(--sp-4); }
+.match-online-dot { width:var(--sp-2); height:var(--sp-2); border-radius:50%; background:var(--state-online); }
+
+/* 對方已加分時的提示（情感動作 → 用杏桃色） */
+.match-incoming {
+  background:var(--apricot-100); color:var(--apricot-800);
+  border-radius:var(--r-md); padding:var(--sp-3) var(--sp-4);
+  font-size:var(--fs-sm);
+}
+.match-incoming__quote { display:block; margin-top:var(--sp-1); font-family:var(--font-display); font-size:var(--fs-body-lg); color:var(--text-primary); }
+
+.match-facts { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--sp-3) var(--sp-4); margin:0; }
+.match-facts dt { font-size:var(--fs-xs); color:var(--text-secondary); }
+.match-facts dd { margin:0; font-size:var(--fs-sm); font-weight:var(--fw-medium); }
+
+.match-stage .dp-tag svg { width:var(--sp-4); height:var(--sp-4); flex:none; }
+.match-section-label { font-size:var(--fs-xs); color:var(--text-secondary); margin-bottom:var(--sp-2); }
+
+/* ---------- 評分 ---------- */
+.match-rating {
+  max-width:var(--profile-card-w); margin:var(--sp-6) auto 0;
+  display:grid; gap:var(--sp-3);
+}
+.match-rating__head { display:flex; align-items:baseline; justify-content:space-between; }
+.match-rating__value { font-family:var(--font-display); font-size:var(--fs-h1); line-height:var(--lh-h1); font-weight:var(--fw-bold); }
+.match-rating__bar { display:flex; gap:var(--sp-1); height:var(--sp-3); }
+.match-rating__seg { position:relative; background:var(--bg-subtle); border-radius:var(--r-pill); overflow:hidden; }
+.match-rating__fill {
+  position:absolute; inset:0 auto 0 0;
+  background:var(--emotion-like-solid); border-radius:var(--r-pill);
+  transition:width var(--dur-base) var(--ease-standard);
+}
+.match-rating__seg--them .match-rating__fill { background:var(--emotion-super-like); }
+.match-rating__legend { display:flex; justify-content:space-between; font-size:var(--fs-sm); color:var(--text-secondary); }
+.match-rating__legend strong { color:var(--text-primary); }
+.match-rating .dp-actions { padding-top:var(--sp-2); }
+.match-rating .dp-action[disabled] { opacity:.35; cursor:not-allowed; transform:none; box-shadow:var(--shadow-sm); }
+.match-rating__hint { text-align:center; font-size:var(--fs-sm); color:var(--text-secondary); }
+.match-rating__sent { text-align:center; font-size:var(--fs-sm); }
+
+.match-pager { display:flex; align-items:center; justify-content:space-between; gap:var(--sp-3); max-width:var(--profile-card-w); margin:var(--sp-6) auto 0; }
+.match-pager svg { width:var(--sp-5); height:var(--sp-5); }
+
+.match-demo { margin-top:var(--sp-12); padding:var(--sp-4) var(--sp-5); }
+.match-demo summary { cursor:pointer; color:var(--text-secondary); }
+.match-demo__body { display:grid; gap:var(--sp-4); justify-items:start; margin-top:var(--sp-4); }
+.match-demo__body .dp-field { width:100%; }
+
+/* ---------- 右側欄 ---------- */
+.match-aside-title { display:flex; align-items:baseline; justify-content:space-between; margin:var(--sp-6) 0 var(--sp-2); }
+.match-aside-title:first-child { margin-top:0; }
+.match-aside-empty { font-size:var(--fs-sm); color:var(--text-secondary); padding:var(--sp-2) var(--sp-3); }
+.dp-shell__aside .dp-list > li { min-width:0; }
+button.dp-list-item { width:100%; border:0; background:transparent; text-align:left; cursor:pointer; }
+.match-score { font-size:var(--fs-xs); font-weight:var(--fw-bold); color:var(--coral-700); }
+
+/* ---------- 彈窗內 ---------- */
+.match-modal__pair { display:flex; gap:var(--sp-2); }
+.match-modal__form { display:grid; gap:var(--sp-3); width:100%; text-align:left; }
+.match-modal__actions { display:grid; gap:var(--sp-2); width:100%; }
+.match-modal__counter { justify-self:end; }
+
+/* ---------- 長輩模式：放大字級與按鈕 ----------
+   主題字級皆為 rem，放大 html 根字級即可整頁等比放大。
+   125% 為本頁自訂值（主題尚無對應 token），已記錄待提給主題負責人。 */
+html.match--senior { font-size:125%; }
+.match--senior .match-rating .dp-action { width:var(--sp-20); height:var(--sp-20); }
+.match--senior .match-rating .dp-action--like { width:calc(var(--sp-20) + var(--sp-5)); height:calc(var(--sp-20) + var(--sp-5)); }
+.match--senior .match-rating .dp-action svg { width:var(--sp-10); height:var(--sp-10); }
+.match--senior .dp-btn { min-height:var(--sp-12); }
+.match--senior .match-rating__bar { height:var(--sp-5); }
+
+/* ---------- RWD（使用主題同一組斷點） ---------- */
+@media (max-width: 1023px) {
+  .match-filter__grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 767px) {
+  .match-filter__grid { grid-template-columns:minmax(0,1fr); }
+  .match-stage { margin-top:var(--sp-4); }
+  .match-photo { font-size:calc(var(--fs-display) * 2); }
+  .match-head .dp-btn { margin-left:auto; }
+}
