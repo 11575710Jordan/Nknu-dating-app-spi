@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>訊息｜Dating POC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme_guide/theme.css">
+<link rel="stylesheet" href="../chat/chat.css">
+</head>
+<body class="chat-body">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M15.8 8.2l-2.2 5.4-5.4 2.2 2.2-5.4z"/></symbol>
+  <symbol id="i-hearts" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20s-7-4.3-8.9-8.6C1.8 8.3 3.7 5 7 5c2 0 3.4 1 5 2.8C13.6 6 15 5 17 5c3.3 0 5.2 3.3 3.9 6.4C19 15.7 12 20 12 20z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 20c1.5-4 4.5-5.5 8-5.5s6.5 1.5 8 5.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-7 16-2-7z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></g></symbol>
+  <symbol id="i-ai" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.2 3.6L17 8.3l-3.8 1.2L12 13.1l-1.2-3.6L7 8.3l3.8-1.2z"/><path d="M18.5 13.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/><path d="M5.5 14.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z"/></g></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
+
+<div class="dp-shell dp-shell--no-aside chat-shell chat-page" id="chat-page">
+  <nav class="dp-shell__nav" aria-label="主要導覽">
+    <div class="dp-logo">品牌名稱</div>
+    <a class="dp-nav-item" href="match.html"><svg><use href="#i-compass"/></svg><span>探索</span></a>
+    <a class="dp-nav-item" href="match.html"><svg><use href="#i-hearts"/></svg><span>配對</span></a>
+    <a class="dp-nav-item" href="chat.html" aria-current="page"><svg><use href="#i-chat"/></svg><span>訊息</span></a>
+    <a class="dp-nav-item" href="user-center.html"><svg><use href="#i-user"/></svg><span>我的檔案</span></a>
+  </nav>
+
+  <main class="dp-shell__main">
+    <div class="chat-workspace">
+      <section class="chat-inbox" aria-labelledby="inbox-title">
+        <div class="chat-inbox__head">
+          <h1 class="dp-h2" id="inbox-title">訊息</h1>
+        </div>
+        <div class="chat-inbox__search">
+          <label class="chat-sr-only" for="chat-search">搜尋對話</label>
+          <input class="dp-input" id="chat-search" type="search" placeholder="搜尋名字或訊息">
+        </div>
+        <div class="chat-matches" aria-label="新配對">
+          <button class="chat-match" type="button" data-open="yun">
+            <span class="dp-avatar chat-tone-apricot">晴</span>
+            <span class="chat-match__name">林予晴</span>
+          </button>
+          <button class="chat-match" type="button" data-open="wei">
+            <span class="dp-avatar dp-avatar--online chat-tone-plum">維</span>
+            <span class="chat-match__name">黃維倫</span>
+          </button>
+        </div>
+        <ul class="dp-list chat-inbox__list" id="inbox-list">
+          <li>
+            <button class="dp-list-item" type="button" data-open="zhe" aria-current="true">
+              <span class="dp-avatar dp-avatar--online chat-tone-plum">哲</span>
+              <span class="dp-list-item__text">
+                <span class="dp-list-item__title">陳彥哲</span>
+                <span class="dp-list-item__sub">那家拉麵我週六也想去！</span>
+              </span>
+              <span class="chat-inbox__time">20:41</span>
+              <span class="dp-badge">2</span>
+            </button>
+          </li>
+          <li>
+            <button class="dp-list-item" type="button" data-open="qi">
+              <span class="dp-avatar chat-tone-sage">琪</span>
+              <span class="dp-list-item__text">
+                <span class="dp-list-item__title">許安琪</span>
+                <span class="dp-list-item__sub">你：好啊，那就約下午三點</span>
+              </span>
+              <span class="chat-inbox__time">昨天</span>
+            </button>
+          </li>
+          <li>
+            <button class="dp-list-item" type="button" data-open="wei">
+              <span class="dp-avatar dp-avatar--online chat-tone-apricot">維</span>
+              <span class="dp-list-item__text">
+                <span class="dp-list-item__title">黃維倫</span>
+                <span class="dp-list-item__sub">哈哈我也養了兩隻橘貓</span>
+              </span>
+              <span class="chat-inbox__time">週日</span>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <section class="chat-room" id="chat-room" aria-labelledby="peer-name">
+        <header class="chat-room__head">
+          <button class="chat-room__back" id="chat-back" type="button" aria-label="回到訊息列表">
+            <svg><use href="#i-back"/></svg>
+          </button>
+          <span class="dp-avatar dp-avatar--sm dp-avatar--online chat-tone-plum" id="peer-avatar">哲</span>
+          <div class="chat-room__peer">
+            <div class="chat-room__name" id="peer-name">陳彥哲</div>
+            <span class="chat-room__status" id="peer-status">現在在線</span>
+          </div>
+          <div class="chat-room__actions">
+            <a class="dp-btn dp-btn--secondary dp-btn--sm chat-hide-mobile" href="match.html">查看檔案</a>
+            <div class="chat-ai" id="chat-ai">
+              <button class="chat-ai__fab" id="chat-ai-btn" type="button" aria-expanded="false" aria-controls="chat-ai-menu" aria-label="AI 助手">
+                <svg><use href="#i-ai"/></svg>
+              </button>
+              <div class="chat-ai__menu" id="chat-ai-menu" hidden>
+                <button type="button" data-ai="reply">聊天建議</button>
+                <button type="button" data-ai="ice">破冰話題</button>
+              </div>
+            </div>
+            <div class="chat-menu">
+              <button class="dp-btn dp-btn--ghost dp-btn--sm" id="chat-more" type="button" aria-expanded="false" aria-controls="chat-more-panel" aria-label="更多動作">
+                <svg><use href="#i-more"/></svg>
+              </button>
+              <div class="chat-menu__panel" id="chat-more-panel" hidden>
+                <a href="match.html">查看完整檔案</a>
+                <a href="report-user.html">檢舉這則對話</a>
+                <button class="chat-menu__danger" type="button">封鎖對方</button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="dp-alert dp-alert--info chat-notice">先在公開場合見面。不要分享帳號密碼或轉帳。</div>
+
+        <aside class="chat-ai-sheet" id="chat-ai-sheet" hidden>
+          <header class="chat-ai-sheet__head">
+            <div>
+              <h2 class="dp-h3" id="chat-ai-title">聊天建議</h2>
+              <p class="dp-sm dp-muted" id="chat-ai-lead"></p>
+            </div>
+            <button class="chat-ai-sheet__close" id="chat-ai-close" type="button" aria-label="關閉建議">
+              <svg><use href="#i-x"/></svg>
+            </button>
+          </header>
+          <ul class="chat-ai-sheet__list" id="chat-ai-list"></ul>
+        </aside>
+
+        <div class="chat-thread" id="chat-thread">
+          <div class="dp-chat" id="chat-stream"></div>
+        </div>
+
+        <form class="chat-composer" id="chat-form">
+          <div class="chat-composer__field">
+            <label class="chat-sr-only" for="chat-input">訊息內容</label>
+            <textarea class="dp-input" id="chat-input" rows="1" placeholder="寫一則訊息" maxlength="500" required></textarea>
+          </div>
+          <button class="dp-btn dp-btn--primary" type="submit">
+            傳送
+            <svg aria-hidden="true"><use href="#i-send"/></svg>
+          </button>
+        </form>
+      </section>
+    </div>
+  </main>
+</div>
+
+<nav class="dp-tabbar" aria-label="主要導覽">
+  <a class="dp-nav-item" href="match.html"><svg><use href="#i-compass"/></svg><span>探索</span></a>
+  <a class="dp-nav-item" href="match.html"><svg><use href="#i-hearts"/></svg><span>配對</span></a>
+  <a class="dp-nav-item" href="chat.html" aria-current="page"><svg><use href="#i-chat"/></svg><span>訊息</span></a>
+  <a class="dp-nav-item" href="user-center.html"><svg><use href="#i-user"/></svg><span>我的檔案</span></a>
+</nav>
+
+<script src="../data/mock-data.js"></script>
+<script src="../chat/chat-ai.js"></script>
+<script src="../chat/chat.js"></script>
+</body>
+</html>
