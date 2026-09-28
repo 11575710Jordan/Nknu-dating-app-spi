@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>個人中心 - 交友 App</title>
+  
+  <!-- 引入 Google 品牌字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 引用外部樣式表 -->
+  <link rel="stylesheet" href="../theme_guide/theme.css">
+  <link rel="stylesheet" href="../css/user-center.css">
+</head>
+<body>
+
+  <div class="dp-card">
+    
+    <!-- 頂部個人頭像與基本資訊 -->
+    <div class="dp-profile-header">
+      <div class="dp-avatar-wrapper">
+        <img src="https://picsum.photos/120/120?random=20" alt="個人頭像" class="dp-avatar">
+        <span class="dp-badge-verified" title="已完成實名認證">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </span>
+      </div>
+      <h2 class="dp-user-name">CcCo</h2>
+      <p class="dp-user-id">ID: @chiahuei_l</p>
+    </div>
+
+    <!-- 社群健康度與仇恨值快速卡片 -->
+    <a href="hate-monitoring.html" class="dp-health-card">
+      <div class="dp-health-info">
+        <span class="dp-health-title">社群健康度與風險指數</span>
+        <span class="dp-health-status">良好 (Hate Score: 15/100)</span>
+      </div>
+      <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </a>
+
+    <!-- 功能選單清單 -->
+    <div class="dp-menu-group">
+      <div class="dp-menu-label">帳號與身份設定</div>
+
+      <!-- 1. 基本資料編輯 -->
+      <a href="profile-settings.html" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <span class="dp-menu-text">編輯個人資料與簡介</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <!-- 2. 真人實名認證 -->
+      <a href="identity-verification.html" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="M9 12l2 2 4-4"></path>
+          </svg>
+        </div>
+        <div class="dp-menu-content">
+          <span class="dp-menu-text">實名與真人認證</span>
+          <span class="dp-tag-success">已驗證</span>
+        </div>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    </div>
+
+    <div class="dp-menu-group">
+      <div class="dp-menu-label">隱私與安全</div>
+
+      <!-- 3. 黑名單與封鎖管理 -->
+      <a href="blocked-users.html" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+          </svg>
+        </div>
+        <span class="dp-menu-text">已封鎖用戶名單</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <!-- 4. 檢舉與申訴紀錄 -->
+      <a href="report-user.html" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </div>
+        <span class="dp-menu-text">檢舉申訴</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    </div>
+
+    <!-- 登出按鈕 -->
+    <button type="button" class="dp-btn-logout" id="logoutBtn">登出帳號</button>
+
+  </div>
+
+  <script src="../js/user-center.js"></script>
+</body>
+</html>
