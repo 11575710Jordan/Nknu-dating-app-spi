@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交友軟體 POC ｜ 頁面導覽</title>
+
+<!-- 引入 Google 品牌字型（與各頁一致） -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- 引用主題變數（本檔與 theme_guide 同層，故不加 ../） -->
+<link rel="stylesheet" href="theme_guide/theme.css">
+
+<style>
+  /* 僅使用 theme.css 已定義的變數，不寫死色碼／px 間距 */
+  .index-page {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--sp-10) var(--sp-6) var(--sp-20);
+  }
+
+  .index-hero {
+    text-align: center;
+    margin-bottom: var(--sp-12);
+  }
+  .index-hero .eyebrow {
+    display: inline-block;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--coral-600);
+    background: var(--coral-100);
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: var(--r-pill);
+    margin-bottom: var(--sp-4);
+  }
+  .index-hero h1 {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-display);
+    line-height: var(--lh-display);
+    color: var(--text-primary);
+    margin: 0 0 var(--sp-3);
+  }
+  .index-hero p {
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body-lg);
+    color: var(--text-secondary);
+    max-width: var(--measure);
+    margin: 0 auto;
+  }
+
+  .index-group {
+    margin-bottom: var(--sp-12);
+  }
+  .index-group__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-5);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .index-group__head h2 {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-h2);
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .index-group__head span {
+    font-size: var(--fs-sm);
+    color: var(--text-placeholder);
+  }
+
+  .index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--sp-5);
+  }
+
+  .index-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    background: var(--bg-surface);
+    border-radius: var(--r-md);
+    padding: var(--sp-5);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--border-default);
+    transition: transform var(--dur-base) var(--ease-standard),
+                box-shadow var(--dur-base) var(--ease-standard);
+  }
+  .index-card:hover,
+  .index-card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-strong);
+  }
+
+  .index-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .index-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--plum-100);
+    color: var(--plum-700);
+    flex-shrink: 0;
+  }
+  .index-card__icon svg { width: 20px; height: 20px; }
+
+  .index-card__file {
+    font-size: var(--fs-xs);
+    color: var(--text-placeholder);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .index-card h3 {
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    color: var(--text-primary);
+    margin: var(--sp-1) 0 0;
+  }
+  .index-card p {
+    font-size: var(--fs-sm);
+    line-height: var(--lh-sm);
+    color: var(--text-secondary);
+    margin: 0;
+    flex-grow: 1;
+  }
+
+  .index-card__cta {
+    margin-top: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--coral-600);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .index-card__cta svg {
+    width: 14px; height: 14px;
+    transition: transform var(--dur-base) var(--ease-standard);
+  }
+  .index-card:hover .index-card__cta svg { transform: translateX(3px); }
+
+  .index-note {
+    background: var(--apricot-100);
+    color: var(--apricot-800);
+    border-radius: var(--r-sm);
+    padding: var(--sp-4) var(--sp-5);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-sm);
+    margin-bottom: var(--sp-12);
+  }
+  .index-note strong { font-weight: var(--fw-bold); }
+
+  .index-footer {
+    text-align: center;
+    font-size: var(--fs-xs);
+    color: var(--text-placeholder);
+    padding-top: var(--sp-6);
+    border-top: 1px solid var(--border-default);
+  }
+
+  .index-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-5);
+    background: var(--action-primary-bg);
+    color: var(--action-primary-text);
+    text-decoration: none;
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-body);
+    padding: var(--sp-3) var(--sp-6);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow-like);
+    transition: background var(--dur-base) var(--ease-standard);
+  }
+  .index-cta:hover { background: var(--action-primary-bg-hover); }
+  .index-cta svg { width: 16px; height: 16px; }
+
+  .index-status {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--sp-6);
+  }
+  .index-status__col {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--r-md);
+    padding: var(--sp-5);
+  }
+  .index-status__col h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-h3);
+    margin: 0 0 var(--sp-4);
+  }
+  .index-status__dot {
+    width: 10px; height: 10px; border-radius: var(--r-pill); flex-shrink: 0;
+  }
+  .index-status__col--done h3 .index-status__dot { background: var(--state-verified); }
+  .index-status__col--todo h3 .index-status__dot { background: var(--status-warning); }
+  .index-status ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .index-status li {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    padding: var(--sp-2) 0;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sp-2);
+  }
+  .index-status li:last-child { border-bottom: none; }
+  .index-status li code {
+    font-size: var(--fs-xs);
+    color: var(--text-placeholder);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 767px) {
+    .index-page { padding: var(--sp-6) var(--sp-4) var(--sp-16); }
+    .index-hero h1 { font-size: var(--fs-h1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="index-page">
+
+  <header class="index-hero">
+    <span class="eyebrow">Nknu-dating-app-spi · 軟體流程改善研究</span>
+    <h1>交友軟體 POC 頁面導覽</h1>
+    <p>純前端原型（HTML + CSS + JS，不使用框架，無後端與資料庫）。已將登入 → 配對 → 傳訊息 → 個人中心的主要流程串起來，以下依功能分組列出所有頁面入口，點擊卡片即可開啟。</p>
+    <a class="index-cta" href="pages/login.html">
+      立即從登入開始體驗
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+    </a>
+  </header>
+
+  <div class="index-note">
+    <strong>測試帳號：</strong><code>u01@nknu-demo.app</code>　<strong>密碼：</strong><code>demo1234</code>（登入頁上也會顯示）。登入後會固定以配對頁的測試帳號 <code>u01</code> 陳彥廷進入，個人中心、配對頁會是同一個人。配對成功後按「傳送第一則訊息」會直接開啟訊息頁對應的對話。個人中心裡「更多功能」區塊是尚未開發的功能，點進去會先看到開發中的假 404 畫面。各頁資料存於瀏覽器 localStorage，清除資料即回到初始狀態。
+  </div>
+
+  <section class="index-group">
+    <div class="index-group__head">
+      <h2>帳號與登入</h2>
+      <span>Login &amp; Access</span>
+    </div>
+    <div class="index-grid">
+
+      <a class="index-card" href="pages/login.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          </div>
+          <span class="index-card__file">login.html</span>
+        </div>
+        <h3>帳號登入</h3>
+        <p>整個流程的起點。用測試帳號登入後會導向配對頁，並以該身分貫穿個人中心等頁面。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+      <a class="index-card" href="pages/forgot-password.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <span class="index-card__file">forgot-password.html</span>
+        </div>
+        <h3>忘記密碼</h3>
+        <p>協助忘記密碼的使用者，透過驗證流程安全重設通行密碼。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="index-group">
+    <div class="index-group__head">
+      <h2>核心配對與聊天</h2>
+      <span>Match &amp; Chat</span>
+    </div>
+    <div class="index-grid">
+
+      <a class="index-card" href="pages/match.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>
+          </div>
+          <span class="index-card__file">match.html</span>
+        </div>
+        <h3>配對</h3>
+        <p>卡片式配對、關係評分、篩選條件與寵物配對模式；支援一般／長輩／寵物三種模式。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+      <a class="index-card" href="pages/chat.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 1 1-3.8-7.1"/><path d="M21 11.5 12 12l.5-9a8.5 8.5 0 0 1 8.5 8.5z" fill="none"/><path d="M3 21l1.6-4.8A8.38 8.38 0 0 1 3 12a8.5 8.5 0 0 1 8.5-8.5"/></svg>
+          </div>
+          <span class="index-card__file">chat.html</span>
+        </div>
+        <h3>訊息</h3>
+        <p>配對成功後的聊天介面，含底部導覽列（探索／配對／訊息／我的檔案）。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="index-group">
+    <div class="index-group__head">
+      <h2>個人中心與資料</h2>
+      <span>Profile &amp; Account</span>
+    </div>
+    <div class="index-grid">
+
+      <a class="index-card" href="pages/user-center.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span class="index-card__file">user-center.html</span>
+        </div>
+        <h3>個人中心</h3>
+        <p>個人資料、安全設定與社群狀態的核心控制台，可從這裡前往各項設定頁面。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+      <a class="index-card" href="pages/profile-settings.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 1 1 3 3L12 15l-4 1 1-4z"/></svg>
+          </div>
+          <span class="index-card__file">profile-settings.html</span>
+        </div>
+        <h3>編輯個人資料</h3>
+        <p>大頭照、暱稱、性別、職業、年齡、自我介紹與興趣標籤（最多 5 項）的編輯頁。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="index-group">
+    <div class="index-group__head">
+      <h2>信任與安全</h2>
+      <span>Trust &amp; Safety</span>
+    </div>
+    <div class="index-grid">
+
+      <a class="index-card" href="pages/identity-verification.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <span class="index-card__file">identity-verification.html</span>
+        </div>
+        <h3>實名與真人驗證</h3>
+        <p>證件與自拍比對流程，防止假帳號、機器人與詐騙，建立平台防護網。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+      <a class="index-card" href="pages/blocked-users.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+          </div>
+          <span class="index-card__file">blocked-users.html</span>
+        </div>
+        <h3>已封鎖用戶名單</h3>
+        <p>管理使用者自主封鎖的對象，維護個人邊界與使用體驗。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+      <a class="index-card" href="pages/report-user.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <span class="index-card__file">report-user.html</span>
+        </div>
+        <h3>檢舉與申訴</h3>
+        <p>通報違規行為與維護秩序的核心機制，支援雙入口情境與舉證上傳。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+      <a class="index-card" href="pages/hate-monitoring.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          </div>
+          <span class="index-card__file">hate-monitoring.html</span>
+        </div>
+        <h3>社群禮儀與仇恨值監控</h3>
+        <p>視覺化呈現用戶的社群信用等級，維護平台良好的互動氛圍。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="index-group">
+    <div class="index-group__head">
+      <h2>開發資源</h2>
+      <span>Dev Resources</span>
+    </div>
+    <div class="index-grid">
+
+      <a class="index-card" href="theme_guide/preview.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          </div>
+          <span class="index-card__file">theme_guide/preview.html</span>
+        </div>
+        <h3>視覺風格指南</h3>
+        <p>色彩、字體、間距、元件等設計 Token 的即時預覽，所有頁面樣式皆以此為準。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="index-group">
+    <div class="index-group__head">
+      <h2>開發進度總覽</h2>
+      <span>Status</span>
+    </div>
+    <p style="font-size:var(--fs-sm);color:var(--text-secondary);margin:0 0 var(--sp-5);">
+      依實際檔案比對 GitHub Project 看板（看板狀態與實際進度曾有落差，以下已校正）。
+    </p>
+    <div class="index-status">
+      <div class="index-status__col index-status__col--done">
+        <h3><span class="index-status__dot"></span>已完成（10 頁）</h3>
+        <ul>
+          <li>帳號登入 <code>login.html</code></li>
+          <li>忘記密碼 <code>forgot-password.html</code></li>
+          <li>配對 <code>match.html</code></li>
+          <li>訊息 <code>chat.html</code></li>
+          <li>個人中心 <code>user-center.html</code></li>
+          <li>編輯個人資料 <code>profile-settings.html</code></li>
+          <li>實名與真人驗證 <code>identity-verification.html</code></li>
+          <li>已封鎖用戶名單 <code>blocked-users.html</code></li>
+          <li>檢舉與申訴 <code>report-user.html</code></li>
+          <li>社群禮儀與仇恨值監控 <code>hate-monitoring.html</code></li>
+        </ul>
+      </div>
+      <div class="index-status__col index-status__col--todo">
+        <h3><span class="index-status__dot"></span>尚未開發</h3>
+        <ul>
+          <li>通知中心 <code>Issue #6</code></li>
+          <li>查詢列表 <code>Issue #7</code></li>
+          <li>共同行事曆 <code>Issue #22</code></li>
+          <li>語音聊天室 <code>Issue #20</code></li>
+          <li>任務系統 <code>Issue #26</code></li>
+          <li>集點系統 <code>Issue #27</code></li>
+          <li>課金系統 <code>Issue #29</code></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer class="index-footer">
+    Nknu-dating-app-spi · 軟體流程改善研究 — 僅為前端 Demo，無後端與資料庫，資料存於瀏覽器 localStorage
+  </footer>
+
+</div>
+
+</body>
+</html>
