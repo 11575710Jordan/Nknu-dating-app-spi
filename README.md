@@ -90,3 +90,51 @@ npm test
 - `theme.css` 的 base 樣式未對 `select` 設定 `font:inherit`，下拉選單字級會變小（本頁先在 `match.css` 補上）。
 - 長輩模式的放大比例（125%）目前為頁面自訂值，主題尚無對應 token。
 - `dp-action` 尚未定義停用（disabled）樣式，本頁自行補上。
+
+---
+
+## 編輯個人資料頁（`pages/profile-settings.html`）
+
+純前端 demo，沒有後端與資料庫，**直接用瀏覽器開啟 `pages/profile-settings.html` 即可使用**。
+
+### 檔案結構
+
+| 檔案 | 用途 |
+|---|---|
+| `pages/profile-settings.html` | 編輯個人資料頁（大頭照、暱稱、性別、職業、年齡、關於我、興趣標籤） |
+| `css/profile-settings.css` | 頁面樣式 |
+| `js/profile-settings.js` | 標籤選取（最多 5 項）、照片縮圖預覽、儲存與載入個人資料 |
+| `js/user-center.js` | 個人中心若讀到已儲存的個人資料，頭像與暱稱改用使用者自己的 |
+
+### 資料儲存
+
+- 存在瀏覽器 `localStorage`，key 為 `nknu-profile`，內容為 JSON：
+
+  ```json
+  {
+    "nickname": "暱稱",
+    "gender": "male | female | other",
+    "occupation": "IT | FINANCE | DESIGN | EDUCATION | MEDICAL | STUDENT | OTHER",
+    "age": "25",
+    "bio": "自我介紹",
+    "tags": ["美饌探索", "國際旅行"],
+    "avatar": "data:image/jpeg;base64,...",
+    "updatedAt": "2026-10-05T08:00:00.000Z"
+  }
+  ```
+
+- 照片上傳後先縮到長邊 400px、轉成 JPEG（品質 0.8）的 data URL 再存，避免超過 localStorage 容量（約 5MB）。
+- 再次進入編輯頁會自動帶回已儲存的資料；個人中心（`user-center.html`）會顯示已儲存的頭像與暱稱，未儲存過則維持原本的預設資料。
+
+### 測試步驟
+
+1. 開啟 `pages/profile-settings.html`，上傳照片、填寫必填欄位、選幾個興趣標籤，按「儲存檔案並繼續」。
+2. 出現「個人資料已成功儲存！」並跳到個人中心，頭像與暱稱應換成剛剛填的。
+3. 點「編輯個人資料與簡介」回到編輯頁，所有欄位與照片應自動帶回。
+4. 按 F12 →「Application」→「Local Storage」可看到 `nknu-profile` 的內容；刪除該筆即回到初始狀態。
+
+### 尚未完成／限制
+
+- 資料只存在目前這個瀏覽器，換電腦或換瀏覽器就看不到。
+- 只存一份個人資料（單一使用者），尚未與登入帳號或配對頁的 `MOCK_DB` 用戶串接。
+- 頁面沒有帳號、密碼欄位，如需「註冊帳號」功能需另外規劃。
