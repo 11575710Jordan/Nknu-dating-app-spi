@@ -262,7 +262,7 @@
   </header>
 
   <div class="index-note">
-    <strong>測試帳號：</strong><code>u01@nknu-demo.app</code>　<strong>密碼：</strong><code>demo1234</code>（登入頁上也會顯示）。登入後會固定以配對頁的測試帳號 <code>u01</code> 陳彥廷進入，個人中心、配對頁會是同一個人。配對成功後按「傳送第一則訊息」會直接開啟訊息頁對應的對話。個人中心裡「更多功能」區塊是尚未開發的功能，點進去會先看到開發中的假 404 畫面。各頁資料存於瀏覽器 localStorage，清除資料即回到初始狀態。
+    <strong>測試帳號：</strong><code>u01@nknu-demo.app</code>～<code>u14@nknu-demo.app</code>　<strong>密碼：</strong><code>demo1234</code>（登入頁上也會顯示；<code>u11</code>～<code>u14</code> 是 65 歲以上，會進入長輩模式）。勾「保持登入狀態」關掉瀏覽器後仍是登入狀態，沒勾則需要重新登入；沒登入就打開配對頁或訊息頁會導回登入頁。關係分數達 60% 即可在配對頁開啟聊天，直接進到訊息頁對應的對話，訊息會保存、重新整理後仍在。個人中心裡「更多功能」區塊除「通知中心」外都還沒開發，點進去會先看到開發中的假 404 畫面。各頁資料存於瀏覽器 localStorage，清除資料即回到初始狀態。
   </div>
 
   <section class="index-group">
@@ -280,7 +280,7 @@
           <span class="index-card__file">login.html</span>
         </div>
         <h3>帳號登入</h3>
-        <p>整個流程的起點。用測試帳號登入後會導向配對頁，並以該身分貫穿個人中心等頁面。</p>
+        <p>整個流程的起點。14 組測試帳號都可登入，會導向配對頁，並以該身分貫穿個人中心、訊息等頁面。</p>
         <span class="index-card__cta">開啟頁面
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
         </span>
@@ -318,7 +318,7 @@
           <span class="index-card__file">match.html</span>
         </div>
         <h3>配對</h3>
-        <p>卡片式配對、關係評分、篩選條件與寵物配對模式；支援一般／長輩／寵物三種模式。</p>
+        <p>卡片式配對、關係評分、篩選條件與寵物配對模式；關係分數達 60% 即可直接開啟聊天。</p>
         <span class="index-card__cta">開啟頁面
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
         </span>
@@ -332,7 +332,7 @@
           <span class="index-card__file">chat.html</span>
         </div>
         <h3>訊息</h3>
-        <p>配對成功後的聊天介面，含底部導覽列（探索／配對／訊息／我的檔案）。</p>
+        <p>對話清單依登入者從配對頁產生，未讀數、聊天建議與破冰話題齊全，訊息會保存。</p>
         <span class="index-card__cta">開啟頁面
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
         </span>
@@ -371,6 +371,20 @@
         </div>
         <h3>編輯個人資料</h3>
         <p>大頭照、暱稱、性別、職業、年齡、自我介紹與興趣標籤（最多 5 項）的編輯頁。</p>
+        <span class="index-card__cta">開啟頁面
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+
+      <a class="index-card" href="pages/notifications.html">
+        <div class="index-card__top">
+          <div class="index-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <span class="index-card__file">notifications.html</span>
+        </div>
+        <h3>通知中心</h3>
+        <p>分類 Tab（全部／未讀／系統／互動）、未讀標記與「全部標為已讀」。</p>
         <span class="index-card__cta">開啟頁面
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg>
         </span>
@@ -479,14 +493,15 @@
     </p>
     <div class="index-status">
       <div class="index-status__col index-status__col--done">
-        <h3><span class="index-status__dot"></span>已完成（10 頁）</h3>
+        <h3><span class="index-status__dot"></span>已完成（11 頁）</h3>
         <ul>
-          <li>帳號登入 <code>login.html</code></li>
+          <li>帳號登入（14 組測試帳號＋登入狀態） <code>login.html</code></li>
           <li>忘記密碼 <code>forgot-password.html</code></li>
-          <li>配對 <code>match.html</code></li>
-          <li>訊息 <code>chat.html</code></li>
+          <li>配對（評分、篩選、寵物、聊天門檻） <code>match.html</code></li>
+          <li>訊息（對話清單、未讀、AI 建議） <code>chat.html</code></li>
           <li>個人中心 <code>user-center.html</code></li>
           <li>編輯個人資料 <code>profile-settings.html</code></li>
+          <li>通知中心 <code>notifications.html</code></li>
           <li>實名與真人驗證 <code>identity-verification.html</code></li>
           <li>已封鎖用戶名單 <code>blocked-users.html</code></li>
           <li>檢舉與申訴 <code>report-user.html</code></li>
@@ -496,7 +511,6 @@
       <div class="index-status__col index-status__col--todo">
         <h3><span class="index-status__dot"></span>尚未開發</h3>
         <ul>
-          <li>通知中心 <code>Issue #6</code></li>
           <li>查詢列表 <code>Issue #7</code></li>
           <li>共同行事曆 <code>Issue #22</code></li>
           <li>語音聊天室 <code>Issue #20</code></li>
