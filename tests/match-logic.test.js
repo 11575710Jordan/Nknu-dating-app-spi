@@ -257,3 +257,23 @@ test('照片清晰度：關係分數 0% 最模糊、隨分數線性變清楚、6
   assert.equal(L.photoVeil(60), 0);
   assert.equal(L.photoVeil(100), 0);
 });
+
+test('開啟聊天：關係分數達 60% 才可以，連結帶上對方的用戶 id', () => {
+  assert.equal(L.CHAT_UNLOCK_SCORE, 60);
+  assert.equal(L.canOpenChat(55), false);
+  assert.equal(L.canOpenChat(60), true);
+  assert.equal(L.canOpenChat(85), true);
+  assert.equal(L.chatUrl('u02'), 'chat.html?peer=u02');
+});
+
+test('聊天對象：人就是本人，寵物則是寵物的主人', () => {
+  const petsById = new Map([['p05', { id: 'p05', ownerId: 'u05' }]]);
+  assert.equal(L.chatPeerId('person', 'u02', petsById), 'u02');
+  assert.equal(L.chatPeerId('pet', 'p05', petsById), 'u05');
+  assert.throws(() => L.chatPeerId('pet', 'p99', petsById), /p99/);
+});
+
+test('demo 豐富度：每位用戶至少有 2 則個人問答，寵物評分至少 6 筆', () => {
+  for (const u of DB.users) assert.ok(u.prompts.length >= 2, `${u.id} 只有 ${u.prompts.length} 則問答`);
+  assert.ok(DB.ratings.filter((r) => r.kind === 'pet').length >= 6);
+});
