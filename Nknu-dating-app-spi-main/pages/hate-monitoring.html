@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社群健康度與仇恨值監控 - 交友 App</title>
+  
+  <!-- 引入 Google 品牌字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 引用外部樣式表 -->
+  <link rel="stylesheet" href="../theme_guide/theme.css">
+  <link rel="stylesheet" href="../css/hate-monitoring.css">
+</head>
+<body>
+
+  <div class="dp-card">
+    <div class="dp-header">
+      <div class="dp-badge">
+        <svg class="dp-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        AI 安全審核系統
+      </div>
+      <h1>社群禮儀與仇恨值監控</h1>
+      <p>系統自動分析互動品質，維持友善與健康的交友環境。</p>
+    </div>
+
+    <!-- 仇恨值量表顯示 -->
+    <div class="dp-score-card">
+      <div class="dp-score-header">
+        <span>當前帳號風險指數 (Hate Score)</span>
+        <strong id="scoreStatusText" class="status-safe">良好</strong>
+      </div>
+      
+      <div class="dp-gauge-wrapper">
+        <div class="dp-gauge-bar">
+          <div class="dp-gauge-fill" id="gaugeFill" style="width: 15%;"></div>
+        </div>
+        <div class="dp-gauge-labels">
+          <span>0 (友善)</span>
+          <span>50 (警告)</span>
+          <span>100 (凍結)</span>
+        </div>
+      </div>
+
+      <div class="dp-score-number">
+        <span id="scoreValue">15</span> <small>/ 100 分</small>
+      </div>
+    </div>
+
+    <!-- 違規紀錄與處罰狀態 -->
+    <div class="dp-section-title">系統偵測紀錄與處置措施</div>
+    
+    <div class="dp-status-list">
+      <div class="dp-status-item">
+        <div class="dp-status-icon safe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="dp-status-content">
+          <strong>聊天權限：正常</strong>
+          <p>無高風險敏感詞彙或不當言語發送紀錄。</p>
+        </div>
+      </div>
+
+      <div class="dp-status-item">
+        <div class="dp-status-icon warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div class="dp-status-content">
+          <strong>檢舉觸發紀錄：1 次預警</strong>
+          <p>近 30 天內曾傳送可能引發不適之字詞，系統已給予即時提醒。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 仇恨值模擬測試器 (開發與展示用) -->
+    <div class="dp-tester-box">
+      <div class="dp-tester-title">AI 言語敏感度模擬測試</div>
+      <div class="dp-field">
+        <input type="text" class="dp-input" id="testInput" placeholder="輸入模擬對話內容（如：笨蛋、詐騙、討厭你...）">
+      </div>
+      <button type="button" class="dp-btn-secondary" id="analyzeBtn">分析仇恨權重</button>
+      <div class="dp-test-result" id="testResult"></div>
+    </div>
+
+    <!-- 返回按鈕 -->
+    <button type="button" class="dp-btn-submit" onclick="history.back()">返回個人中心</button>
+  </div>
+
+  <script src="../js/hate-monitoring.js"></script>
+</body>
+</html>

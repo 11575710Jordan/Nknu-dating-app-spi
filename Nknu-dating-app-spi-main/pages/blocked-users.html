@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>已封鎖用戶名單 - 交友 App</title>
+  
+  <!-- 引入 Google 品牌字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 引用外部樣式表 -->
+  <link rel="stylesheet" href="../theme_guide/theme.css">
+  <link rel="stylesheet" href="../css/blocked-users.css">
+</head>
+<body>
+
+  <div class="dp-card">
+    <div class="dp-header">
+      <div class="dp-badge">
+        <svg class="dp-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+        </svg>
+        隱私與安全
+      </div>
+      <h1>已封鎖用戶名單</h1>
+      <p>已被封鎖的用戶無法傳送訊息給你，亦無法在配對列表中看到你的動態。</p>
+    </div>
+
+    <!-- 提示訊息 -->
+    <div class="dp-alert" id="alertMessage" aria-live="polite"></div>
+
+    <!-- 黑名單清單區塊 -->
+    <div class="dp-blocked-list" id="blockedList">
+      <!-- 列表項 1 -->
+      <div class="dp-blocked-item" data-id="user-101">
+        <div class="dp-user-info">
+          <img src="https://picsum.photos/80/80?random=31" alt="用戶頭像" class="dp-user-avatar">
+          <div class="dp-user-details">
+            <strong class="dp-user-name">Alex</strong>
+            <span class="dp-blocked-date">封鎖日期：2026/09/20</span>
+          </div>
+        </div>
+        <button type="button" class="dp-btn-unblock" data-id="user-101" data-name="Alex">解除封鎖</button>
+      </div>
+
+      <!-- 列表項 2 -->
+      <div class="dp-blocked-item" data-id="user-102">
+        <div class="dp-user-info">
+          <img src="https://picsum.photos/80/80?random=32" alt="用戶頭像" class="dp-user-avatar">
+          <div class="dp-user-details">
+            <strong class="dp-user-name">Chris</strong>
+            <span class="dp-blocked-date">封鎖日期：2026/09/15</span>
+          </div>
+        </div>
+        <button type="button" class="dp-btn-unblock" data-id="user-102" data-name="Chris">解除封鎖</button>
+      </div>
+
+      <!-- 列表項 3 -->
+      <div class="dp-blocked-item" data-id="user-103">
+        <div class="dp-user-info">
+          <img src="https://picsum.photos/80/80?random=33" alt="用戶頭像" class="dp-user-avatar">
+          <div class="dp-user-details">
+            <strong class="dp-user-name">Jordan</strong>
+            <span class="dp-blocked-date">封鎖日期：2026/08/28</span>
+          </div>
+        </div>
+        <button type="button" class="dp-btn-unblock" data-id="user-103" data-name="Jordan">解除封鎖</button>
+      </div>
+    </div>
+
+    <!-- 空狀態顯示 (預設隱藏) -->
+    <div class="dp-empty-state" id="emptyState" style="display: none;">
+      <svg class="dp-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M8 15s1.5 2 4 2 4-2 4-2"></path>
+        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+      </svg>
+      <h3>尚無任何封鎖用戶</h3>
+      <p>你的黑名單是空的，目前社群互動品質相當良好！</p>
+    </div>
+
+    <!-- 返回個人中心 -->
+    <button type="button" class="dp-btn-back" onclick="history.back()">返回個人中心</button>
+  </div>
+
+  <script src="../js/blocked-users.js"></script>
+</body>
+</html>
