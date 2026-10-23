@@ -34,7 +34,7 @@
           <line x1="12" y1="9" x2="12" y2="13"></line>
           <line x1="12" y1="17" x2="12.01" y2="17"></line>
         </svg>
-        隱私與安全- 社群秩序維護
+        社群秩序維護
       </div>
       <h1>建立檢舉單</h1>
       <p>若遇到不當言論、詐騙或騷擾行為，請填寫以下資訊，平台將於 24 小時內審核處理。</p>
@@ -105,7 +105,7 @@
               <polyline points="21 15 16 10 5 21"></polyline>
             </svg>
             <span class="dp-upload-text">點擊或拖曳上傳截圖</span>
-            <span class="dp-upload-subtext">支援 JPG、PNG 格式</span>
+            <span class="dp-upload-subtext">支援 JPG、PNG 格式（每張 5MB 以內）</span>
           </div>
         </div>
         <!-- 截圖預覽容器 -->
@@ -113,10 +113,10 @@
       </div>
 
       <!-- 提示訊息 -->
-      <div class="dp-alert" id="alertMessage" aria-live="polite"></div>
+      <div class="dp-alert" id="alertMessage" style="display: none;" aria-live="polite"></div>
 
       <!-- 提交按鈕 -->
-      <button type="submit" class="dp-btn-submit">提交檢舉單</button>
+      <button type="submit" class="dp-btn-submit" id="submitBtn">提交檢舉單</button>
     </form>
   </div>
 

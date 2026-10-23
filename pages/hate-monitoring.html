@@ -17,7 +17,17 @@
 <body>
 
   <div class="dp-card">
+    <!-- hate-monitoring.html 的標頭與返回按鈕修正 -->
     <div class="dp-header">
+      <div class="dp-header-top" style="display: flex; justify-content: flex-start; align-items: center; width: 100%; text-align: left;">
+        <a href="user-center.html" class="dp-btn-back" title="返回個人中心" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>個人中心</span>
+        </a>
+      </div>
+
       <div class="dp-badge">
         <svg class="dp-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"></circle>
@@ -91,7 +101,7 @@
         <input type="text" class="dp-input" id="testInput" placeholder="輸入模擬對話內容（如：笨蛋、詐騙、討厭你...）">
       </div>
       <button type="button" class="dp-btn-secondary" id="analyzeBtn">分析仇恨權重</button>
-      <div class="dp-test-result" id="testResult"></div>
+      <div class="dp-test-result" id="testResult" aria-live="polite"></div>
     </div>
 
     <!-- 返回按鈕 -->

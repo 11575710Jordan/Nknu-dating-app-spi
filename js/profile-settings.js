@@ -1,20 +1,45 @@
 /* =========================================================
-   編輯個人資料
-   - 純前端 demo，沒有資料庫：資料存在瀏覽器的 localStorage（key: nknu-profile）
-   - 照片先縮到長邊 AVATAR_EDGE 再轉成 JPEG data URL 存起來，避免塞爆 localStorage
+   編輯個人資料 (UI/UX 最佳化版本)
+   - 純前端 demo，資料存在瀏覽器的 localStorage (key: nknu-profile)
+   - 包含標籤動態計數、未儲存離開防呆、以及提交載入狀態
    ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'nknu-profile';
   const AVATAR_EDGE = 400;
   let avatarDataUrl = '';
+  let isFormDirty = false; // 追蹤表單是否有修改未儲存
 
-  // 1. 興趣標籤選取邏輯
+  // 取得 DOM 元素
   const tagContainer = document.getElementById('tagContainer');
+  const tagCounter = document.getElementById('tagCounter');
+  const avatarInput = document.getElementById('avatarInput');
+  const avatarImage = document.getElementById('avatarImage');
+  const placeholderText = document.getElementById('placeholderText');
+  const alertMessage = document.getElementById('alertMessage');
+  const profileForm = document.getElementById('profileForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const backBtn = document.getElementById('backBtn');
   const MAX_TAGS = 5;
 
+  // 輔助函式：顯示提示訊息
+  function showAlert(msg, type = 'warning') {
+    if (!alertMessage) return;
+    alertMessage.textContent = msg;
+    alertMessage.className = `dp-alert dp-alert-${type}`;
+    alertMessage.style.display = 'block';
+    alertMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // 更新標籤計數器文字
+  function updateTagCounter() {
+    if (!tagCounter || !tagContainer) return;
+    const selectedCount = tagContainer.querySelectorAll('.dp-tag-btn.active').length;
+    tagCounter.textContent = `(已選 ${selectedCount}/${MAX_TAGS})`;
+  }
+
+  // 1. 興趣標籤選取邏輯
   if (tagContainer) {
     tagContainer.addEventListener('click', (event) => {
-      // 確保點擊的是按鈕或按鈕內部
       const btn = event.target.closest('.dp-tag-btn');
       if (!btn) return;
 
@@ -22,30 +47,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const isSelected = btn.classList.contains('active');
 
       if (isSelected) {
-        // 若已選取，則取消選取
         btn.classList.remove('active');
         btn.setAttribute('aria-pressed', 'false');
       } else {
-        // 若未選取，檢查是否超過 5 項限制
         if (selectedTags.length >= MAX_TAGS) {
-          alert(`最多只能選擇 ${MAX_TAGS} 項興趣標籤喔！`);
+          showAlert(`最多只能選擇 ${MAX_TAGS} 項興趣標籤喔！`, 'warning');
           return;
         }
-        // 標記為選取
         btn.classList.add('active');
         btn.setAttribute('aria-pressed', 'true');
       }
+      
+      isFormDirty = true;
+      updateTagCounter();
     });
   }
 
   // 2. 大頭照上傳預覽
-  const avatarInput = document.getElementById('avatarInput');
-  const avatarImage = document.getElementById('avatarImage');
-  const placeholderText = document.getElementById('placeholderText');
-
   function showAvatar(src) {
-    avatarImage.src = src;
-    avatarImage.style.display = 'block';
+    if (avatarImage) {
+      avatarImage.src = src;
+      avatarImage.style.display = 'block';
+    }
     if (placeholderText) {
       placeholderText.style.display = 'none';
     }
@@ -78,8 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then((smallUrl) => {
               avatarDataUrl = smallUrl;
               showAvatar(smallUrl);
+              isFormDirty = true;
             })
-            .catch(() => alert('這張圖片無法讀取，請換一張試試'));
+            .catch(() => showAlert('這張圖片無法讀取，請換一張試試', 'error'));
         };
         reader.readAsDataURL(file);
       }
@@ -99,11 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const saved = loadProfile();
   if (saved) {
-    document.getElementById('nickname').value = saved.nickname || '';
-    document.getElementById('gender').value = saved.gender || '';
-    document.getElementById('occupation').value = saved.occupation || '';
-    document.getElementById('age').value = saved.age || '';
-    document.getElementById('bio').value = saved.bio || '';
+    if (document.getElementById('nickname')) document.getElementById('nickname').value = saved.nickname || '';
+    if (document.getElementById('gender')) document.getElementById('gender').value = saved.gender || '';
+    if (document.getElementById('occupation')) document.getElementById('occupation').value = saved.occupation || '';
+    if (document.getElementById('age')) document.getElementById('age').value = saved.age || '';
+    if (document.getElementById('bio')) document.getElementById('bio').value = saved.bio || '';
+    
     (saved.tags || []).forEach((tag) => {
       const btn = tagContainer.querySelector(`.dp-tag-btn[data-tag="${tag}"]`);
       if (btn) {
@@ -111,17 +136,41 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.setAttribute('aria-pressed', 'true');
       }
     });
+    updateTagCounter();
+
     if (saved.avatar) {
       avatarDataUrl = saved.avatar;
       showAvatar(saved.avatar);
     }
   }
 
-  // 4. 表單提交事件
-  const profileForm = document.getElementById('profileForm');
+  // 4. 表單變更偵測 (防呆：離開未儲存確認)
+  if (profileForm) {
+    profileForm.addEventListener('input', () => {
+      isFormDirty = true;
+    });
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      if (isFormDirty) {
+        if (!confirm('您輸入的資料尚未儲存，確定要離開嗎？')) {
+          e.preventDefault();
+        }
+      }
+    });
+  }
+
+  // 5. 表單提交事件
   if (profileForm) {
     profileForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
+      const ageVal = parseInt(document.getElementById('age').value, 10);
+      if (ageVal < 18) {
+        showAlert('依據服務條款，使用者需年滿 18 歲方可註冊與使用。', 'error');
+        return;
+      }
 
       // 收集選中的標籤文字
       const activeBtnElements = tagContainer.querySelectorAll('.dp-tag-btn.active');
@@ -131,26 +180,37 @@ document.addEventListener('DOMContentLoaded', () => {
         nickname: document.getElementById('nickname').value.trim(),
         gender: document.getElementById('gender').value,
         occupation: document.getElementById('occupation').value,
-        age: document.getElementById('age').value,
+        age: ageVal,
         bio: document.getElementById('bio').value.trim(),
         tags: selectedTags,
         avatar: avatarDataUrl,
         updatedAt: new Date().toISOString()
       };
 
+      // 切換按鈕載入狀態 (System Status)
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '資料儲存中...';
+      }
+
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
       } catch (err) {
         console.warn('[profile] 無法寫入 localStorage', err);
-        alert('儲存失敗，可能是照片太大或瀏覽器空間不足，請換一張照片再試');
+        showAlert('儲存失敗，可能是照片太大或瀏覽器空間不足，請換一張照片再試', 'error');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '儲存檔案並繼續';
+        }
         return;
       }
 
-      console.log('儲存的個人資料：', formData);
-      alert('個人資料已成功儲存！');
-
-      // 儲存完成後返回個人中心
-      window.location.href = 'user-center.html';
+      // 模擬順暢的非同步儲存回饋
+      setTimeout(() => {
+        isFormDirty = false;
+        alert('個人資料已成功儲存！');
+        window.location.href = 'user-center.html';
+      }, 600);
     });
   }
 });

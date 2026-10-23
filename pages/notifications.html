@@ -21,7 +21,7 @@
     <!-- 標準頁頭導覽與標題區塊 -->
     <div class="dp-header">
       <div class="dp-header-top">
-        <a href="user-center.html" class="dp-btn-back" title="返回個人中心">
+        <a href="user-center.html" class="dp-btn-back" id="backBtn" title="返回個人中心">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
@@ -44,16 +44,19 @@
     <!-- 分類 Tab 切換 -->
     <div class="dp-tabs" id="notificationTabs">
       <button type="button" class="dp-tab-btn active" data-tab="all">全部</button>
-      <button type="button" class="dp-tab-btn" data-tab="unread">未讀 <span class="dp-tab-badge">2</span></button>
+      <button type="button" class="dp-tab-btn" data-tab="unread">未讀 <span class="dp-tab-badge" id="unreadBadge">2</span></button>
       <button type="button" class="dp-tab-btn" data-tab="system">系統</button>
       <button type="button" class="dp-tab-btn" data-tab="interactive">互動</button>
     </div>
+
+    <!-- 提示訊息 -->
+    <div class="dp-alert" id="alertMessage" style="display: none;" aria-live="polite"></div>
 
     <!-- 通知列表 -->
     <div class="dp-notification-list" id="notificationContainer">
       
       <!-- 未讀通知：實名認證 -->
-      <div class="dp-notification-item unread" data-category="system">
+      <div class="dp-notification-item unread" data-category="system" data-href="identity-verification.html">
         <div class="dp-notif-icon icon-success">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -90,7 +93,7 @@
       </div>
 
       <!-- 已讀通知：配對提醒 -->
-      <div class="dp-notification-item" data-category="interactive">
+      <div class="dp-notification-item" data-category="interactive" data-href="chat.html">
         <div class="dp-notif-icon icon-heart">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -106,7 +109,7 @@
       </div>
 
       <!-- 已讀通知：檢舉處理結果 -->
-      <div class="dp-notification-item" data-category="system">
+      <div class="dp-notification-item" data-category="system" data-href="report-user.html">
         <div class="dp-notif-icon icon-shield">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
