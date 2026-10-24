@@ -1,13 +1,13 @@
 /* =========================================================
-   編輯個人資料 (UI/UX 最佳化版本)
-   - 純前端 demo，資料存在瀏覽器的 localStorage (key: nknu-profile)
-   - 包含標籤動態計數、未儲存離開防呆、以及提交載入狀態
+   編輯個人資料 (符合 SPI.md 規格與純前端 LocalStorage 完整實作)
+   - key: nknu-profile (儲存使用者編輯之基本資料與 Base64 大頭照)
+   - 包含 HTML5 Canvas 圖片縮圖/ Base64 轉換、標籤動態控管與防呆提醒
    ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'nknu-profile';
-  const AVATAR_EDGE = 400;
+  const AVATAR_EDGE = 400; // 圖片縮圖最大邊長 (防 LocalStorage 空間溢出)
   let avatarDataUrl = '';
-  let isFormDirty = false; // 追蹤表單是否有修改未儲存
+  let isFormDirty = false; // 追蹤表單修改狀態
 
   // 取得 DOM 元素
   const tagContainer = document.getElementById('tagContainer');
@@ -21,7 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const backBtn = document.getElementById('backBtn');
   const MAX_TAGS = 5;
 
-  // 輔助函式：顯示提示訊息
+  /**
+   * 輔助函式：顯示警示與提示訊息 (Nielsen 原則：狀態即時反饋)
+   */
   function showAlert(msg, type = 'warning') {
     if (!alertMessage) return;
     alertMessage.textContent = msg;
@@ -30,10 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
     alertMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
-  // 更新標籤計數器文字
+  function hideAlert() {
+    if (alertMessage) alertMessage.style.display = 'none';
+  }
+
+  /**
+   * 更新標籤選取計數器
+   */
   function updateTagCounter() {
     if (!tagCounter || !tagContainer) return;
-    const selectedCount = tagContainer.querySelectorAll('.dp-tag-btn.active').length;
+    const selectedCount = tagContainer.querySelectorAll('.dp-tag-btn.active, .dp-tag-btn[aria-pressed="true"]').length;
     tagCounter.textContent = `(已選 ${selectedCount}/${MAX_TAGS})`;
   }
 
@@ -43,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = event.target.closest('.dp-tag-btn');
       if (!btn) return;
 
-      const selectedTags = tagContainer.querySelectorAll('.dp-tag-btn.active');
-      const isSelected = btn.classList.contains('active');
+      const isSelected = btn.classList.contains('active') || btn.getAttribute('aria-pressed') === 'true';
+      const selectedTags = tagContainer.querySelectorAll('.dp-tag-btn.active, .dp-tag-btn[aria-pressed="true"]');
 
       if (isSelected) {
         btn.classList.remove('active');
@@ -59,11 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       isFormDirty = true;
+      hideAlert();
       updateTagCounter();
     });
   }
 
-  // 2. 大頭照上傳預覽
+  // 2. 大頭照上傳與 Canvas 壓縮/Base64 轉碼
   function showAvatar(src) {
     if (avatarImage) {
       avatarImage.src = src;
@@ -74,8 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /** 把圖片縮到長邊 AVATAR_EDGE 並轉成 JPEG data URL */
-  function resizeImage(dataUrl) {
+  /** 利用 Canvas 將上傳圖片轉成適當尺寸之 Base64 字串 */
+  function resizeAndConvertToBase64(dataUrl) {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
@@ -83,8 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const canvas = document.createElement('canvas');
         canvas.width = Math.round(img.width * scale);
         canvas.height = Math.round(img.height * scale);
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/jpeg', 0.8));
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
       };
       img.onerror = reject;
       img.src = dataUrl;
@@ -95,109 +105,159 @@ document.addEventListener('DOMContentLoaded', () => {
     avatarInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
+        // 檢查圖片副檔名與大小 (超過 5MB 原圖進行攔截)
+        if (file.size > 5 * 1024 * 1024) {
+          showAlert('選擇的照片檔案過大，請選擇 5MB 以下的照片', 'error');
+          return;
+        }
+
         const reader = new FileReader();
         reader.onload = (event) => {
-          resizeImage(event.target.result)
-            .then((smallUrl) => {
-              avatarDataUrl = smallUrl;
-              showAvatar(smallUrl);
+          resizeAndConvertToBase64(event.target.result)
+            .then((base64Url) => {
+              avatarDataUrl = base64Url;
+              showAvatar(base64Url);
               isFormDirty = true;
+              hideAlert();
             })
-            .catch(() => showAlert('這張圖片無法讀取，請換一張試試', 'error'));
+            .catch(() => showAlert('圖片解析失敗，請重新選擇其他格式之圖片', 'error'));
         };
         reader.readAsDataURL(file);
       }
     });
   }
 
-  // 3. 進頁面時，把之前存過的資料帶回表單
-  function loadProfile() {
+  // 3. 頁面初始化：載入預設資料（優先順序：LocalStorage > Session / MockData）
+  function loadProfileData() {
     try {
+      // (1) 先試著讀取先前儲存於 LocalStorage 的 Profile
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : null;
+      if (raw) return JSON.parse(raw);
+
+      // (2) 若 LocalStorage 尚無紀錄，則載入預設的使用者身分 (Mock DB)
+      if (typeof Session !== 'undefined' && typeof MOCK_DB !== 'undefined') {
+        const mockUser = Session.currentUser(MOCK_DB.users);
+        if (mockUser) {
+          return {
+            nickname: mockUser.name || '',
+            gender: 'female',
+            occupation: 'STUDENT',
+            age: 22,
+            bio: mockUser.bio || '熱愛生活與跨領域程式開發，期待在此遇見契合的朋友！',
+            tags: ['咖啡品味', '美饌探索', '科技趨勢'],
+            avatar: (mockUser.photos && mockUser.photos[0]) ? mockUser.photos[0].src : ''
+          };
+        }
+      }
+      return null;
     } catch (err) {
-      console.warn('[profile] 讀取 localStorage 失敗', err);
+      console.warn('[profile] 載入資料失敗', err);
       return null;
     }
   }
 
-  const saved = loadProfile();
-  if (saved) {
-    if (document.getElementById('nickname')) document.getElementById('nickname').value = saved.nickname || '';
-    if (document.getElementById('gender')) document.getElementById('gender').value = saved.gender || '';
-    if (document.getElementById('occupation')) document.getElementById('occupation').value = saved.occupation || '';
-    if (document.getElementById('age')) document.getElementById('age').value = saved.age || '';
-    if (document.getElementById('bio')) document.getElementById('bio').value = saved.bio || '';
+  // 填充表單 DOM 欄位
+  const savedData = loadProfileData();
+  if (savedData) {
+    if (document.getElementById('nickname')) document.getElementById('nickname').value = savedData.nickname || '';
+    if (document.getElementById('gender')) document.getElementById('gender').value = savedData.gender || '';
+    if (document.getElementById('occupation')) document.getElementById('occupation').value = savedData.occupation || '';
+    if (document.getElementById('age')) document.getElementById('age').value = savedData.age || '';
+    if (document.getElementById('bio')) document.getElementById('bio').value = savedData.bio || '';
     
-    (saved.tags || []).forEach((tag) => {
-      const btn = tagContainer.querySelector(`.dp-tag-btn[data-tag="${tag}"]`);
-      if (btn) {
-        btn.classList.add('active');
-        btn.setAttribute('aria-pressed', 'true');
-      }
-    });
+    // 選取已帶入之興趣標籤
+    if (savedData.tags && Array.isArray(savedData.tags)) {
+      savedData.tags.forEach((tag) => {
+        const btn = tagContainer ? tagContainer.querySelector(`.dp-tag-btn[data-tag="${tag}"]`) : null;
+        if (btn) {
+          btn.classList.add('active');
+          btn.setAttribute('aria-pressed', 'true');
+        }
+      });
+    }
     updateTagCounter();
 
-    if (saved.avatar) {
-      avatarDataUrl = saved.avatar;
-      showAvatar(saved.avatar);
+    // 載入頭像
+    if (savedData.avatar) {
+      avatarDataUrl = savedData.avatar;
+      showAvatar(savedData.avatar);
     }
   }
 
-  // 4. 表單變更偵測 (防呆：離開未儲存確認)
+  // 4. 表單變更偵測與未儲存防呆
   if (profileForm) {
     profileForm.addEventListener('input', () => {
       isFormDirty = true;
+      hideAlert();
     });
   }
 
   if (backBtn) {
     backBtn.addEventListener('click', (e) => {
       if (isFormDirty) {
-        if (!confirm('您輸入的資料尚未儲存，確定要離開嗎？')) {
+        if (!confirm('您輸入或修改的資料尚未儲存，確定要返回嗎？')) {
           e.preventDefault();
         }
       }
     });
   }
 
-  // 5. 表單提交事件
+  // 5. 表單提交與驗證 (驗收準則：必填欄位與格式檢查)
   if (profileForm) {
     profileForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
+      const nickname = document.getElementById('nickname').value.trim();
+      const gender = document.getElementById('gender').value;
+      const occupation = document.getElementById('occupation').value;
       const ageVal = parseInt(document.getElementById('age').value, 10);
-      if (ageVal < 18) {
-        showAlert('依據服務條款，使用者需年滿 18 歲方可註冊與使用。', 'error');
+      const bio = document.getElementById('bio').value.trim();
+
+      // 欄位驗證
+      if (!nickname) {
+        showAlert('請輸入顯示暱稱！', 'error');
+        return;
+      }
+      if (!gender) {
+        showAlert('請選擇您的性別！', 'error');
+        return;
+      }
+      if (!occupation) {
+        showAlert('請選擇職業/專業領域！', 'error');
+        return;
+      }
+      if (isNaN(ageVal) || ageVal < 18) {
+        showAlert('依據平台服務條款，使用者需年滿 18 歲才可註冊與使用。', 'error');
         return;
       }
 
-      // 收集選中的標籤文字
-      const activeBtnElements = tagContainer.querySelectorAll('.dp-tag-btn.active');
-      const selectedTags = Array.from(activeBtnElements).map(btn => btn.getAttribute('data-tag'));
+      // 取得選取之興趣標籤
+      const activeBtns = tagContainer ? tagContainer.querySelectorAll('.dp-tag-btn.active, .dp-tag-btn[aria-pressed="true"]') : [];
+      const selectedTags = Array.from(activeBtns).map(btn => btn.getAttribute('data-tag'));
 
-      const formData = {
-        nickname: document.getElementById('nickname').value.trim(),
-        gender: document.getElementById('gender').value,
-        occupation: document.getElementById('occupation').value,
+      const profilePayload = {
+        nickname: nickname,
+        gender: gender,
+        occupation: occupation,
         age: ageVal,
-        bio: document.getElementById('bio').value.trim(),
+        bio: bio,
         tags: selectedTags,
         avatar: avatarDataUrl,
         updatedAt: new Date().toISOString()
       };
 
-      // 切換按鈕載入狀態 (System Status)
+      // 狀態反饋：停用按鈕並顯示處理中
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = '資料儲存中...';
       }
 
+      // 寫入 LocalStorage 持久化
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(profilePayload));
       } catch (err) {
-        console.warn('[profile] 無法寫入 localStorage', err);
-        showAlert('儲存失敗，可能是照片太大或瀏覽器空間不足，請換一張照片再試', 'error');
+        console.warn('[profile] 寫入 LocalStorage 失敗', err);
+        showAlert('儲存失敗！可能是圖片尺寸較大超出瀏覽器容量，請更換一張照片再試。', 'error');
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.textContent = '儲存檔案並繼續';
@@ -205,12 +265,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // 模擬順暢的非同步儲存回饋
+      // 模擬順暢非同步處理延遲並重導向
       setTimeout(() => {
         isFormDirty = false;
-        alert('個人資料已成功儲存！');
+        alert('個人資料已順利更新完成！');
         window.location.href = 'user-center.html';
-      }, 600);
+      }, 500);
     });
   }
 });

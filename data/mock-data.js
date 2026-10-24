@@ -19,7 +19,7 @@ const MOCK_DB = {
   "users": [
     {
       "id": "u01",
-      "name": "陳彥廷",
+      "name": "王小美",
       "email": "u01@nknu-demo.app",
       "password": "demo1234",
       "gender": "male",

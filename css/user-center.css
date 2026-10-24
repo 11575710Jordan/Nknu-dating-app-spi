@@ -1,5 +1,5 @@
 /* =========================================================
-   基本重置 & 全螢幕置中佈局
+   個人中心 - 三區塊架構 (左側導覽 + 中上固定 + 中下選單網格)
    ========================================================= */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -7,61 +7,53 @@
   padding: 0;
 }
 
-body {
-  font-family: var(--font-body);
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  color: var(--text-primary);
-  background-color: var(--bg-canvas);
-  
+/* 限制中欄最大寬度，確保閱讀比例最舒適 */
+.dp-shell__main-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: var(--sp-6) var(--sp-4);
+  flex-direction: column;
+  gap: var(--sp-4);
 }
 
 /* =========================================================
-   卡片面板樣式
+   【中上方區塊】固定個人頭像與狀態卡片
    ========================================================= */
-.dp-card {
+.dp-card--header {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-default);
   border-radius: var(--r-lg);
-  box-shadow: var(--shadow-lg);
-  width: 100%;
-  max-width: 480px;
-  padding: var(--sp-8) var(--sp-6);
-  margin: auto;
+  box-shadow: var(--shadow-md);
+  padding: var(--sp-6) var(--sp-6) var(--sp-4);
 }
 
-/* 個人頭像區塊 */
 .dp-profile-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin-bottom: var(--sp-6);
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-4);
 }
 
 .dp-avatar-wrapper {
   position: relative;
-  margin-bottom: var(--sp-3);
+  flex-shrink: 0;
 }
 
 .dp-avatar {
-  width: 88px;
-  height: 88px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--plum-100);
+  border: 2.5px solid var(--plum-100);
 }
 
 .dp-badge-verified {
   position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 24px;
-  height: 24px;
+  bottom: 0px;
+  right: 0px;
+  width: 22px;
+  height: 22px;
   background-color: var(--sage-500);
   color: var(--mist-0);
   border-radius: 50%;
@@ -72,8 +64,13 @@ body {
 }
 
 .dp-badge-verified svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
+}
+
+.dp-profile-meta {
+  display: flex;
+  flex-direction: column;
 }
 
 .dp-user-name {
@@ -98,12 +95,11 @@ body {
   border-radius: var(--r-md);
   padding: var(--sp-3) var(--sp-4);
   text-decoration: none;
-  margin-bottom: var(--sp-6);
   transition: transform var(--dur-fast) var(--ease-standard);
 }
 
 .dp-health-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .dp-health-info {
@@ -123,9 +119,42 @@ body {
   color: var(--sage-800);
 }
 
-/* 功能選單群組 */
+/* =========================================================
+   【中下方區塊】儀表板選單與操作按鈕
+   ========================================================= */
+.dp-card--content {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--sp-6);
+}
+
+/* 雙欄網格佈局 (Dashboard Grid) */
+.dp-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-4);
+}
+
+@media (min-width: 640px) {
+  .dp-dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dp-menu-group--full {
+    grid-column: span 2;
+  }
+  .dp-sub-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-2) var(--sp-3);
+  }
+}
+
+/* 選單單元 */
 .dp-menu-group {
-  margin-bottom: var(--sp-5);
+  margin-bottom: var(--sp-2);
 }
 
 .dp-menu-label {
@@ -147,7 +176,7 @@ body {
   text-decoration: none;
   color: var(--text-primary);
   margin-bottom: var(--sp-2);
-  transition: background-color var(--dur-fast) var(--ease-standard);
+  transition: background-color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
 }
 
 .dp-menu-item:hover {
@@ -156,12 +185,13 @@ body {
 }
 
 .dp-menu-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   color: var(--plum-700);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .dp-menu-icon svg {
@@ -191,10 +221,21 @@ body {
   font-weight: var(--fw-bold);
 }
 
+.dp-404__tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: var(--fw-bold);
+  color: var(--status-warning);
+  background: var(--status-warning-bg);
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+}
+
 .dp-arrow-icon {
   width: 16px;
   height: 16px;
   color: var(--text-placeholder);
+  flex-shrink: 0;
 }
 
 /* 登出按鈕 */
