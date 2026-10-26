@@ -43,6 +43,36 @@
       </svg>
     </a>
 
+    <!-- 回到配對頁／訊息頁的快速入口（配對、訊息頁的導覽都連回個人中心，但原本缺一個回去的入口） -->
+    <div class="dp-menu-group">
+      <div class="dp-menu-label">探索與配對</div>
+
+      <a href="match.html" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path fill="currentColor" stroke="none" d="M15.8 8.2l-2.2 5.4-5.4 2.2 2.2-5.4z"></path>
+          </svg>
+        </div>
+        <span class="dp-menu-text">配對探索</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="chat.html" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 5h16v11H9l-5 4z"></path>
+          </svg>
+        </div>
+        <span class="dp-menu-text">訊息</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    </div>
+
     <!-- 功能選單清單 -->
     <div class="dp-menu-group">
       <div class="dp-menu-label">帳號與身份設定</div>
@@ -113,11 +143,113 @@
       </a>
     </div>
 
+    <div class="dp-menu-group">
+      <div class="dp-menu-label">更多功能</div>
+
+      <!-- 通知中心已開發完成，改連真正的頁面 -->
+      <a href="notifications.html" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+        </div>
+        <span class="dp-menu-text">通知中心</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <!-- 尚未開發：點進去先看 404 假畫面，待功能上線後再換成真正頁面 -->
+      <a href="404.html?feature=查詢列表" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <span class="dp-menu-text">查詢列表</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="404.html?feature=共同行事曆" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <span class="dp-menu-text">共同行事曆</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="404.html?feature=語音聊天室" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+          </svg>
+        </div>
+        <span class="dp-menu-text">語音聊天室</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="404.html?feature=任務系統" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+        </div>
+        <span class="dp-menu-text">任務系統</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="404.html?feature=集點系統" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="8.5"></circle>
+            <path stroke-linecap="round" d="M12 7.5v9M9.5 9.5c0-1 1.1-1.8 2.5-1.8s2.5.8 2.5 1.8-1.1 1.6-2.5 1.9-2.5.9-2.5 1.9 1.1 1.8 2.5 1.8 2.5-.8 2.5-1.8"></path>
+          </svg>
+        </div>
+        <span class="dp-menu-text">集點系統</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="404.html?feature=課金系統" class="dp-menu-item">
+        <div class="dp-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="1" y="4" width="22" height="16" rx="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+          </svg>
+        </div>
+        <span class="dp-menu-text">課金系統</span>
+        <svg class="dp-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    </div>
+
     <!-- 登出按鈕 -->
     <button type="button" class="dp-btn-logout" id="logoutBtn">登出帳號</button>
 
   </div>
 
+  <script src="../data/mock-data.js"></script>
+  <script src="../js/session.js"></script>
   <script src="../js/user-center.js"></script>
 </body>
 </html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>功能開發中 - 交友 App</title>
+
+  <!-- 引入 Google 品牌字型（與各頁一致） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 引用主題變數 -->
+  <link rel="stylesheet" href="../theme_guide/theme.css">
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-canvas);
+      padding: var(--sp-6) var(--sp-4);
+    }
+    .dp-404 {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-lg);
+      padding: var(--sp-10) var(--sp-6);
+      text-align: center;
+    }
+    .dp-404__icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto var(--sp-5);
+      border-radius: var(--r-pill);
+      background: var(--plum-100);
+      color: var(--plum-500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dp-404__icon svg { width: 34px; height: 34px; }
+    .dp-404__code {
+      font-family: var(--font-display);
+      font-weight: var(--fw-bold);
+      font-size: var(--fs-display);
+      color: var(--plum-300);
+      margin: 0 0 var(--sp-2);
+      letter-spacing: .05em;
+    }
+    .dp-404 h1 {
+      font-family: var(--font-display);
+      font-weight: var(--fw-bold);
+      font-size: var(--fs-h2);
+      color: var(--text-primary);
+      margin: 0 0 var(--sp-3);
+    }
+    .dp-404 p {
+      font-size: var(--fs-sm);
+      line-height: var(--lh-sm);
+      color: var(--text-secondary);
+      margin: 0 0 var(--sp-6);
+    }
+    .dp-404__tag {
+      display: inline-block;
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      color: var(--status-warning);
+      background: var(--status-warning-bg);
+      padding: var(--sp-1) var(--sp-3);
+      border-radius: var(--r-pill);
+      margin-bottom: var(--sp-4);
+    }
+    .dp-404__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+    @media (min-width: 420px) {
+      .dp-404__actions { flex-direction: row; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dp-404">
+    <div class="dp-404__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-1.5 2-2.5 3"></path>
+        <line x1="12" y1="16.5" x2="12" y2="16.6"></line>
+      </svg>
+    </div>
+
+    <p class="dp-404__code">404</p>
+    <span class="dp-404__tag">開發排程中</span>
+    <h1 id="feature-title">這個功能還在路上</h1>
+    <p id="feature-desc">這個頁面目前還沒有開發，之後會由負責的組員完成並上線，敬請期待。</p>
+
+    <div class="dp-404__actions">
+      <a class="dp-btn dp-btn--primary" href="user-center.html">返回個人中心</a>
+      <a class="dp-btn dp-btn--ghost" href="match.html">回到配對首頁</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var feature = new URLSearchParams(location.search).get('feature');
+      if (!feature) return;
+      document.title = feature + ' 開發中 - 交友 App';
+      document.getElementById('feature-title').textContent = '「' + feature + '」開發中';
+      document.getElementById('feature-desc').textContent =
+        '「' + feature + '」目前還在開發排程中，之後會由負責的組員完成並上線，敬請期待。';
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>集點系統 - 交友 App</title>
+
+<!-- 引入 Google 品牌字型（與各頁一致） -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- 引用主題變數與本頁樣式 -->
+<link rel="stylesheet" href="../theme_guide/theme.css">
+<link rel="stylesheet" href="../css/points-system.css">
+</head>
+<body>
+
+<div class="dp-card">
+  <div class="dp-header">
+    <div class="dp-header-top">
+      <a href="user-center.html" class="dp-btn-back" title="返回個人中心">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>個人中心</span>
+      </a>
+    </div>
+
+    <div class="dp-badge">
+      <svg class="dp-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="8" r="6"></circle>
+        <path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"></path>
+      </svg>
+      集點系統
+    </div>
+    <h1>我的點數</h1>
+    <p>查看目前點數、歷史異動紀錄，或用點數兌換專屬裝飾。</p>
+  </div>
+
+  <!-- 未登入提示（不自動導頁，因為子資料夾頁面無法正確帶回登入後的頁面） -->
+  <div class="dp-alert dp-alert--warning" id="guestNotice" style="display:none;">
+    尚未登入，無法查看你的點數。請先
+    <a href="login.html">前往登入</a>，登入後重新整理這一頁即可查看。
+  </div>
+
+  <div id="pointsRoot" style="display:none;">
+
+    <!-- 目前點數 -->
+    <div class="balance-card">
+      <div class="balance-card__label">目前可用點數</div>
+      <div class="balance-card__value"><span id="balanceNumber">0</span> <small>點</small></div>
+      <a class="dp-btn dp-btn--secondary dp-btn--sm" href="billing-system.html">點數不夠？去儲值</a>
+    </div>
+
+    <!-- 兌換商店 -->
+    <div class="dp-section-title">兌換商店</div>
+    <p class="dp-sm dp-muted" style="margin:0 0 var(--sp-4);">每項裝飾限兌換一次，兌換後會標記為已擁有。</p>
+    <ul class="shop-list" id="shopList"></ul>
+
+    <!-- 點數相關功能 -->
+    <div class="dp-section-title">其他功能</div>
+    <div class="task-nav">
+      <a class="dp-btn dp-btn--secondary dp-btn--sm" href="task-system.html">去完成任務賺點數</a>
+    </div>
+
+    <!-- 異動紀錄 -->
+    <div class="dp-section-title">點數異動紀錄</div>
+    <ul class="log-list" id="logList"></ul>
+    <p class="dp-sm dp-muted" id="logEmpty" style="display:none;">目前還沒有任何點數異動紀錄。</p>
+
+    <div class="dp-alert" id="pointsAlert" role="status" aria-live="polite" style="display:none;"></div>
+  </div>
+
+</div>
+
+<script src="../data/mock-data.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/points-api.js"></script>
+<script src="../js/points-system.js"></script>
+</body>
+</html>

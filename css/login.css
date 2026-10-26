@@ -172,6 +172,23 @@ body {
 }
 
 /* Alert 狀態 */
+/* Demo 測試帳號提示 */
+.dp-demo-hint {
+  margin-bottom: var(--sp-6);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-sm);
+  background-color: var(--status-info-bg);
+  color: var(--status-info);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-sm);
+}
+
+.dp-demo-hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
 .dp-alert {
   display: none;
   padding: var(--sp-3) var(--sp-4);

@@ -203,6 +203,27 @@ const MatchLogic = (() => {
     return existing + adding > PET_PHOTO_MAX ? `照片最多 ${PET_PHOTO_MAX} 張，請先移除幾張再上傳。` : null;
   }
 
+  /* ---------- 開啟聊天 ---------- */
+  /** 關係分數達到這個值才能開啟聊天（與照片完全清晰同一個門檻） */
+  const CHAT_UNLOCK_SCORE = 60;
+
+  function canOpenChat(score) {
+    return score >= CHAT_UNLOCK_SCORE;
+  }
+
+  /** 聊天頁網址；聊天頁需讀取 ?peer=<用戶 id> 才會開對應的對話（介面約定，見 README） */
+  function chatUrl(userId) {
+    return `chat.html?peer=${encodeURIComponent(userId)}`;
+  }
+
+  /** 要聊天的「人」：一般／長輩模式就是對方本人，寵物模式是對方寵物的主人 */
+  function chatPeerId(kind, targetId, petsById) {
+    if (kind !== 'pet') return targetId;
+    const pet = petsById.get(targetId);
+    if (!pet) throw new Error(`找不到寵物 ${targetId}，無法決定聊天對象`);
+    return pet.ownerId;
+  }
+
   /* ---------- 點數與動態 ---------- */
   const UNLOCK_COST = 30;
   const POINTS_INPUT_MAX = 10000;
@@ -242,6 +263,7 @@ const MatchLogic = (() => {
 
   return {
     PET_PHOTO_MAX, stepPhoto, validatePhotoCount, PHOTO_CLEAR_SCORE, photoVeil,
+    CHAT_UNLOCK_SCORE, canOpenChat, chatUrl, chatPeerId,
     UNLOCK_COST, TOPUP_PLANS, parsePointsInput, addPoints, momentKey, isUnlocked, unlockMoments,
     STEP, SENIOR_AGE, PET_SPECIES, PET_GENDERS, PET_SIZES,
     validatePet, validatePhoto, nextPetId,

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 規劃行程 - 交友 App</title>
+
+<!-- 引入 Google 品牌字型（與各頁一致） -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- 引用主題變數與本頁樣式 -->
+<link rel="stylesheet" href="../theme_guide/theme.css">
+<link rel="stylesheet" href="../css/ai-itinerary.css">
+</head>
+<body>
+
+<div class="dp-card">
+  <div class="dp-header">
+    <div class="dp-header-top">
+      <a href="user-center.html" class="dp-btn-back" title="返回個人中心">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>個人中心</span>
+      </a>
+    </div>
+
+    <div class="dp-badge">
+      <svg class="dp-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2v4"></path><path d="M12 18v4"></path><path d="M4.93 4.93l2.83 2.83"></path>
+        <path d="M16.24 16.24l2.83 2.83"></path><path d="M2 12h4"></path><path d="M18 12h4"></path>
+        <path d="M4.93 19.07l2.83-2.83"></path><path d="M16.24 7.76l2.83-2.83"></path>
+      </svg>
+      AI 規劃行程
+    </div>
+    <h1>約會行程小幫手</h1>
+    <p>選一下地區、時段、預算和興趣，幫你排一份高雄約會行程參考。這是規則比對產生的建議，不是真的 AI 模型。</p>
+  </div>
+
+  <!-- 未登入提示（不自動導頁，因為子資料夾頁面無法正確帶回登入後的頁面） -->
+  <div class="dp-alert dp-alert--warning" id="guestNotice" style="display:none;">
+    尚未登入，無法記錄你的規劃紀錄。請先
+    <a href="login.html">前往登入</a>，登入後重新整理這一頁即可開始規劃。
+  </div>
+
+  <div id="itineraryRoot" style="display:none;">
+
+    <!-- 條件表單 -->
+    <div class="dp-section-title">行程條件</div>
+    <form id="planForm">
+      <div class="dp-field">
+        <label class="dp-label" for="regionSelect">地區</label>
+        <select class="dp-input" id="regionSelect">
+          <option value="">不指定（高雄市全區）</option>
+        </select>
+      </div>
+
+      <div class="dp-field">
+        <label class="dp-label" for="timeSelect">時段</label>
+        <select class="dp-input" id="timeSelect">
+          <option value="全天">全天（早中晚各一站）</option>
+          <option value="早上">早上</option>
+          <option value="下午">下午</option>
+          <option value="晚上">晚上</option>
+        </select>
+      </div>
+
+      <div class="dp-field">
+        <label class="dp-label" for="budgetSelect">預算</label>
+        <select class="dp-input" id="budgetSelect">
+          <option value="free">小資（免費景點為主）</option>
+          <option value="low" selected>中等（含部分平價消費）</option>
+          <option value="any">不限</option>
+        </select>
+      </div>
+
+      <div class="dp-field">
+        <label class="dp-label">興趣（可多選）</label>
+        <div class="tag-grid" id="interestTags"></div>
+      </div>
+
+      <label class="pet-toggle">
+        <input type="checkbox" id="petToggle">
+        <span>要和寵物一起出門（只排寵物友善地點）</span>
+      </label>
+
+      <button type="submit" class="dp-btn dp-btn--primary" id="generateBtn" style="width:100%; margin-top: var(--sp-5);">產生行程</button>
+    </form>
+
+    <!-- 產生結果 -->
+    <div id="resultSection" style="display:none;">
+      <div class="dp-section-title">建議行程</div>
+      <p class="dp-sm dp-muted" id="resultNote" style="margin-bottom: var(--sp-3);"></p>
+      <ul class="timeline" id="timeline"></ul>
+    </div>
+
+    <!-- 快速入口 -->
+    <div class="dp-section-title">其他功能</div>
+    <div class="task-nav">
+      <a class="dp-btn dp-btn--secondary dp-btn--sm" href="task-system.html">查看任務獎勵</a>
+    </div>
+
+    <div class="dp-alert" id="itineraryAlert" role="status" aria-live="polite" style="display:none;"></div>
+  </div>
+
+</div>
+
+<script src="../data/mock-data.js"></script>
+<script src="../js/session.js"></script>
+<script src="../data/itinerary-data.js"></script>
+<script src="../js/ai-itinerary.js"></script>
+</body>
+</html>
