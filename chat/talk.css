@@ -11,3 +11,14 @@
 .talk-mic { min-width: 12rem; }
 .talk-mic[aria-pressed="true"] { background: var(--sage-600); }
 @media (max-width: 767px) { .talk-main { padding: var(--sp-4); padding-bottom: calc(var(--bottom-tab-h) + var(--sp-4)); } .talk-card { padding: var(--sp-5); } }
+
+#talk-remote-audio { display: none; }
+.talk-controls { display: grid; grid-template-columns: repeat(3, minmax(5rem, 1fr)); gap: var(--sp-3); width: min(100%, 25rem); }
+.talk-control { min-width: 0; min-height: 5.5rem; display: grid; justify-items: center; align-content: center; gap: var(--sp-2); padding: var(--sp-3); border: 1px solid var(--border-default); border-radius: var(--r-md); background: var(--bg-surface); color: var(--text-primary); font: inherit; cursor: pointer; }
+.talk-control svg { width: var(--sp-6); height: var(--sp-6); }
+.talk-control span { font-size: var(--fs-xs); }
+.talk-control[aria-pressed="true"] { background: var(--sage-100); border-color: var(--sage-500); color: var(--sage-800); }
+.talk-control--end { background: var(--coral-600); border-color: var(--coral-600); color: var(--text-inverse); }
+.talk-control--end:hover { background: var(--coral-700); }
+.talk-control:disabled { opacity: .6; cursor: wait; }
+.talk-mic { min-width: 0; }

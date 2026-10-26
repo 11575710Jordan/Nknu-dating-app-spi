@@ -21,12 +21,25 @@
         </nav>
         <main class="dp-shell__main talk-main">
             <section class="talk-card" aria-labelledby="talk-title">
-                <a class="dp-btn dp-btn--ghost dp-btn--sm talk-back" id="talk-back" href="chat.html">← 返回聊天室</a>
                 <div class="dp-avatar dp-avatar--lg talk-avatar" id="talk-avatar" aria-hidden="true">?</div>
                 <h1 class="dp-h2" id="talk-title">語音聊天</h1>
                 <p class="dp-muted" id="talk-peer">正在載入聊天對象…</p>
-                <p class="talk-status" id="talk-status" role="status">麥克風目前關閉</p>
-                <button class="dp-btn dp-btn--primary talk-mic" id="talk-mic" type="button" aria-pressed="false">開啟麥克風</button>
+                <p class="talk-status" id="talk-status" role="status" aria-live="polite">麥克風目前關閉 · 擴音已開啟（等待對方音訊）</p>
+                <audio id="talk-remote-audio" autoplay></audio>
+                <div class="talk-controls" role="group" aria-label="通話控制">
+                    <button class="talk-control" id="talk-mic" type="button" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11z" fill="currentColor"/></svg>
+                        <span>開啟麥克風</span>
+                    </button>
+                    <button class="talk-control" id="talk-speaker" type="button" aria-pressed="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a3.5 3.5 0 0 0-2-3.16v6.32a3.5 3.5 0 0 0 2-3.16zM14.5 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z" fill="currentColor"/></svg>
+                        <span>關閉擴音</span>
+                    </button>
+                    <button class="talk-control talk-control--end" id="talk-end" type="button">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 15.5c5.8-5.2 14.2-5.2 20 0l-3.1 4.1a1 1 0 0 1-1.2.3l-3.1-1.4a1 1 0 0 1-.6-.9v-2a14 14 0 0 0-4 0v2a1 1 0 0 1-.6.9l-3.1 1.4a1 1 0 0 1-1.2-.3z" fill="currentColor"/></svg>
+                        <span>結束通話</span>
+                    </button>
+                </div>
             </section>
         </main>
     </div>

@@ -7,9 +7,13 @@
     var peerLabel = document.getElementById("talk-peer");
     var button = document.getElementById("talk-mic");
     var status = document.getElementById("talk-status");
-    var back = document.getElementById("talk-back");
+    var speakerButton = document.getElementById("talk-speaker");
+    var endButton = document.getElementById("talk-end");
+    var remoteAudio = document.getElementById("talk-remote-audio");
     var tones = ["chat-tone-plum", "chat-tone-apricot", "chat-tone-sage", "chat-tone-plum"];
     var stream = null;
+    var speakerOn = true;
+    var ending = false;
 
     if (peer) {
         avatar.textContent = Array.from(peer.name).pop();
@@ -21,12 +25,18 @@
         peerLabel.textContent = "未指定聊天對象";
     }
     var conversation = params.get("conversation");
-    if (conversation) back.href = "chat.html?peer=" + encodeURIComponent(peer ? peer.id : "");
+    var returnUrl = conversation && peer
+        ? "chat.html?peer=" + encodeURIComponent(peer.id)
+        : "chat.html";
+
+    function updateStatus(message) {
+        status.textContent = message || ("麥克風" + (stream ? "已開啟" : "目前關閉") + " · 擴音" + (speakerOn ? "已開啟" : "已關閉") + (remoteAudio.srcObject ? "" : "（等待對方音訊）"));
+    }
 
     function setMicOn(on) {
         button.setAttribute("aria-pressed", on ? "true" : "false");
-        button.textContent = on ? "關閉麥克風" : "開啟麥克風";
-        status.textContent = on ? "麥克風已開啟" : "麥克風目前關閉";
+        button.querySelector("span").textContent = on ? "關閉麥克風" : "開啟麥克風";
+        updateStatus();
     }
 
     button.addEventListener("click", async function () {
@@ -37,20 +47,46 @@
             return;
         }
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            status.textContent = "此瀏覽器或頁面環境不支援麥克風，請透過 localhost 或 HTTPS 開啟。";
+            updateStatus("此瀏覽器或頁面環境不支援麥克風，請透過 localhost 或 HTTPS 開啟。");
             return;
         }
         button.disabled = true;
-        status.textContent = "等待麥克風權限…";
+        updateStatus("等待麥克風權限…");
         try {
-            stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            var requestedStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            if (ending) {
+                requestedStream.getTracks().forEach(function (track) { track.stop(); });
+                return;
+            }
+            stream = requestedStream;
             setMicOn(true);
         } catch (err) {
-            status.textContent = err.name === "NotAllowedError" ? "麥克風權限未開啟，請在瀏覽器設定中允許使用。" : "無法啟用麥克風，請確認裝置已連接。";
+            updateStatus(err.name === "NotAllowedError" ? "麥克風權限未開啟，請在瀏覽器設定中允許使用。" : "無法啟用麥克風，請確認裝置已連接。");
         } finally {
             button.disabled = false;
         }
     });
+
+    speakerButton.addEventListener("click", function () {
+        speakerOn = !speakerOn;
+        remoteAudio.muted = !speakerOn;
+        speakerButton.setAttribute("aria-pressed", speakerOn ? "true" : "false");
+        speakerButton.querySelector("span").textContent = speakerOn ? "關閉擴音" : "開啟擴音";
+        updateStatus();
+    });
+
+    endButton.addEventListener("click", function () {
+        ending = true;
+        if (stream) {
+            stream.getTracks().forEach(function (track) { track.stop(); });
+            stream = null;
+        }
+        remoteAudio.pause();
+        remoteAudio.srcObject = null;
+        setMicOn(false);
+        window.location.href = returnUrl;
+    });
+
     window.addEventListener("pagehide", function () {
         if (stream) stream.getTracks().forEach(function (track) { track.stop(); });
     });
