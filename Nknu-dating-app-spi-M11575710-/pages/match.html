@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>配對｜Dating POC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme_guide/theme.css">
+<link rel="stylesheet" href="match.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" d="M5 12h14"/></symbol>
+  <symbol id="i-paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="6" cy="10" rx="2" ry="2.6"/><ellipse cx="10" cy="6" rx="2" ry="2.6"/><ellipse cx="14" cy="6" rx="2" ry="2.6"/><ellipse cx="18" cy="10" rx="2" ry="2.6"/><path d="M12 11c-3 0-6 4.2-6 6.6 0 1.6 1.3 2.4 3 2.4 1.2 0 2-.6 3-.6s1.8.6 3 .6c1.7 0 3-.8 3-2.4C18 15.2 15 11 12 11z"/></g></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.6-5 6.5-5s5.5 1.5 6.5 5"/><circle cx="17" cy="9" r="2.8"/><path d="M17 14.5c2.3 0 4 1.3 4.8 4"/></g></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 6h16M7 12h10M10 18h4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><path stroke-linecap="round" d="M12 7.5v9M9.5 9.5c0-1 1.1-1.8 2.5-1.8s2.5.8 2.5 1.8-1.1 1.6-2.5 1.9-2.5.9-2.5 1.9 1.1 1.8 2.5 1.8 2.5-.8 2.5-1.8"/></g></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></g></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M15.8 8.2l-2.2 5.4-5.4 2.2 2.2-5.4z"/></symbol>
+  <symbol id="i-hearts" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20s-7-4.3-8.9-8.6C1.8 8.3 3.7 5 7 5c2 0 3.4 1 5 2.8C13.6 6 15 5 17 5c3.3 0 5.2 3.3 3.9 6.4C19 15.7 12 20 12 20z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 20c1.5-4 4.5-5.5 8-5.5s6.5 1.5 8 5.5"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></symbol>
+</svg>
+
+<!-- 側邊欄與手機底部分頁列沿用聊天頁（chat.html）的導覽結構 -->
+<div class="dp-shell dp-shell--no-aside match-shell">
+  <nav class="dp-shell__nav" aria-label="主要導覽">
+    <div class="dp-logo">品牌名稱</div>
+    <a class="dp-nav-item" href="match.html"><svg><use href="#i-compass"/></svg><span>探索</span></a>
+    <a class="dp-nav-item" href="match.html" aria-current="page"><svg><use href="#i-hearts"/></svg><span>配對</span></a>
+    <a class="dp-nav-item" href="chat.html"><svg><use href="#i-chat"/></svg><span>訊息</span></a>
+    <a class="dp-nav-item" href="user-center.html"><svg><use href="#i-user"/></svg><span>我的檔案</span></a>
+  </nav>
+
+<main class="dp-shell__main">
+<div class="match-main">
+  <h1 class="match-sr-only">配對</h1>
+
+  <div class="match-toolbar">
+    <div class="match-modes" id="mode-switch" role="group" aria-label="配對模式"></div>
+    <div class="match-toolbar__end">
+      <button class="dp-btn dp-btn--ghost dp-btn--sm" id="points-toggle" type="button" aria-haspopup="dialog"></button>
+      <div class="match-filter-anchor">
+        <button class="dp-btn dp-btn--ghost dp-btn--sm" id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-panel"></button>
+        <form class="match-filter" id="filter-panel" role="dialog" aria-label="篩選條件" novalidate hidden></form>
+      </div>
+    </div>
+  </div>
+
+  <div class="match-pet-picker" id="pet-picker" hidden></div>
+
+  <section class="match-stage" id="match-stage"></section>
+  <p class="match-sr-only" id="match-live" aria-live="polite"></p>
+</div>
+</main>
+</div>
+
+<nav class="dp-tabbar" aria-label="主要導覽">
+  <a class="dp-nav-item" href="match.html"><svg><use href="#i-compass"/></svg><span>探索</span></a>
+  <a class="dp-nav-item" href="match.html" aria-current="page"><svg><use href="#i-hearts"/></svg><span>配對</span></a>
+  <a class="dp-nav-item" href="chat.html"><svg><use href="#i-chat"/></svg><span>訊息</span></a>
+  <a class="dp-nav-item" href="user-center.html"><svg><use href="#i-user"/></svg><span>我的檔案</span></a>
+</nav>
+
+<div id="modal-root"></div>
+
+<script src="../data/mock-data.js"></script>
+<script src="../data/mock-chats.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/match-logic.js"></script>
+<script src="../chat/chat-store.js"></script>
+<script src="match.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編輯個人資料 - 交友 App</title>
+  
+  <!-- 引入 Google 品牌字型與系統字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 引用外部主題樣式表 -->
+  <link rel="stylesheet" href="../theme_guide/theme.css">
+  <link rel="stylesheet" href="../css/profile-settings.css">
+</head>
+<body>
+
+  <div class="dp-card">
+    <!-- 頁頭導覽與標題區塊 -->
+    <div class="dp-header">
+      <div class="dp-header-top">
+        <a href="user-center.html" class="dp-btn-back" title="返回個人中心">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>個人中心</span>
+        </a>
+      </div>
+      <h1>編輯個人資料</h1>
+      <p>完整的個人檔案能提升 80% 以上的配對成功率</p>
+    </div>
+
+    <form id="profileForm">
+      <!-- 大頭照上傳 -->
+      <div class="avatar-upload-group">
+        <div class="avatar-preview" id="avatarPreview">
+          <span class="avatar-placeholder" id="placeholderText">上傳展示照</span>
+          <img id="avatarImage" src="" alt="個人頭像">
+        </div>
+        <label for="avatarInput" class="file-input-btn">選擇個人照片</label>
+        <input type="file" id="avatarInput" accept="image/*">
+      </div>
+
+      <!-- 暱稱 & 性別 -->
+      <div class="dp-form-row">
+        <div class="dp-field">
+          <label class="dp-label" for="nickname">顯示暱稱<span class="required">*</span></label>
+          <input type="text" class="dp-input" id="nickname" placeholder="例如：Alex / 艾倫" required>
+        </div>
+        <div class="dp-field">
+          <label class="dp-label" for="gender">性別<span class="required">*</span></label>
+          <select class="dp-select" id="gender" required>
+            <option value="">請選擇</option>
+            <option value="male">男</option>
+            <option value="female">女</option>
+            <option value="other">多元性別</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 職業 / 領域 & 年齡 -->
+      <div class="dp-form-row">
+        <div class="dp-field">
+          <label class="dp-label" for="occupation">職業 / 專業領域<span class="required">*</span></label>
+          <select class="dp-select" id="occupation" required>
+            <option value="">請選擇職業類別</option>
+            <option value="IT">資訊科技 / 軟體工程</option>
+            <option value="FINANCE">金融理財 / 商業</option>
+            <option value="DESIGN">藝術設計 / 廣告行銷</option>
+            <option value="EDUCATION">教育 / 學術研究</option>
+            <option value="MEDICAL">醫療 / 生技保健</option>
+            <option value="STUDENT">學生</option>
+            <option value="OTHER">其他領域</option>
+          </select>
+        </div>
+        <div class="dp-field">
+          <label class="dp-label" for="age">年齡<span class="required">*</span></label>
+          <input type="number" class="dp-input" id="age" min="18" max="99" placeholder="例如：25" required>
+        </div>
+      </div>
+
+      <!-- 個人簡介 -->
+      <div class="dp-field">
+        <label class="dp-label" for="bio">關於我</label>
+        <textarea class="dp-textarea" id="bio" placeholder="聊聊你的日常休閒、生活態度，或是你期待在這裡遇見什麼樣的人..."></textarea>
+      </div>
+
+      <!-- 興趣標籤選取 -->
+      <div class="dp-field">
+        <label class="dp-label">興趣標籤（最多選擇 5 項）</label>
+        <div class="dp-tag-list" id="tagContainer">
+          <button type="button" class="dp-tag-btn" data-tag="美饌探索" aria-pressed="false">美饌探索</button>
+          <button type="button" class="dp-tag-btn" data-tag="咖啡品味" aria-pressed="false">咖啡品味</button>
+          <button type="button" class="dp-tag-btn" data-tag="戶外露營" aria-pressed="false">戶外露營</button>
+          <button type="button" class="dp-tag-btn" data-tag="健身重訓" aria-pressed="false">健身重訓</button>
+          <button type="button" class="dp-tag-btn" data-tag="電影影集" aria-pressed="false">電影影集</button>
+          <button type="button" class="dp-tag-btn" data-tag="音樂展演" aria-pressed="false">音樂展演</button>
+          <button type="button" class="dp-tag-btn" data-tag="國際旅行" aria-pressed="false">國際旅行</button>
+          <button type="button" class="dp-tag-btn" data-tag="攝影創作" aria-pressed="false">攝影創作</button>
+          <button type="button" class="dp-tag-btn" data-tag="科技趨勢" aria-pressed="false">科技趨勢</button>
+          <button type="button" class="dp-tag-btn" data-tag="毛孩寵物" aria-pressed="false">毛孩寵物</button>
+        </div>
+      </div>
+
+      <!-- 提交按鈕 -->
+      <button type="submit" class="dp-btn-submit">儲存檔案並繼續</button>
+    </form>
+  </div>
+
+  <script src="../js/profile-settings.js"></script>
+</body>
+</html>

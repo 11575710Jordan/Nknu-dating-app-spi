@@ -1,0 +1,255 @@
+/* =========================================================
+   基本重置 & 頁面置中佈局
+   ========================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  background-color: var(--bg-canvas);
+  
+  /* Flexbox 全螢幕垂直水平置中 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--sp-6) var(--sp-4);
+}
+
+/* =========================================================
+   卡片面板樣式
+   ========================================================= */
+.dp-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 540px;
+  padding: var(--sp-8) var(--sp-6);
+  /* 確保外距邊界正常居中 */
+  margin: auto;
+}
+
+.dp-header {
+  text-align: center;
+  margin-bottom: var(--sp-6);
+}
+
+.dp-header h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--sp-2);
+}
+
+.dp-header p {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* 表單欄位 */
+.dp-field {
+  display: grid;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-6);
+}
+
+.dp-label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.dp-label .required {
+  color: var(--coral-600);
+  margin-left: 2px;
+}
+
+.dp-input, .dp-select, .dp-textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  transition: border-color var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.dp-input::placeholder, .dp-textarea::placeholder {
+  color: var(--text-placeholder);
+}
+
+.dp-input:focus, .dp-select:focus, .dp-textarea:focus {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px var(--plum-100);
+}
+
+.dp-textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: var(--lh-body);
+}
+
+/* 大頭照上傳區塊 */
+.avatar-upload-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+
+.avatar-preview {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background-color: var(--plum-100);
+  border: 2px dashed var(--plum-300);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.avatar-placeholder {
+  font-size: var(--fs-sm);
+  color: var(--plum-700);
+  text-align: center;
+  font-weight: var(--fw-medium);
+}
+
+.file-input-btn {
+  background-color: var(--action-secondary-bg);
+  color: var(--action-secondary-text);
+  padding: 8px var(--sp-4);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-standard);
+}
+
+.file-input-btn:hover {
+  background-color: var(--action-secondary-bg-hover);
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* 雙欄排版 */
+.dp-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+
+/* 興趣標籤區塊 */
+.dp-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}
+
+.dp-tag-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+}
+
+.dp-tag-btn:hover {
+  background: var(--plum-100);
+}
+
+.dp-tag-btn[aria-pressed="true"] {
+  background: var(--plum-700);
+  color: var(--mist-0);
+  border-color: var(--plum-700);
+}
+
+/* 主按鈕 */
+.dp-btn-submit {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--sp-6);
+  background-color: var(--action-primary-bg);
+  color: var(--action-primary-text);
+  border: 0;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  margin-top: var(--sp-4);
+  transition: background var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard);
+  box-shadow: var(--shadow-md);
+}
+
+.dp-btn-submit:hover {
+  background-color: var(--action-primary-bg-hover);
+}
+
+.dp-btn-submit:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .dp-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 頁頭左上方返回按鈕配置 */
+.dp-header-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--sp-3);
+}
+
+.dp-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  padding: 4px 8px;
+  margin-left: -8px;
+  border-radius: var(--r-sm);
+  transition: color var(--dur-fast) var(--ease-standard), background-color var(--dur-fast) var(--ease-standard);
+}
+
+.dp-btn-back:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-subtle);
+}
