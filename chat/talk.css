@@ -1,0 +1,13 @@
+.talk-body { min-height: 100vh; background: var(--bg-canvas); }
+.talk-shell { min-height: 100vh; }
+.talk-main { display: grid; place-items: center; padding: var(--sp-6); }
+.talk-card { width: min(100%, 32rem); display: grid; justify-items: center; gap: var(--sp-4); padding: var(--sp-8); background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--r-lg); box-shadow: var(--shadow-md); text-align: center; }
+.talk-back { justify-self: start; }
+.talk-avatar { display: grid; place-items: center; }
+.talk-avatar.chat-tone-plum { background: var(--plum-100); color: var(--plum-700); }
+.talk-avatar.chat-tone-apricot { background: var(--apricot-100); color: var(--apricot-800); }
+.talk-avatar.chat-tone-sage { background: var(--sage-100); color: var(--sage-800); }
+.talk-status { min-height: var(--sp-6); color: var(--text-secondary); }
+.talk-mic { min-width: 12rem; }
+.talk-mic[aria-pressed="true"] { background: var(--sage-600); }
+@media (max-width: 767px) { .talk-main { padding: var(--sp-4); padding-bottom: calc(var(--bottom-tab-h) + var(--sp-4)); } .talk-card { padding: var(--sp-5); } }
