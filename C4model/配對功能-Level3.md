@@ -1,7 +1,7 @@
 # C4 Model - Level 3：Components（元件層）
-## 主題：配對功能（查詢列表、評分與同步解鎖聊天室）
+## 主題：配對功能（查詢列表、評分與用戶解鎖聊天室）
 
-> 本文件延伸自 `1151012.md` 系統架構文件。對應 Level 2 容器「使用者介面容器 (Web/Mobile SPA Client)」中的 `match.html`，以及「社交與通訊容器 (Chat & Messaging Service)」之「配對清單維護」職責，並與「認證與授權容器 (Auth & Security Service)」協作取得登入者。本篇依手繪 C4 圖（`IMG_8881.jpeg`）將「配對功能」展開為 Level 3 元件，並繪製流程圖。
+> 本文件延伸自 `1151012.md` 系統架構文件。對應 Level 2 容器「使用者介面容器 (Web/Mobile SPA Client)」中的 `match.html`，以及「社交與通訊容器 (Chat & Messaging Service)」之「配對清單維護」職責，並與「認證與授權容器 (Auth & Security Service)」協作取得登入者。本篇依手繪 C4 圖（本資料夾 `7CFC15EB-841F-43AD-A434-5CFAD9D93047_1_105_c.jpeg`）將「配對功能」展開為 Level 3 元件，繪製 C4 元件圖，並以流程圖補充互動順序。
 >
 > **說明**：`1151012.md` 的頁面清單尚未列入 `match.html`，本文件將其歸屬於使用者介面容器；配對資料與聊天開通歸屬於社交與通訊容器。
 
@@ -18,11 +18,63 @@
 | 交友軟體 → AI 建議 ↔ AI | `ChatAI` | `chat/chat-ai.js` |
 | 查詢列表 | `ModeSwitcher`、`FilterPanel`、`CandidatePool` | `pages/match.js` |
 | 長輩交友 | `SeniorMode` | `MatchLogic.isSeniorEligible`、`html.match--senior` |
-| 寵物模式 | `PetMode`、`PetManager` | `MatchLogic.filterPets`、`openPetForm` |
+| 跨物種 | `PetMode`、`PetManager`（寵物模式） | `MatchLogic.filterPets`、`openPetForm` |
 | 興趣配對 | `InterestMatcher` | `MatchLogic.filterPeople`、`sharedInterests` |
 | 評分功能 | `RatingPanel` | `MatchLogic.capFor` / `applyDelta`、`changePoints` |
-| 同步解鎖 | `SyncUnlock` | `MatchLogic.photoVeil` / `canOpenChat`、`ensureChat` |
+| 用戶解鎖 | `UserUnlock` | `MatchLogic.photoVeil` / `canOpenChat`、`ensureChat` |
 | 聊天室 | `ChatWorkspace`（聊天功能容器） | `chat.html?peer=<用戶 id>` |
+
+---
+
+## C4 元件圖 (Component Diagram)
+
+> 依手繪 C4 圖繪製：使用者經「交友軟體」使用各項功能，其中「配對功能」展開為 Level 3 元件；「聊天室」屬於聊天功能容器，由「用戶解鎖」導入。圖中元件標示為「名稱 [技術／實作]：職責」，箭頭為元件之間的使用關係。
+>
+> **註**：
+> * 手繪圖中的外部「AI」目前在程式中以 `chat/chat-ai.js` 的規則式建議模擬，尚未串接真正的外部 AI 服務。
+> * 評分、對話、點數與登入狀態皆存於瀏覽器 `localStorage`（模擬後端資料庫），為簡化圖面未畫出。
+
+```mermaid
+C4Component
+  title 配對功能 - Component Diagram（C4 Level 3）
+
+  Person(user, "使用者 User", "交友軟體的終端使用者")
+  System_Ext(ai, "AI", "外部 AI 服務：依對話內容與對方檔案產生建議")
+
+  System_Boundary(app, "交友軟體（純前端 Web App）") {
+    Component(account, "帳號管理", "js/session.js：Session", "登入驗證、登入狀態、未登入導回登入頁")
+    Component(aiAdvice, "AI 建議", "chat/chat-ai.js：ChatAI", "破冰話題、回覆建議")
+    Component(task, "任務功能", "PointsWallet", "取得點數（目前以手動加點模擬）、花點數解鎖動態")
+
+    Container_Boundary(matchBoundary, "配對功能（match.html / match.js / match-logic.js）") {
+      Component(query, "查詢列表", "ModeSwitcher / FilterPanel / CandidatePool", "依模式與篩選條件產生卡池，依距離排序")
+      Component(rating, "評分功能", "RatingPanel", "每次 ±5；異性女 60／男 40，同性與寵物各 50")
+      Component(unlock, "用戶解鎖", "UserUnlock：PhotoClarity / ChatUnlocker", "關係分數達 60%：照片完全清晰、開通聊天")
+      Component(pet, "跨物種", "PetMode / PetManager", "以寵物身分配對；寵物新增、編輯、刪除")
+      Component(senior, "長輩交友", "SeniorMode", "65 歲以上預設進入，只顯示 65 歲以上對象")
+      Component(interest, "興趣配對", "InterestMatcher", "依興趣、學校、工作、年齡、距離篩選")
+    }
+
+    Container_Boundary(chatBoundary, "聊天功能（chat.html / chat.js / chat-store.js）") {
+      Component(room, "聊天室", "ChatWorkspace / ChatStore", "依 ?peer= 開啟對話、收發訊息、未讀數")
+    }
+  }
+
+  Rel(user, account, "登入、使用交友軟體")
+  Rel(account, query, "登入後進入配對")
+  Rel(task, query, "花點數解鎖動態")
+  Rel(query, rating, "對卡片加減分")
+  Rel(rating, unlock, "關係分數達 60%")
+  Rel(query, pet, "寵物模式")
+  Rel(query, senior, "長輩模式")
+  Rel(query, interest, "一般模式")
+  Rel(unlock, room, "建立對話並導向", "chat.html?peer=")
+  BiRel(aiAdvice, ai, "傳送對話／取得建議")
+
+  UpdateRelStyle(query, rating, $offsetX="-30", $offsetY="-20")
+  UpdateRelStyle(rating, unlock, $offsetX="-35", $offsetY="-20")
+  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+```
 
 ---
 
@@ -41,7 +93,7 @@
   * `ScoreRules`（`capFor` / `applyDelta` / `canDecrease`）：關係分數滿分 100%，每按一次 ±5；異性女方上限 60、男方 40，同性與寵物各 50；分數為 0 時只能加分。
   * `FirstMessagePrompt`（`canLeaveMessage` / `openMessageModal`）：第一次加分可留一句話（40 字內），之後扣回 0 也不能再留言。
   * `MatchDetector`（`relationshipScore` / `isMatched` / `openMatchModal`）：雙方加總為關係分數；雙方都加過分即判定配對成功並跳出提示。
-* **4. 同步解鎖模組 (`SyncUnlock`)**
+* **4. 用戶解鎖模組 (`UserUnlock`)**
   * `PhotoClarity` 元件（`PHOTO_CLEAR_SCORE` / `photoVeil`）：人的照片依關係分數線性變清楚，0% 時以 `--sp-3` 半徑霧化（仍可辨識輪廓），達 60% 完全清晰；寵物照片不霧化。
   * `ChatUnlocker` 元件（`CHAT_UNLOCK_SCORE` / `canOpenChat` / `chatPeerId` / `chatUrl`）：關係分數達 60% 時呼叫 `ensureChat()` → `ChatStore.ensure()` 建立對話（模擬後端開通聊天），並以 `chat.html?peer=<用戶 id>` 導向聊天室；寵物配對的聊天對象為寵物主人。
 * **5. 點數與動態模組 (`PointsWallet`，對應手繪圖「任務功能」)**
@@ -56,6 +108,8 @@
 ---
 
 ## 流程圖 (Flowchart)
+
+> 補充說明元件之間的互動順序；元件的靜態結構與關係請見上方 C4 元件圖。
 
 ```mermaid
 flowchart TD
@@ -87,7 +141,7 @@ flowchart TD
     MT -- "首次成立" --> MT1["MatchDetector<br/>跳出配對成功提示"]
   end
 
-  subgraph UNLOCK["同步解鎖模組（手繪圖：同步解鎖）"]
+  subgraph UNLOCK["用戶解鎖模組（手繪圖：用戶解鎖）"]
     T --> G{"關係分數 ≥ 60%?"}
     G -- "否" --> G1["照片維持霧化<br/>顯示『60% 照片完全清晰・開啟聊天』"]
     G -- "是" --> G2["PhotoClarity：照片完全清晰"]
@@ -113,10 +167,10 @@ flowchart TD
 
 1. 使用者開啟 `match.html`，`Session.requireUser` 檢查登入狀態；未登入則導向 `login.html?next=match.html`，登入後返回配對頁。
 2. `ModeSwitcher` 依登入者年齡決定初始模式：65 歲以上預設進入長輩模式，其餘為一般模式；使用者可切換一般、寵物、長輩（僅 65 歲以上可用）。
-3. 查詢列表依模式產生卡池：一般模式由 `InterestMatcher` 依性別、年齡、距離、學校、工作領域、興趣篩選；寵物模式由 `PetMode` 依種類、體型、個性篩選（可用 `PetManager` 管理自己的寵物）；長輩模式由 `SeniorMode` 只顯示 65 歲以上的對象。篩選條件在浮動面板按「確定」後才套用。
+3. 查詢列表依模式產生卡池：一般模式由 `InterestMatcher` 依性別、年齡、距離、學校、工作領域、興趣篩選；寵物模式（手繪圖：跨物種）由 `PetMode` 依種類、體型、個性篩選（可用 `PetManager` 管理自己的寵物）；長輩模式由 `SeniorMode` 只顯示 65 歲以上的對象。篩選條件在浮動面板按「確定」後才套用。
 4. `CandidatePool` 依距離由近到遠排序並顯示卡片；人的照片由 `PhotoClarity` 依目前關係分數霧化，分數越高越清楚。
 5. 使用者在 `RatingPanel` 按 + 或 −：每次 ±5，受 `capFor` 上限限制（異性女 60／男 40，同性與寵物各 50），分數為 0 時只能加分；第一次加分會跳出 `FirstMessagePrompt` 可留一句話。
 6. 雙方分數加總為關係分數；雙方都加過分時 `MatchDetector` 判定配對成功並提示。
-7. 【同步解鎖】關係分數達 60% 時同時發生兩件事：`PhotoClarity` 讓照片完全清晰，`ChatUnlocker` 呼叫 `ChatStore.ensure()` 建立對話並提示「可以和○○聊天了」；未達 60% 則維持霧化並提示還差多少。
+7. 【用戶解鎖】關係分數達 60% 時同時發生兩件事：`PhotoClarity` 讓照片完全清晰，`ChatUnlocker` 呼叫 `ChatStore.ensure()` 建立對話並提示「可以和○○聊天了」；未達 60% 則維持霧化並提示還差多少。
 8. 使用者點擊「和○○聊天」前往 `chat.html?peer=<用戶 id>`，`ChatWorkspace` 直接開啟對應對話，訊息經 `ChatStore.send()` 保存；聊天室內可使用 `ChatAI` 的破冰話題與回覆建議（手繪圖中「AI 建議 ↔ AI」）。寵物配對的聊天對象為寵物主人。
 9. 另外，使用者可透過 `PointsWallet` 以課金方案或任務獎勵（目前以手動加點模擬）取得點數，展開卡片後由 `MomentsUnlocker` 花 30 點永久解鎖對象的動態。
