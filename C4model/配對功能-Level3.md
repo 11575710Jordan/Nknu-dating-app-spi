@@ -1,7 +1,7 @@
 # C4 Model - Level 3：Components（元件層）
 ## 主題：配對功能（查詢列表、評分與用戶解鎖聊天室）
 
-> 本文件延伸自 `1151012.md` 系統架構文件。對應 Level 2 容器「使用者介面容器 (Web/Mobile SPA Client)」中的 `match.html`，以及「社交與通訊容器 (Chat & Messaging Service)」之「配對清單維護」職責，並與「認證與授權容器 (Auth & Security Service)」協作取得登入者。本篇依手繪 C4 圖（本資料夾 `7CFC15EB-841F-43AD-A434-5CFAD9D93047_1_105_c.jpeg`）將「配對功能」展開為 Level 3 元件，繪製 C4 元件圖，並以流程圖補充互動順序。
+> 本文件延伸自 `1151012.md` 系統架構文件。對應 Level 2 容器「使用者介面容器 (Web/Mobile SPA Client)」中的 `match.html`，以及「社交與通訊容器 (Chat & Messaging Service)」之「配對清單維護」職責，並與「認證與授權容器 (Auth & Security Service)」協作取得登入者。本篇依手繪 C4 圖將「配對功能」展開為 Level 3 元件，繪製 C4 元件圖，並以流程圖補充互動順序。
 >
 > **說明**：`1151012.md` 的頁面清單尚未列入 `match.html`，本文件將其歸屬於使用者介面容器；配對資料與聊天開通歸屬於社交與通訊容器。
 
