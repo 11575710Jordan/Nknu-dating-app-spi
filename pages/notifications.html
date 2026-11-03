@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>通知中心 - 交友 App</title>
+  
+  <!-- 引入 Google 品牌字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 引用外部主題樣式表 -->
+  <link rel="stylesheet" href="../theme_guide/theme.css">
+  <link rel="stylesheet" href="../css/notifications.css">
+</head>
+<body>
+
+  <div class="dp-card">
+    
+    <!-- 標準頁頭導覽與標題區塊 -->
+    <div class="dp-header">
+      <div class="dp-header-top">
+        <a href="user-center.html" class="dp-btn-back" title="返回個人中心">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>個人中心</span>
+        </a>
+        <button type="button" class="dp-btn-text-action" id="markAllReadBtn">全部標為已讀</button>
+      </div>
+
+      <div class="dp-badge">
+        <svg class="dp-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        訊息動態
+      </div>
+      <h1>通知中心</h1>
+      <p>即時掌握帳號驗證、配對互動與系統重要通知</p>
+    </div>
+
+    <!-- 分類 Tab 切換 -->
+    <div class="dp-tabs" id="notificationTabs">
+      <button type="button" class="dp-tab-btn active" data-tab="all">全部</button>
+      <button type="button" class="dp-tab-btn" data-tab="unread">未讀 <span class="dp-tab-badge">2</span></button>
+      <button type="button" class="dp-tab-btn" data-tab="system">系統</button>
+      <button type="button" class="dp-tab-btn" data-tab="interactive">互動</button>
+    </div>
+
+    <!-- 通知列表 -->
+    <div class="dp-notification-list" id="notificationContainer">
+      
+      <!-- 未讀通知：實名認證 -->
+      <div class="dp-notification-item unread" data-category="system">
+        <div class="dp-notif-icon icon-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="M9 12l2 2 4-4"></path>
+          </svg>
+        </div>
+        <div class="dp-notif-body">
+          <div class="dp-notif-header">
+            <span class="dp-notif-title">實名與真人認證成功</span>
+            <span class="dp-notif-time">10 分鐘前</span>
+          </div>
+          <p class="dp-notif-desc">恭喜！您的實名認證與照片審核已完成，獲得「已驗證」藍色標章。</p>
+        </div>
+        <span class="dp-notif-dot"></span>
+      </div>
+
+      <!-- 未讀通知：系統維護 -->
+      <div class="dp-notification-item unread" data-category="system">
+        <div class="dp-notif-icon icon-warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="dp-notif-body">
+          <div class="dp-notif-header">
+            <span class="dp-notif-title">伺服器例行維護通知</span>
+            <span class="dp-notif-time">2 小時前</span>
+          </div>
+          <p class="dp-notif-desc">系統預計將於今晚 02:00 ~ 04:00 進行伺服器優化維護，屆時暫時無法登入與配對。</p>
+        </div>
+        <span class="dp-notif-dot"></span>
+      </div>
+
+      <!-- 已讀通知：配對提醒 -->
+      <div class="dp-notification-item" data-category="interactive">
+        <div class="dp-notif-icon icon-heart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </div>
+        <div class="dp-notif-body">
+          <div class="dp-notif-header">
+            <span class="dp-notif-title">成功獲得新配對！</span>
+            <span class="dp-notif-time">昨天 18:30</span>
+          </div>
+          <p class="dp-notif-desc">你與「雅婷」互相對彼此送出了喜歡，快去打個招呼吧！</p>
+        </div>
+      </div>
+
+      <!-- 已讀通知：檢舉處理結果 -->
+      <div class="dp-notification-item" data-category="system">
+        <div class="dp-notif-icon icon-shield">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+        <div class="dp-notif-body">
+          <div class="dp-notif-header">
+            <span class="dp-notif-title">檢舉案件處理結果</span>
+            <span class="dp-notif-time">3 天前</span>
+          </div>
+          <p class="dp-notif-desc">您提交的案件 #RP-8842 已審核完畢，違規用戶已受到系統處分。</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 無通知時的空狀態 -->
+    <div class="dp-empty-state" id="emptyState" style="display: none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+      </svg>
+      <p>目前沒有這個分類的通知</p>
+    </div>
+
+  </div>
+
+  <script src="../js/notifications.js"></script>
+</body>
+</html>

@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const eyeIcon = document.getElementById('eyeIcon');
   const submitBtn = document.getElementById('submitBtn');
   const alertMessage = document.getElementById('alertMessage');
+  const rememberMe = document.getElementById('rememberMe');
+  // 登入後要回去的頁面（例如從聊天頁被導回來），預設為配對頁
+  const nextPage = Session.safeNext(new URLSearchParams(location.search).get('next'));
 
   // 1. 密碼顯示 / 隱藏切換
   togglePasswordBtn.addEventListener('click', () => {
@@ -38,17 +41,26 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 模擬驗證登入
+    // 模擬向後端驗證：比對 data/mock-data.js 的帳號資料
     submitBtn.disabled = true;
     submitBtn.textContent = '登入中...';
-    alertMessage.style.display = 'none';
+    alertMessage.className = 'dp-alert';
 
     setTimeout(() => {
-      // 模擬成功驗證（可直接引導至編輯資料或主頁）
-      showAlert('登入成功！正在跳轉頁面...', 'success');
-      
+      const result = Session.authenticate(MOCK_DB.users, email, password);
+      if (result.error) {
+        showAlert(result.error, 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '登入';
+        passwordInput.focus();
+        return;
+      }
+
+      Session.login(result.user.id, rememberMe.checked);
+      showAlert(`登入成功！歡迎回來，${result.user.name}，正在跳轉頁面...`, 'success');
+
       setTimeout(() => {
-        window.location.href = 'user-center.html';
+        window.location.href = nextPage;
       }, 1000);
 
     }, 1200);

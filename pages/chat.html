@@ -43,49 +43,9 @@
           <label class="chat-sr-only" for="chat-search">搜尋對話</label>
           <input class="dp-input" id="chat-search" type="search" placeholder="搜尋名字或訊息">
         </div>
-        <div class="chat-matches" aria-label="新配對">
-          <button class="chat-match" type="button" data-open="yun">
-            <span class="dp-avatar chat-tone-apricot">晴</span>
-            <span class="chat-match__name">林予晴</span>
-          </button>
-          <button class="chat-match" type="button" data-open="wei">
-            <span class="dp-avatar dp-avatar--online chat-tone-plum">維</span>
-            <span class="chat-match__name">黃維倫</span>
-          </button>
-        </div>
-        <ul class="dp-list chat-inbox__list" id="inbox-list">
-          <li>
-            <button class="dp-list-item" type="button" data-open="zhe" aria-current="true">
-              <span class="dp-avatar dp-avatar--online chat-tone-plum">哲</span>
-              <span class="dp-list-item__text">
-                <span class="dp-list-item__title">陳彥哲</span>
-                <span class="dp-list-item__sub">那家拉麵我週六也想去！</span>
-              </span>
-              <span class="chat-inbox__time">20:41</span>
-              <span class="dp-badge">2</span>
-            </button>
-          </li>
-          <li>
-            <button class="dp-list-item" type="button" data-open="qi">
-              <span class="dp-avatar chat-tone-sage">琪</span>
-              <span class="dp-list-item__text">
-                <span class="dp-list-item__title">許安琪</span>
-                <span class="dp-list-item__sub">你：好啊，那就約下午三點</span>
-              </span>
-              <span class="chat-inbox__time">昨天</span>
-            </button>
-          </li>
-          <li>
-            <button class="dp-list-item" type="button" data-open="wei">
-              <span class="dp-avatar dp-avatar--online chat-tone-apricot">維</span>
-              <span class="dp-list-item__text">
-                <span class="dp-list-item__title">黃維倫</span>
-                <span class="dp-list-item__sub">哈哈我也養了兩隻橘貓</span>
-              </span>
-              <span class="chat-inbox__time">週日</span>
-            </button>
-          </li>
-        </ul>
+        <!-- 新配對（還沒傳過訊息）與對話列表由 chat/chat.js 依登入者產生 -->
+        <div class="chat-matches" id="chat-matches" aria-label="新配對" hidden></div>
+        <ul class="dp-list chat-inbox__list" id="inbox-list"></ul>
       </section>
 
       <section class="chat-room" id="chat-room" aria-labelledby="peer-name">
@@ -93,10 +53,10 @@
           <button class="chat-room__back" id="chat-back" type="button" aria-label="回到訊息列表">
             <svg><use href="#i-back"/></svg>
           </button>
-          <span class="dp-avatar dp-avatar--sm dp-avatar--online chat-tone-plum" id="peer-avatar">哲</span>
+          <span class="dp-avatar dp-avatar--sm chat-tone-plum" id="peer-avatar"></span>
           <div class="chat-room__peer">
-            <div class="chat-room__name" id="peer-name">陳彥哲</div>
-            <span class="chat-room__status" id="peer-status">現在在線</span>
+            <div class="chat-room__name" id="peer-name">訊息</div>
+            <span class="chat-room__status" id="peer-status"></span>
           </div>
           <div class="chat-room__actions">
             <a class="dp-btn dp-btn--secondary dp-btn--sm chat-hide-mobile" href="match.html">查看檔案</a>
@@ -122,6 +82,7 @@
           </div>
         </header>
 
+        <div class="dp-alert dp-alert--warning chat-notice" id="chat-route-notice" role="status" hidden></div>
         <div class="dp-alert dp-alert--info chat-notice">先在公開場合見面。不要分享帳號密碼或轉帳。</div>
 
         <aside class="chat-ai-sheet" id="chat-ai-sheet" hidden>
@@ -164,6 +125,9 @@
 </nav>
 
 <script src="../data/mock-data.js"></script>
+<script src="../data/mock-chats.js"></script>
+<script src="../js/session.js"></script>
+<script src="../chat/chat-store.js"></script>
 <script src="../chat/chat-ai.js"></script>
 <script src="../chat/chat.js"></script>
 </body>

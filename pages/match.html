@@ -27,23 +27,25 @@
   <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></g></symbol>
   <symbol id="i-expand" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></symbol>
   <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M15.8 8.2l-2.2 5.4-5.4 2.2 2.2-5.4z"/></symbol>
+  <symbol id="i-hearts" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20s-7-4.3-8.9-8.6C1.8 8.3 3.7 5 7 5c2 0 3.4 1 5 2.8C13.6 6 15 5 17 5c3.3 0 5.2 3.3 3.9 6.4C19 15.7 12 20 12 20z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 20c1.5-4 4.5-5.5 8-5.5s6.5 1.5 8 5.5"/></symbol>
   <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></symbol>
 </svg>
 
-<div class="match-page">
-<!-- 測試用：還沒有登入頁，先用輸入框指定登入者 -->
-<header class="match-account">
-  <form class="match-account__form" id="account-form" novalidate>
-    <label class="dp-label" for="account-input">測試帳號</label>
-    <input class="dp-input" id="account-input" list="account-list" autocomplete="off" placeholder="輸入 u01～u14 或姓名" aria-describedby="account-help">
-    <datalist id="account-list"></datalist>
-    <button class="dp-btn dp-btn--secondary dp-btn--sm" type="submit">切換帳號</button>
-    <button class="dp-btn dp-btn--ghost dp-btn--sm" id="demo-reset" type="button">重設</button>
-  </form>
-  <p class="dp-help" id="account-help" role="status"></p>
-</header>
+<!-- 側邊欄與手機底部分頁列沿用聊天頁（chat.html）的導覽結構 -->
+<div class="dp-shell dp-shell--no-aside match-shell">
+  <nav class="dp-shell__nav" aria-label="主要導覽">
+    <div class="dp-logo">品牌名稱</div>
+    <a class="dp-nav-item" href="match.html"><svg><use href="#i-compass"/></svg><span>探索</span></a>
+    <a class="dp-nav-item" href="match.html" aria-current="page"><svg><use href="#i-hearts"/></svg><span>配對</span></a>
+    <a class="dp-nav-item" href="chat.html"><svg><use href="#i-chat"/></svg><span>訊息</span></a>
+    <a class="dp-nav-item" href="user-center.html"><svg><use href="#i-user"/></svg><span>我的檔案</span></a>
+  </nav>
 
-<main class="match-main">
+<main class="dp-shell__main">
+<div class="match-main">
   <h1 class="match-sr-only">配對</h1>
 
   <div class="match-toolbar">
@@ -61,13 +63,24 @@
 
   <section class="match-stage" id="match-stage"></section>
   <p class="match-sr-only" id="match-live" aria-live="polite"></p>
+</div>
 </main>
 </div>
+
+<nav class="dp-tabbar" aria-label="主要導覽">
+  <a class="dp-nav-item" href="match.html"><svg><use href="#i-compass"/></svg><span>探索</span></a>
+  <a class="dp-nav-item" href="match.html" aria-current="page"><svg><use href="#i-hearts"/></svg><span>配對</span></a>
+  <a class="dp-nav-item" href="chat.html"><svg><use href="#i-chat"/></svg><span>訊息</span></a>
+  <a class="dp-nav-item" href="user-center.html"><svg><use href="#i-user"/></svg><span>我的檔案</span></a>
+</nav>
 
 <div id="modal-root"></div>
 
 <script src="../data/mock-data.js"></script>
+<script src="../data/mock-chats.js"></script>
+<script src="../js/session.js"></script>
 <script src="../js/match-logic.js"></script>
+<script src="../chat/chat-store.js"></script>
 <script src="match.js"></script>
 </body>
 </html>

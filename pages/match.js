@@ -1,14 +1,15 @@
 /* =========================================================
    配對頁畫面邏輯
    依賴：../data/mock-data.js（MOCK_DB）、../js/match-logic.js（MatchLogic）
-   - 登入者：網址 ?user=u01 > localStorage 記住的帳號 > MOCK_DB.currentUserId
+   - 登入者：由登入頁建立的登入狀態（js/session.js）；沒有登入會導回登入頁
    - 評分、寵物異動、點數與解鎖紀錄存在 localStorage，模擬「後端已保存」
+   - 關係分數達 60% 可開啟聊天：在聊天資料（chat/chat-store.js）建立對話，再連到 chat.html?peer=<用戶 id>
    ========================================================= */
 (() => {
   'use strict';
 
   const L = MatchLogic;
-  const STORAGE_KEY = 'nknu-match-demo-v3';
+  const STORAGE_KEY = 'nknu-match-demo-v5';
   const MESSAGE_MAX = 40;
   const DISTANCE_MAX = 30;
   const PHOTO_EDGE = 800; // 上傳照片縮到長邊 800px 再存，避免塞爆 localStorage
@@ -21,8 +22,6 @@
 
   const $ = (id) => document.getElementById(id);
   const el = {
-    accountForm: $('account-form'), accountInput: $('account-input'),
-    accountList: $('account-list'), accountHelp: $('account-help'), demoReset: $('demo-reset'),
     modes: $('mode-switch'), petPicker: $('pet-picker'),
     pointsToggle: $('points-toggle'),
     filterToggle: $('filter-toggle'), filter: $('filter-panel'),
@@ -32,12 +31,11 @@
 
   /* ---------- 狀態 ---------- */
   const saved = loadSaved();
-  const urlAccount = new URLSearchParams(location.search).get('user');
-  const urlUser = urlAccount ? L.resolveAccount(MOCK_DB.users, urlAccount) : null;
-  const savedUser = saved ? L.resolveAccount(MOCK_DB.users, saved.meId) : null;
+  const loginUser = Session.requireUser(MOCK_DB.users);
+  if (!loginUser) return; // 未登入，已導向登入頁
 
   const state = {
-    meId: (urlUser || savedUser || { id: MOCK_DB.currentUserId }).id,
+    meId: loginUser.id,
     ratings: saved ? saved.ratings : structuredClone(MOCK_DB.ratings),
     petOverrides: (saved && saved.petOverrides) || {}, // { userId: 完整寵物清單 }，有改過寵物的用戶才會有
     wallets: (saved && saved.wallets) || {},           // { userId: { points, unlocked[] } }，有動過點數的用戶才會有
@@ -73,7 +71,7 @@
   function save() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        meId: state.meId, ratings: state.ratings, petOverrides: state.petOverrides, wallets: state.wallets,
+        ratings: state.ratings, petOverrides: state.petOverrides, wallets: state.wallets,
       }));
       return true;
     } catch (err) {
@@ -191,46 +189,8 @@
     return `<span class="dp-avatar match-tone-${ownerOf(kind, id).photoTone} ${extraClass}">${lastChar(displayName(kind, id))}</span>`;
   }
 
-  /* ---------- 測試帳號 ---------- */
-  function renderAccount(problem) {
-    const me = currentUser();
-    el.accountList.innerHTML = MOCK_DB.users
-      .map((u) => `<option value="${u.id}">${esc(u.name)}（${GENDER_LABEL[u.gender]}，${u.age}）</option>`)
-      .join('');
-    el.accountInput.value = '';
-    el.accountInput.placeholder = `目前：${me.id}`;
-    el.accountHelp.classList.toggle('dp-help--error', Boolean(problem));
-    el.accountHelp.textContent = problem || `目前登入：${me.name}（${me.id}，${GENDER_LABEL[me.gender]}，${me.age} 歲）`;
-  }
-
-  function accountError(input) {
-    return `找不到帳號「${input}」，請輸入 u01～u${String(MOCK_DB.users.length).padStart(2, '0')} 或完整姓名。`;
-  }
-
-  el.accountForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const input = el.accountInput.value.trim();
-    const user = L.resolveAccount(MOCK_DB.users, input);
-    if (!user) {
-      el.accountInput.setAttribute('aria-invalid', 'true');
-      el.accountHelp.classList.add('dp-help--error');
-      el.accountHelp.textContent = input ? accountError(input) : '請輸入要測試的帳號。';
-      el.accountInput.focus();
-      return;
-    }
-    state.meId = user.id;
-    save();
-    // 以新的登入者重新整理整頁，確保所有狀態都從頭載入
-    const url = new URL(location.href);
-    url.searchParams.set('user', user.id);
-    location.assign(url);
-  });
-
-  el.accountInput.addEventListener('input', () => {
-    el.accountInput.removeAttribute('aria-invalid');
-  });
-
-  el.demoReset.addEventListener('click', () => {
+  /* ---------- 示範資料重設 ---------- */
+  function resetDemoData() {
     state.ratings = structuredClone(MOCK_DB.ratings);
     state.petOverrides = {};
     state.wallets = {};
@@ -239,7 +199,7 @@
     resetForUser();
     renderAll();
     announce('示範資料已重設。');
-  });
+  }
 
   /* ---------- 工具列：模式、點數、寵物選擇 ---------- */
   function renderModes() {
@@ -582,7 +542,7 @@
     const score = pairInfo('person', me.id, u.id).total;
     const veil = L.photoVeil(score);
     const veilNote = veil > 0
-      ? `<div class="match-photo__veil-note">${icon('i-lock')}關係分數 ${L.PHOTO_CLEAR_SCORE}% 照片完全清晰（目前 ${score}%）</div>` : '';
+      ? `<div class="match-photo__veil-note">${icon('i-lock')}${L.PHOTO_CLEAR_SCORE}% 照片完全清晰・開啟聊天（目前 ${score}%）</div>` : '';
 
     return `<article class="dp-profile-card match-card" aria-label="${esc(u.name)}的個人檔案">
       <div class="dp-profile-card__photo match-gallery">
@@ -632,6 +592,16 @@
   }
 
   /* ---------- 評分欄（桌機在卡片右側，手機在卡片下方一列） ---------- */
+  /** 關係分數達 CHAT_UNLOCK_SCORE 才給聊天連結；寵物配對是和寵物主人聊天 */
+  function chatBlock(kind, theirId, score) {
+    const peerId = L.chatPeerId(kind, theirId, petsById);
+    const peerName = usersById.get(peerId).name;
+    if (L.canOpenChat(score)) {
+      return `<a class="dp-btn dp-btn--primary dp-btn--sm match-rating__chat" href="${esc(L.chatUrl(peerId))}" data-chat-peer="${peerId}">${icon('i-chat')}和${esc(peerName)}聊天</a>`;
+    }
+    return `<p class="match-rating__chat match-rating__chat--locked">${icon('i-lock')}${L.CHAT_UNLOCK_SCORE}% 開啟聊天<span class="match-hide-mobile">（目前 ${score}%）</span></p>`;
+  }
+
   function ratingBlock(kind, myId, theirId, total) {
     const info = pairInfo(kind, myId, theirId);
     const myRecord = findRating(kind, myId, theirId);
@@ -639,7 +609,8 @@
     const theirLabel = displayName(kind, theirId);
 
     let hint = '';
-    if (info.matched) hint = '已配對成功，可以開始聊天了。';
+    if (L.canOpenChat(info.total)) hint = `關係分數已達 ${L.CHAT_UNLOCK_SCORE}%，可以開始聊天了。`;
+    else if (info.matched) hint = `已配對成功，關係分數到 ${L.CHAT_UNLOCK_SCORE}% 就能開啟聊天。`;
     else if (info.mine === 0) hint = L.canLeaveMessage(myRecord) ? '按 + 加分，第一次加分可以留一句話。' : '按 + 給對方加分。';
     else hint = `等${esc(theirLabel)}也加分就會配對成功。`;
 
@@ -666,6 +637,7 @@
         <button class="dp-action dp-action--like match-rating__plus" type="button" data-action="plus" aria-label="加 ${L.STEP} 分"${L.canIncrease(info.mine, info.myCap) ? '' : ' disabled'}>${icon('i-plus')}</button>
       </div>
       <p class="match-rating__hint">${hint}</p>
+      ${chatBlock(kind, theirId, info.total)}
       ${sent}
       <div class="match-pager">
         <button class="dp-btn dp-btn--ghost dp-btn--sm match-pager__prev" type="button" data-action="prev" aria-label="上一位">${icon('i-chevron-left')}</button>
@@ -791,7 +763,34 @@
         <p class="dp-sm">目前關係分數 <strong>${info.total}%</strong>，繼續加分讓關係升溫。</p>
         ${quote}
         <div class="match-modal__actions">
-          <a class="dp-btn dp-btn--primary" href="#">傳送第一則訊息</a>
+          ${chatAction(kind, theirId, info.total, '傳送第一則訊息')}
+          <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-close>繼續配對</button>
+        </div>
+      </div>`, (dialog) => dialog.querySelector('.dp-btn--primary, [data-close]').focus());
+  }
+
+  /** 彈窗內的聊天動作：達門檻給連結，未達門檻說明還差多少 */
+  function chatAction(kind, theirId, score, label) {
+    if (!L.canOpenChat(score)) {
+      return `<p class="dp-sm dp-muted">關係分數到 ${L.CHAT_UNLOCK_SCORE}% 就能開啟聊天（目前 ${score}%）。</p>`;
+    }
+    const peerId = L.chatPeerId(kind, theirId, petsById);
+    return `<a class="dp-btn dp-btn--primary" href="${esc(L.chatUrl(peerId))}" data-chat-peer="${peerId}">${label}</a>`;
+  }
+
+  /** 關係分數第一次跨過聊天門檻時提示 */
+  function openChatUnlockedModal(kind, myId, theirId) {
+    const info = pairInfo(kind, myId, theirId);
+    const peerName = usersById.get(L.chatPeerId(kind, theirId, petsById)).name;
+    const detail = kind === 'pet'
+      ? `${esc(displayName(kind, myId))}和${esc(displayName(kind, theirId))}的關係分數達到 ${info.total}%，可以和主人${esc(peerName)}聊聊了。`
+      : `你們的關係分數達到 ${info.total}%，照片已完全清晰，也可以開始聊天了。`;
+    openModal(`<div class="dp-modal" role="dialog" aria-modal="true" aria-labelledby="chat-unlocked-title">
+        <div class="match-modal__pair">${avatar(kind, myId, 'dp-avatar--lg')}${avatar(kind, theirId, 'dp-avatar--lg')}</div>
+        <h2 class="dp-h2" id="chat-unlocked-title">可以和${esc(peerName)}聊天了</h2>
+        <p class="dp-sm">${detail}</p>
+        <div class="match-modal__actions">
+          ${chatAction(kind, theirId, info.total, '開啟聊天')}
           <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-close>繼續配對</button>
         </div>
       </div>`, (dialog) => dialog.querySelector('.dp-btn--primary').focus());
@@ -828,6 +827,12 @@
           </div>
           <p class="dp-help dp-help--error" id="points-amount-error" hidden></p>
         </form>
+
+        <section class="match-points__section">
+          <h3 class="dp-h3">示範用：重設資料</h3>
+          <p class="dp-xs dp-muted">清除這個瀏覽器中的評分、寵物異動與點數，回到模擬資料的初始狀態。</p>
+          <button class="dp-btn dp-btn--ghost dp-btn--sm match-points__reset" type="button" data-reset-demo>重設示範資料</button>
+        </section>
 
         <div class="match-modal__actions">
           <button class="dp-btn dp-btn--ghost dp-btn--sm" type="button" data-close>關閉</button>
@@ -886,6 +891,11 @@
         amountInput.removeAttribute('aria-invalid');
         amountInput.value = '';
         credit(value, '手動增加');
+      });
+
+      dialog.querySelector('[data-reset-demo]').addEventListener('click', () => {
+        closeModal();
+        resetDemoData();
       });
 
       dialog.querySelector('[data-buy]').focus();
@@ -1202,6 +1212,9 @@
     const after = pairInfo(kind, myId, theirId);
     announce(`${delta > 0 ? '加' : '扣'} ${L.STEP} 分，關係分數 ${after.total}%。`);
     if (!before.matched && after.matched) openMatchModal(kind, myId, theirId);
+    else if (!L.canOpenChat(before.total) && L.canOpenChat(after.total)) openChatUnlockedModal(kind, myId, theirId);
+    // 分數達門檻就開通聊天（模擬後端建立對話），之後從訊息頁也看得到
+    if (L.canOpenChat(after.total)) ensureChat(L.chatPeerId(kind, theirId, petsById));
   }
 
   function handlePlus() {
@@ -1300,6 +1313,21 @@
     renderAll();
   });
 
+  /* ---------- 開通聊天 ---------- */
+  /** 在聊天資料建立和對方的對話（已存在就不動）；配對頁與訊息頁共用 ChatStore */
+  function ensureChat(peerId) {
+    const result = ChatStore.ensure(ChatStore.load(MOCK_CHATS), state.meId, peerId, new Date());
+    if (result.created && !ChatStore.save(result.conversations)) {
+      console.warn(`[match] 無法建立和 ${peerId} 的對話，訊息頁會看不到這段對話`);
+    }
+  }
+
+  // 點「和○○聊天」：先確保對話存在再前往訊息頁（例如分數是在別的分頁達標的）
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('[data-chat-peer]');
+    if (link) ensureChat(link.dataset.chatPeer);
+  });
+
   /* ---------- 初始化 ---------- */
   function renderAll() {
     renderModes();
@@ -1310,6 +1338,5 @@
   }
 
   resetForUser();
-  renderAccount(urlAccount && !urlUser ? accountError(urlAccount) : '');
   renderAll();
 })();

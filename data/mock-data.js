@@ -3,6 +3,7 @@
    - 以 <script> 載入，直接雙擊 HTML 就能用（避開 file:// 的 fetch 限制）
    - 內容維持 JSON 格式，之後要換成真的 API 只要把這個物件改成 fetch 回來的結果
    欄位說明：
+     users[].email          登入帳號 u01@nknu-demo.app 格式；password 皆為 demo1234（僅供 demo）
      users[].gender         'female' | 'male'
      users[].lat / lng      位置（高雄市），用來算距離
      users[].photos[]       多張照片 { src, caption }；src 為 null 時顯示佔位圖與說明
@@ -19,6 +20,8 @@ const MOCK_DB = {
     {
       "id": "u01",
       "name": "陳彥廷",
+      "email": "u01@nknu-demo.app",
+      "password": "demo1234",
       "gender": "male",
       "age": 28,
       "height": 176,
@@ -45,6 +48,10 @@ const MOCK_DB = {
         {
           "q": "理想的週末是",
           "a": "早上爬柴山，下午找間咖啡店把沒看完的書看完。"
+        },
+        {
+          "q": "我最近迷上",
+          "a": "研究不同產地的咖啡豆，最喜歡衣索比亞的花香。"
         }
       ],
       "photoTone": 0,
@@ -111,6 +118,8 @@ const MOCK_DB = {
     {
       "id": "u02",
       "name": "林予晴",
+      "email": "u02@nknu-demo.app",
+      "password": "demo1234",
       "gender": "female",
       "age": 27,
       "height": 162,
@@ -137,6 +146,10 @@ const MOCK_DB = {
         {
           "q": "我最近迷上",
           "a": "用底片機拍早餐店，老闆都以為我是記者。"
+        },
+        {
+          "q": "理想的週末是",
+          "a": "早上去柴山走一圈，下午找一間有窗的咖啡店看書。"
         }
       ],
       "photoTone": 1,
@@ -206,6 +219,8 @@ const MOCK_DB = {
     {
       "id": "u03",
       "name": "許安琪",
+      "email": "u03@nknu-demo.app",
+      "password": "demo1234",
       "gender": "female",
       "age": 25,
       "height": 158,
@@ -232,6 +247,10 @@ const MOCK_DB = {
         {
           "q": "和我約會一定要",
           "a": "陪我去一次誠品，然後聽我介紹三本書。"
+        },
+        {
+          "q": "最近在讀",
+          "a": "《小王子》重讀第五次，每次都看到不一樣的東西。"
         }
       ],
       "photoTone": 2,
@@ -261,6 +280,8 @@ const MOCK_DB = {
     {
       "id": "u04",
       "name": "黃維倫",
+      "email": "u04@nknu-demo.app",
+      "password": "demo1234",
       "gender": "male",
       "age": 31,
       "height": 180,
@@ -287,6 +308,10 @@ const MOCK_DB = {
         {
           "q": "我的拿手菜",
           "a": "番茄燉牛肉，燉四小時那種。"
+        },
+        {
+          "q": "上完大夜班後",
+          "a": "一定要吃一碗熱湯麵，再抱著橘子睡到中午。"
         }
       ],
       "photoTone": 3,
@@ -383,6 +408,8 @@ const MOCK_DB = {
     {
       "id": "u05",
       "name": "張芸瑄",
+      "email": "u05@nknu-demo.app",
+      "password": "demo1234",
       "gender": "female",
       "age": 29,
       "height": 165,
@@ -409,6 +436,10 @@ const MOCK_DB = {
         {
           "q": "今年一定要做的事",
           "a": "去墾丁衝浪一次站起來超過五秒。"
+        },
+        {
+          "q": "最想一起去的地方",
+          "a": "墾丁南灣看日出，然後在海邊吃早餐。"
         }
       ],
       "photoTone": 1,
@@ -475,6 +506,8 @@ const MOCK_DB = {
     {
       "id": "u06",
       "name": "王宥翔",
+      "email": "u06@nknu-demo.app",
+      "password": "demo1234",
       "gender": "male",
       "age": 26,
       "height": 172,
@@ -501,6 +534,10 @@ const MOCK_DB = {
         {
           "q": "別人對我的第一印象",
           "a": "很安靜，熟了之後會一直講桌遊規則。"
+        },
+        {
+          "q": "最近在玩的桌遊",
+          "a": "卡坦島和璀璨寶石，輸了會一直想再來一局。"
         }
       ],
       "photoTone": 0,
@@ -526,6 +563,8 @@ const MOCK_DB = {
     {
       "id": "u07",
       "name": "李心妤",
+      "email": "u07@nknu-demo.app",
+      "password": "demo1234",
       "gender": "female",
       "age": 32,
       "height": 168,
@@ -552,6 +591,10 @@ const MOCK_DB = {
         {
           "q": "我在找的人",
           "a": "願意一起逛傳統市場、回家一起煮飯的人。"
+        },
+        {
+          "q": "我的週日儀式",
+          "a": "早上瑜珈、中午煮一鍋湯、晚上帶奶茶去河堤散步。"
         }
       ],
       "photoTone": 2,
@@ -617,6 +660,8 @@ const MOCK_DB = {
     {
       "id": "u08",
       "name": "吳承恩",
+      "email": "u08@nknu-demo.app",
+      "password": "demo1234",
       "gender": "male",
       "age": 34,
       "height": 178,
@@ -643,6 +688,10 @@ const MOCK_DB = {
         {
           "q": "最近一次冒險",
           "a": "帶黑糖去南橫露營，結果牠比我還早睡。"
+        },
+        {
+          "q": "我的拿手菜",
+          "a": "露營時用荷蘭鍋燉的番茄牛肉，連黑糖都想偷吃。"
         }
       ],
       "photoTone": 3,
@@ -709,6 +758,8 @@ const MOCK_DB = {
     {
       "id": "u09",
       "name": "周品妤",
+      "email": "u09@nknu-demo.app",
+      "password": "demo1234",
       "gender": "female",
       "age": 23,
       "height": 160,
@@ -735,6 +786,10 @@ const MOCK_DB = {
         {
           "q": "我的冷知識",
           "a": "兔子開心的時候會在空中扭一下，叫做 binky。"
+        },
+        {
+          "q": "最近在做的手作",
+          "a": "用黏土捏 QQ 的公仔，已經捏壞三隻了。"
         }
       ],
       "photoTone": 1,
@@ -800,6 +855,8 @@ const MOCK_DB = {
     {
       "id": "u10",
       "name": "蔡欣怡",
+      "email": "u10@nknu-demo.app",
+      "password": "demo1234",
       "gender": "female",
       "age": 30,
       "height": 163,
@@ -826,6 +883,10 @@ const MOCK_DB = {
         {
           "q": "一起去哪裡約會",
           "a": "駁二看展，然後在旁邊的倉庫咖啡坐到天黑。"
+        },
+        {
+          "q": "我最近迷上",
+          "a": "畫高雄老街的轉角，特別是傍晚的光。"
         }
       ],
       "photoTone": 2,
@@ -891,6 +952,8 @@ const MOCK_DB = {
     {
       "id": "u11",
       "name": "林秀蘭",
+      "email": "u11@nknu-demo.app",
+      "password": "demo1234",
       "gender": "female",
       "age": 68,
       "height": 155,
@@ -917,6 +980,10 @@ const MOCK_DB = {
         {
           "q": "我每天早上",
           "a": "六點去衛武營打太極拳，打完喝一碗豆漿。"
+        },
+        {
+          "q": "我的拿手菜",
+          "a": "鳳梨苦瓜雞湯，孫子每次回來都指定要喝。"
         }
       ],
       "photoTone": 0,
@@ -982,6 +1049,8 @@ const MOCK_DB = {
     {
       "id": "u12",
       "name": "陳文雄",
+      "email": "u12@nknu-demo.app",
+      "password": "demo1234",
       "gender": "male",
       "age": 70,
       "height": 168,
@@ -1008,6 +1077,10 @@ const MOCK_DB = {
         {
           "q": "我想找的人",
           "a": "願意一起去澄清湖散步、聊聊天的朋友。"
+        },
+        {
+          "q": "年輕時的夢想",
+          "a": "想當書法老師，退休後終於在社區大學開課了。"
         }
       ],
       "photoTone": 3,
@@ -1037,6 +1110,8 @@ const MOCK_DB = {
     {
       "id": "u13",
       "name": "王美惠",
+      "email": "u13@nknu-demo.app",
+      "password": "demo1234",
       "gender": "female",
       "age": 66,
       "height": 157,
@@ -1063,6 +1138,10 @@ const MOCK_DB = {
         {
           "q": "我的拿手菜",
           "a": "蘿蔔糕，街坊鄰居過年都跟我訂。"
+        },
+        {
+          "q": "理想的約會",
+          "a": "一起去市場買菜，回家煮一桌菜配老歌。"
         }
       ],
       "photoTone": 1,
@@ -1128,6 +1207,8 @@ const MOCK_DB = {
     {
       "id": "u14",
       "name": "李國榮",
+      "email": "u14@nknu-demo.app",
+      "password": "demo1234",
       "gender": "male",
       "age": 72,
       "height": 170,
@@ -1154,6 +1235,10 @@ const MOCK_DB = {
         {
           "q": "我最驕傲的事",
           "a": "跑船三十年，去過四十幾個國家，每個港口都有故事。"
+        },
+        {
+          "q": "想帶你去的地方",
+          "a": "旗津的燈塔，那裡看夕陽是全高雄最美的。"
         }
       ],
       "photoTone": 2,
@@ -1223,7 +1308,7 @@ const MOCK_DB = {
       "kind": "person",
       "from": "u02",
       "to": "u01",
-      "points": 15,
+      "points": 20,
       "messageUsed": true,
       "message": "你照片裡那條步道是哪裡？看起來好美"
     },
@@ -1247,7 +1332,7 @@ const MOCK_DB = {
       "kind": "person",
       "from": "u07",
       "to": "u04",
-      "points": 20,
+      "points": 30,
       "messageUsed": true,
       "message": "橘子跟橘寶是兄弟嗎？好可愛"
     },
@@ -1255,7 +1340,7 @@ const MOCK_DB = {
       "kind": "person",
       "from": "u03",
       "to": "u06",
-      "points": 5,
+      "points": 30,
       "messageUsed": true,
       "message": "我也超愛玩桌遊！"
     },
@@ -1263,7 +1348,7 @@ const MOCK_DB = {
       "kind": "person",
       "from": "u10",
       "to": "u02",
-      "points": 20,
+      "points": 30,
       "messageUsed": true,
       "message": "我們好像常去同一間咖啡店"
     },
@@ -1279,7 +1364,7 @@ const MOCK_DB = {
       "kind": "person",
       "from": "u13",
       "to": "u12",
-      "points": 10,
+      "points": 25,
       "messageUsed": true,
       "message": "你平常都泡什麼茶呀？"
     },
@@ -1287,7 +1372,7 @@ const MOCK_DB = {
       "kind": "person",
       "from": "u14",
       "to": "u11",
-      "points": 10,
+      "points": 25,
       "messageUsed": true,
       "message": "看您喜歡合唱，我年輕時也在船上唱歌"
     },
@@ -1314,6 +1399,166 @@ const MOCK_DB = {
       "points": 10,
       "messageUsed": true,
       "message": "小白想認識旺財，一起曬太陽"
+    },
+    {
+      "kind": "person",
+      "from": "u01",
+      "to": "u08",
+      "points": 30,
+      "messageUsed": true,
+      "message": "週末一起去柴山嗎？"
+    },
+    {
+      "kind": "person",
+      "from": "u08",
+      "to": "u01",
+      "points": 30,
+      "messageUsed": true,
+      "message": "看到你也常去柴山，下次一起！"
+    },
+    {
+      "kind": "person",
+      "from": "u01",
+      "to": "u03",
+      "points": 40,
+      "messageUsed": true,
+      "message": "你推薦的書我也想看"
+    },
+    {
+      "kind": "person",
+      "from": "u03",
+      "to": "u01",
+      "points": 25,
+      "messageUsed": true,
+      "message": "你常去的咖啡店我也去過"
+    },
+    {
+      "kind": "person",
+      "from": "u01",
+      "to": "u04",
+      "points": 30,
+      "messageUsed": true,
+      "message": "橘子跟橘寶好可愛"
+    },
+    {
+      "kind": "person",
+      "from": "u04",
+      "to": "u01",
+      "points": 30,
+      "messageUsed": true,
+      "message": "你和豆花的合照好可愛"
+    },
+    {
+      "kind": "person",
+      "from": "u02",
+      "to": "u10",
+      "points": 30,
+      "messageUsed": true,
+      "message": "你畫的老街轉角我都有去過！"
+    },
+    {
+      "kind": "person",
+      "from": "u06",
+      "to": "u03",
+      "points": 35,
+      "messageUsed": true,
+      "message": "你推薦的電影我上週去看了"
+    },
+    {
+      "kind": "person",
+      "from": "u04",
+      "to": "u07",
+      "points": 35,
+      "messageUsed": true,
+      "message": "週日也想去河堤散步"
+    },
+    {
+      "kind": "person",
+      "from": "u05",
+      "to": "u08",
+      "points": 30,
+      "messageUsed": true,
+      "message": "你的荷蘭鍋牛肉看起來好好吃"
+    },
+    {
+      "kind": "person",
+      "from": "u08",
+      "to": "u05",
+      "points": 35,
+      "messageUsed": true,
+      "message": "我也想學衝浪，可以教我嗎？"
+    },
+    {
+      "kind": "person",
+      "from": "u11",
+      "to": "u14",
+      "points": 40,
+      "messageUsed": true,
+      "message": "旗津的燈塔我好久沒去了"
+    },
+    {
+      "kind": "person",
+      "from": "u12",
+      "to": "u13",
+      "points": 35,
+      "messageUsed": true,
+      "message": "你的蘿蔔糕我想訂一份"
+    },
+    {
+      "kind": "person",
+      "from": "u06",
+      "to": "u09",
+      "points": 15,
+      "messageUsed": true,
+      "message": "你也喜歡桌遊！下次一起去桌遊店？"
+    },
+    {
+      "kind": "person",
+      "from": "u08",
+      "to": "u07",
+      "points": 20,
+      "messageUsed": true,
+      "message": "看到你也喜歡料理，有推薦的市場嗎？"
+    },
+    {
+      "kind": "person",
+      "from": "u04",
+      "to": "u05",
+      "points": 15,
+      "messageUsed": true,
+      "message": "衝浪聽起來好酷，初學者會很難嗎？"
+    },
+    {
+      "kind": "person",
+      "from": "u14",
+      "to": "u13",
+      "points": 15,
+      "messageUsed": true,
+      "message": "早餐店的阿福好可愛"
+    },
+    {
+      "kind": "pet",
+      "from": "p07",
+      "to": "p05",
+      "points": 15,
+      "messageUsed": true,
+      "message": "黑糖想和可可去西子灣玩水"
+    },
+    {
+      "kind": "pet",
+      "from": "p11",
+      "to": "p10",
+      "points": 10,
+      "messageUsed": true,
+      "message": "阿福想認識小白，一起曬太陽"
+    },
+    {
+      "kind": "pet",
+      "from": "p03",
+      "to": "p09",
+      "points": 10,
+      "messageUsed": true,
+      "message": ""
     }
   ]
 };
