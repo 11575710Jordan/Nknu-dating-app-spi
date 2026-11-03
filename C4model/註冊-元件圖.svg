@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 470" width="720" height="470" font-family="Microsoft JhengHei, sans-serif" font-size="15">
+  <rect width="720" height="470" fill="#fff"/>
+  <defs>
+    <g id="icon">
+      <rect x="0" y="0" width="16" height="20" fill="#fff" stroke="#333"/>
+      <rect x="-4" y="4" width="8" height="4" fill="#fff" stroke="#333"/>
+      <rect x="-4" y="12" width="8" height="4" fill="#fff" stroke="#333"/>
+    </g>
+  </defs>
+
+  <!-- 元件 -->
+  <rect x="30" y="50" width="190" height="80" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <use href="#icon" x="192" y="58"/>
+  <text x="125" y="78" text-anchor="middle" font-size="13">«component»</text>
+  <text x="125" y="100" text-anchor="middle" font-weight="bold">RegisterPage</text>
+  <text x="125" y="120" text-anchor="middle" font-size="13">register.js</text>
+
+  <rect x="360" y="50" width="200" height="80" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <use href="#icon" x="532" y="58"/>
+  <text x="460" y="78" text-anchor="middle" font-size="13">«component»</text>
+  <text x="460" y="100" text-anchor="middle" font-weight="bold">RegisterLogic</text>
+  <text x="460" y="120" text-anchor="middle" font-size="13">register-logic.js</text>
+
+  <rect x="30" y="260" width="190" height="80" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <use href="#icon" x="192" y="268"/>
+  <text x="125" y="288" text-anchor="middle" font-size="13">«component»</text>
+  <text x="125" y="310" text-anchor="middle" font-weight="bold">MockData</text>
+  <text x="125" y="330" text-anchor="middle" font-size="13">mock-data.js</text>
+
+  <rect x="360" y="260" width="200" height="80" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <use href="#icon" x="532" y="268"/>
+  <text x="460" y="288" text-anchor="middle" font-size="13">«component»</text>
+  <text x="460" y="310" text-anchor="middle" font-weight="bold">LocalStorage</text>
+  <text x="460" y="330" text-anchor="middle" font-size="13">瀏覽器 Web Storage</text>
+
+  <!-- IRegister：RegisterLogic 提供，RegisterPage 需要 -->
+  <line x1="360" y1="90" x2="300" y2="90" stroke="#333" stroke-width="1.5"/>
+  <circle cx="290" cy="90" r="10" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <line x1="220" y1="90" x2="274" y2="90" stroke="#333" stroke-width="1.5"/>
+  <path d="M 290 74 A 16 16 0 0 0 290 106" fill="none" stroke="#333" stroke-width="1.5"/>
+  <text x="290" y="62" text-anchor="middle">IRegister</text>
+  <text x="290" y="130" text-anchor="middle" font-size="12" fill="#555">validate()</text>
+  <text x="290" y="146" text-anchor="middle" font-size="12" fill="#555">create()</text>
+
+  <!-- IUserList：MockData 提供，RegisterPage 需要 -->
+  <line x1="125" y1="260" x2="125" y2="216" stroke="#333" stroke-width="1.5"/>
+  <circle cx="125" cy="206" r="10" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <line x1="125" y1="130" x2="125" y2="190" stroke="#333" stroke-width="1.5"/>
+  <path d="M 109 206 A 16 16 0 0 1 141 206" fill="none" stroke="#333" stroke-width="1.5"/>
+  <text x="151" y="202">IUserList</text>
+  <text x="151" y="220" font-size="12" fill="#555">MOCK_DB.users</text>
+
+  <!-- IStorage：LocalStorage 提供，RegisterLogic 需要 -->
+  <line x1="460" y1="260" x2="460" y2="216" stroke="#333" stroke-width="1.5"/>
+  <circle cx="460" cy="206" r="10" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <line x1="460" y1="130" x2="460" y2="190" stroke="#333" stroke-width="1.5"/>
+  <path d="M 444 206 A 16 16 0 0 1 476 206" fill="none" stroke="#333" stroke-width="1.5"/>
+  <text x="486" y="202">IStorage</text>
+  <text x="486" y="220" font-size="12" fill="#555">getItem() / setItem()</text>
+
+  <!-- 圖例（同講義第 44 頁） -->
+  <line x1="30" y1="385" x2="690" y2="385" stroke="#ddd"/>
+  <rect x="30" y="410" width="34" height="22" fill="#fff" stroke="#333"/>
+  <text x="72" y="427" font-size="13">Component</text>
+  <line x1="190" y1="421" x2="212" y2="421" stroke="#333"/>
+  <circle cx="220" cy="421" r="8" fill="#fff" stroke="#333"/>
+  <text x="236" y="427" font-size="13">Provided Interface（提供）</text>
+  <line x1="440" y1="421" x2="460" y2="421" stroke="#333"/>
+  <path d="M 472 409 A 12 12 0 0 0 472 433" fill="none" stroke="#333"/>
+  <text x="484" y="427" font-size="13">Required Interface（需要）</text>
+</svg>

@@ -1,0 +1,8 @@
+/* 註冊頁：版面沿用 login.css，這裡只補差異 */
+.dp-help--error:empty {
+  display: none;
+}
+
+.register-footer {
+  margin-top: var(--sp-6);
+}
