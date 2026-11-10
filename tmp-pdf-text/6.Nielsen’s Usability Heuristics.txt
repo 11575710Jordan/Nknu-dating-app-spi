@@ -1,0 +1,485 @@
+--- PAGE 1 ---\nNielsen’s Usability Heuristics
+尼爾森可用性啟發式指引
+李文廷
+高雄師範大學軟體工程與管理學系
+1\n\n--- PAGE 2 ---\nReference
+Nielsen’s Usability Heuristics
+10 Usability Heuristics for User Interface Design
+Case study: Implementation of Nielsen’s 10 usability 
+heuristics in Markazpillar project | by Hanifah Annisa 
+Putri | Bootcamp
+10 Usability Heuristics with Examples | by 
+SaiChandan Duggirala | Prototypr
+2022 ui/ux design trends. Design inspirations for 
+your next… | by Manan Gupta | Bootcamp
+10 Usability Heuristics: Exemplified | by Esther 
+Pomerantz | The Startup | Medium
+ Jakob Nielsen
+2\n\n--- PAGE 3 ---\nNielsen’s Usability Heuristics
+NS01 清楚的系統狀態
+NS02 與真實世界的對應
+NS03 使用者擁有控制權
+NS04 一致的風格
+NS05 錯誤預防
+NS06 易於識別
+NS07 有彈性及有效率的使用
+NS08 優雅簡潔的設計
+NS09 清楚的錯誤處理
+NS10 適當的說明
+3\n\n--- PAGE 4 ---\nVisibility Mapping Freedom Consistency Error Prevention
+Recognition Flexibility Minimalism Error recovery Help
+4\n\n--- PAGE 5 ---\nNS01 Visibility of System Status/清楚的系統狀態
+“The system should always keep users 
+informed about what is going on, through 
+appropriate feedback within a reasonable 
+time.”
+● Highlighting important 
+information/elements and 
+understanding user context to help to 
+establish visibility. 
+● Providing feedback for action in a 
+reasonable amount of time is important 
+to retain and engage the user.
+系統應該在 合理的時間內 做出適當的反
+饋，始終讓用戶了解目前狀態或正在發生
+的事情。
+● 在合理的時間內為行動提供反饋對於
+留住和吸引用戶很重要。
+● 凸顯重要資訊/元素並了解用戶上下文
+以幫助建立可見性。
+提供進度條
+對使用者的任何動作提供反饋
+5\n\n--- PAGE 6 ---\n清楚說明每個
+檔案上傳的狀態
+Upload 100 files
+image1.png
+image2.png
+image3.png
+Upload 100 files
+系統是不是掛了？
+6\n\n--- PAGE 7 ---\n讓使用者清
+楚知道有訊息未讀
+立即的提示
+email 輸入錯誤
+ 目前在步驟 2
+1 2 3 4john#gml.com
+invalid email
+Email
+10
+7\n\n--- PAGE 8 ---\nhttps://www.nngroup.com/articles/visibility-system-status/
+不同大小的
+產品目前存貨的狀
+況，清楚的使用者
+知道
+8\n\n--- PAGE 9 ---\nNS02 Match Between System and The Real World/
+與真實世界的對應
+“The system should speak the users’
+language, with words, phrases, and 
+concepts familiar to the user, rather than 
+system-oriented terms. 
+Follow real-world conventions, making 
+information appear in a natural and logical 
+order.”
+“系統應該說 用戶的語言，使用用戶熟悉的
+單詞、短語和概念，而不是偏向系統的術
+語。
+遵循現實大眾的慣例，使訊息以自然和合
+乎邏輯的順序出現。”
+每天食用止痛藥不要超過...
+每天食用乙醯胺酚不要超過...
+9\n\n--- PAGE 10 ---\n瓦斯爐和它的控制器，哪一種設計容易
+操作？
+10\n\n--- PAGE 11 ---\n摩托車的方向燈鍵與汽車排檔
+許多人誤把前進檔當成
+駐車檔 – 或許是 UX 的問題
+左右的按鍵
+很容易對應到左
+右轉
+上下的按
+鍵很難對應到左
+右轉
+11\n\n--- PAGE 12 ---\nhttps://blog.prototypr.io/10-usability-heuristics-with-examples-4a81ada920c
+不是用 Sign Up 來提示大家註冊 – 而是用比較口語
+的方式 – “是的，我想 Neil 來教我成長業績”
+12\n\n--- PAGE 13 ---\nwhile True:
+go = input ('Press G/g to continue input; X/x to stop ')
+if (go == 'X' or go == 'x'):
+break
+elif (go not in ['G', 'g']):
+continue
+n = str(input('Please input the name '))
+while True:
+try:
+w = float(input('Please input the weight (kg) '))
+except ValueError:
+print ('Input should be a value, please re-input ')
+continue
+if (w>500 or w<10):
+print ('Weight should be in the range (10, 500), 
+please re-input ')
+continue
+break
+避免適用電腦用語，或是工程師慣
+用的邏輯方式與使用者對談。使用
+可讀性較高的方式來停止繼續輸入。
+print ("Please input weight and height, 
+press -9 to stop")
+Version 7
+Version 8
+13\n\n--- PAGE 14 ---\nNS03 User Control and Freedom/使用者擁有控制權
+“Users often choose system functions by 
+mistake and will need a clearly marked 
+“emergency exit” to leave the unwanted 
+state without having to go through an 
+extended dialogue. 
+Support undo and redo.”
+用戶經常會錯誤地選擇系統功能，並且需要一
+個明確標記的 “緊急出口” 來離開不需要的狀
+態，而無需進行擴展對話。
+提供 取消 和 重做 的功能
+總是提供 [Back] [Cancel] [Close] [Undo] 
+14\n\n--- PAGE 15 ---\n常用的控制鍵
+[Back]: 近來後發現這不是我要的，我要回上一
+頁重新探索
+[Cancel]: 誤按了某個動作，我要取消
+[Close]: 惱人的廣告頁，讓我關了它; 這個功能
+已經掛了，讓我關了它
+[Undo]: 喔喔，做錯了，幫我回復到上一個狀態
+[Reset]: 小心謹慎的使用 Reset 鍵，會把打好的
+資料清除。
+15\n\n--- PAGE 16 ---\nhttps://blog.prototypr.io/10-usability-heuristics-with-examples-4a81ada920c
+當你把信件丟到垃圾桶，系統提供你 反悔 的
+機會。甚至於是寄信的當下，也可以 Undo。
+放棄留言時，系統提
+供你 取消 的機會
+16\n\n--- PAGE 17 ---\n即便打錯了，也有修改的機會
+17\n\n--- PAGE 18 ---\nNS04 Consistency and Standards/一致的風格
+“Users should not have to wonder 
+whether different words, situations, or 
+actions mean the same thing. 
+Follow platform conventions.”
+用戶不必懷疑不同的詞語、情況或行為是
+否意味著同一件事。
+遵循平台慣例。
+首頁上方提供登入功能 (外部一致性)
+統一的排版配色 (內部一致性)
+18\n\n--- PAGE 19 ---\nTips
+藉由保持內部與外部的一致性，改善學習曲線
+● 內部一致性：保持單一產品或是產品群的一致性
+○ 蘋果 App 設計風格
+● 外部一致性：遵循已建立的產業慣例
+○ 大家都用 Ctrl-C 做複製的動作
+19\n\n--- PAGE 20 ---\nhttps://www.nngroup.com/articles/consistency-and-standards/
+外部一致性：不同的商業網站，都提供
+了 搜尋、登入、購物車等功能
+20\n\n--- PAGE 21 ---\n提交
+ Submit
+確認
+OK
+是一樣的嗎？
+提交
+Done
+Download Download
+他們是一樣的吧，為什麼不能
+一致？
+21\n\n--- PAGE 22 ---\n你確認要放棄這個編輯嗎？
+確認
+取消
+這個檔案有 100 MB
+你確認要上傳嗎？
+確認
+ 取消
+「確認」鍵忽左
+忽右
+Spatial memory: 人類有空間記憶性，任意的變換位置會造成困擾; 顏色也是
+這個檔案有 100 MB
+你確認要上傳嗎？
+確認
+取消
+你確認要放棄這個編輯嗎？
+確認
+取消
+「確認」鍵顏色
+變來變去
+22\n\n--- PAGE 23 ---\n藉由簡化程式碼，讓
+輸出的提示字只出現
+在一個地方，避免造
+成不一致
+while True:
+n = str(input('Please input the name '))
+if (n == '-9'):
+break
+w = float(input('Please input the weight (kg) '))
+if (w == -9):
+break
+h = float(input('Please input the height (m) '))
+if (h == -9):
+break
+bmi = round(w/(h**2), 1)
+bmi_set[n] = bmi
+print ('------')
+for k,v in bmi_set.items():
+print ('The BMI of {} is {}'.format(k, v))
+23\n\n--- PAGE 24 ---\nNS05 Error Prevention/錯誤預防
+“Even better than good error messages is 
+a careful design which prevents a 
+problem from occurring in the first place. 
+Either eliminate error-prone conditions or 
+check for them and present users with a 
+confirmation option before they commit 
+to the action.”
+消除容易出錯的條件，或檢查它們，並在用戶
+採取行動之前向他們提供 提醒確認 選項。
+比 ”好的錯誤消息” 更好的是 精心設計，它可
+以從一開始就防止問題發生。
+對於危險動作，總是再確認一次
+預測並避免錯誤的發生
+“限制” 是預防錯誤的好策略之一
+24\n\n--- PAGE 25 ---\n你確認要刪除這檔案
+嗎？可能會造成系統的毀損
+確認
+取消
+您似乎忘了附件，確定
+要傳送嗎？
+確認
+取消
+25\n\n--- PAGE 26 ---\n即時的提供錯誤
+提醒，預防錯誤
+帳號
+****
+密碼
+確認密碼
+密碼必須至少八碼英數
+混合
+即時提供密碼設
+定錯誤
+26\n\n--- PAGE 27 ---\n限制是最好的防呆
+<form name="bmi">
+<label for="pname">Name:</label><br>
+<input type="text" id="pname" name="pname" value="" required><br>
+<label for="weight">Weight(kg):</label><br>
+<input type="number" id="weight" name="weight" value="60" min="30" max="300"><br>
+27\n\n--- PAGE 28 ---\nNS06 Recognition Rather Than Recall/易於識別
+“Minimize the user’s memory load by 
+making objects, actions, and options 
+visible. The user should not have to 
+remember information from one part of 
+the dialogue to another. 
+Instructions for use of the system should 
+be visible or easily retrievable whenever 
+appropriate.”
+透過使物件、動作和選項可見，最大限度地減
+少用戶的記憶負荷。 用戶不必記住從對話的
+一部分到另一部分的訊息。
+系統的使用說明應在適當的時候可見或易於檢
+索。
+葡萄牙的首都是哪個城市？(記憶)
+里斯本是葡萄牙的首都嗎？(識別)
+28\n\n--- PAGE 29 ---\nSearch result:
+我剛剛下的關鍵
+字是什麼？
+Search result:
+“user experience design” and personalization 
+降低記憶負擔
+29\n\n--- PAGE 30 ---\niPad Pro iPad Air iPad 
+顯示器
+晶片
+相機
+…
+https://www.apple.com/tw/ipad/compare/
+清楚的比較表讓
+我不用去紀錄每一個產
+品每一個項目的差異
+30\n\n--- PAGE 31 ---\n約有 21,800,000 項結果 (搜尋時間：0.42 秒)
+大谷翔平- 维基百科，自由的百科全書
+https://zh.m.wikipedia.org › zh-tw › 大谷翔平
+大谷翔平 - 台灣棒球維基館
+http://twbsball.dils.tku.edu.tw › ... › 日本球員
+實測！挑戰恐怖的日本打者大谷翔平！大聯盟打
+出來的火球！被 ...
+大谷翔平
+不同的顏色提醒你有
+些網站已經拜訪過
+31\n\n--- PAGE 32 ---\nNS07 Flexibility and Efficiency of Use/
+有彈性及有效率的使用
+“Accelerators — unseen by the novice 
+user — may often speed up the 
+interaction for the expert user such that 
+the system can cater to both 
+inexperienced and experienced users. 
+Allow users to tailor frequent actions.”
+提供一些 快速做法 ，以便系統可以同時滿
+足沒有經驗和有經驗的用戶的需求。
+允許用戶制定 常做的操作。
+IG 的常用者雙擊照片表示
+簡易計算機點一下變成工程計算機
+提供快捷鍵
+32\n\n--- PAGE 33 ---\n快捷鍵 (shortcut)
+可以自訂程式片
+段
+33\n\n--- PAGE 34 ---\n個人化 (personalization) 與 客製化 (customization)
+個人化 是系統被操作過後，系統依據個人的特性
+或行為模式做的自動化調整; 客製化 是由使用者
+自主的調整
+個人化
+● 角色 (role-based) 個人化: 管理者和工程師
+看到的內容會不同。
+● 個體 (individual) 個人化: 依據的使用行
+為，猜測你是孕婦所做出的推薦商品; 預測
+你喜歡娛樂新聞
+○ 最近觀看的影集、推薦的影集
+● AI/Data mining 的技術常被使用
+客製化設定
+● 常見的喜好設定 (preference): 從作業系統
+設定、瀏覽器設定到小作家設定都是。
+● 例如：BBC news: 設定你喜歡的新聞
+● 適用於用戶知道自己想要什麼，個人化則
+適合於用戶不明確目標是什麼。
+● 過度的客製化帶來系統的設計複雜。
+34\n\n--- PAGE 35 ---\nNS08 Aesthetic and Minimalist Design 優雅簡潔的設計
+“Dialogues should not contain information 
+which is irrelevant or rarely needed. Every 
+extra unit of information in a dialogue 
+competes with the relevant units of 
+information and diminishes their relative 
+visibility.”
+對話 不應包含不相關 或很少需要的訊息。
+對話中每一個額外的訊息都會與相關的訊
+息競爭，並 降低 它們的相對可見度。
+圖表取代冗長的文字
+簡短精準的用詞
+35\n\n--- PAGE 36 ---\n過多的資訊會沖淡重要資訊的重要性，使用者可能
+不知道如何從哪裡開始使用這個網站。
+36\n\n--- PAGE 37 ---\nGoogle
+what is UX
+沒有提供任何目錄，僅提供
+輸入想要找的關鍵字。
+簡約並不代表功能簡單，
+相反的，背後需要更強技
+術的支持
+what is UX
+不用開分頁，直接在 URL 上
+搜尋
+37\n\n--- PAGE 38 ---\n精準的圖片與文字是簡約設計必備的元素
+38\n\n--- PAGE 39 ---\n一開始的呈現是很簡約的，使用者點擊後出現
+其他的選單。同時滿足簡約與彈性。
+39\n\n--- PAGE 40 ---\n提供圖表的方式，
+簡潔的視覺呈現健康
+分佈狀況
+40\n\n--- PAGE 41 ---\nNS09 Help Users Recognise, Diagnose, and Recover from Errors/
+清楚的錯誤處理
+Error messages should be expressed in 
+plain language (no codes), precisely
+indicate the problem, and constructively
+suggest a solution.
+錯誤信息應該用通俗易懂的語言（無代
+碼）表達，準確地 指出問題，並建設性地
+提出解決方案。
+41\n\n--- PAGE 42 ---\nError 404 喔喔，目前這個頁面無法提供服
+務，請您於上班時間撥打以下電
+話，或以 email 與我們聯絡
+0800007008
+contacts@gmail.com 
+說明問題，並提供解
+決方案
+42\n\n--- PAGE 43 ---\n如何呈現 錯誤訊息？
+錯誤訊息應該是
+● 明晰的 (explicit): 有錯誤就必須提示
+● 精準的 (precise): 精準的說明錯誤
+● 看得懂的 (readable): 使用者要看得
+懂的
+● 客氣的 (polite): 不要責備不要命令
+式的回應
+● 有建設性的 (constructive advice): 
+知道該如何處理
+43\n\n--- PAGE 44 ---\nPlain language (通俗易懂語言)
+● 易讀 Legibility
+○ 字體大小
+○ 對比性
+○ 字體
+● 可讀性 Readability
+○ 避免艱深少用的字
+○ 避免用簡化的造詞 (如成發會)
+○ 如果受眾是大眾，使用約國中
+的用語; 如果受眾是專業人
+士，使用約高中用語
+○ 使用條列簡短的句子
+● 可理解性 Comprehension
+○ 使用閱讀者習慣的字詞
+○ 理解後可作出 明確的動作/決定
+○ 倒金字塔寫作風格：先寫結論
+在描述細節
+○ 使用圖表提升可理解性
+44\n\n--- PAGE 45 ---\nNS10 Help and Documentation
+“Even though it is better if the system can 
+be used without documentation, it may be 
+necessary to provide help and 
+documentation. Any such information 
+should be easy to search, focused on the 
+user’s task, list concrete steps to be 
+carried out, and not be too large.”
+即使系統可以在沒有文件的情況下使用會
+更好，但可能有必要提供 幫助和文件。 任
+何此類訊息都應該 易於搜索，專注於用戶
+的任務，列出要執行的 具體步驟，並且不
+能太大。
+45\n\n--- PAGE 46 ---\n作品 策展DemoX
+如何建立策展 聯絡我們 版權
+登入
+被動式協助：需要的時候再
+點擊
+作品 策展DemoX
+如何建立策展 聯絡我們 版權
+登入
+DemoX tutorial
+Step1: 登入帳戶
+Next                 結束教學
+主動式協助：透過導覽讓使
+用者很快知道如何建立
+46\n\n--- PAGE 47 ---\n作品 策展DemoX
+空白作品 藝術類
+作品
+程式類
+作品
+實驗類
+作品
+登入
+演說類
+作品
+報告類
+作品
+選擇作品樣板
+如何建立策展 聯絡我們 版權
+透過樣板快速的建立作品也是一種
+主動式的協助。使用者在瀏覽觀看
+其他作品的過程也可以學習如何建
+立作品。
+47\n\n--- PAGE 48 ---\nHi, Nick
+很高興你使用我們的系統來建造日曆。
+我們將引導你如何一步步的建立日曆事
+件，包含他的地點等。大約需要 30秒的時
+間。
+Cheers,
+Micro
+Start → Skip
+有些主動式協助可能是沒必要的，
+因為他的操作已經非常普遍與直
+覺。
+48\n\n--- PAGE 49 ---\n清楚的系統狀態
+與真實世界的對應 使用者擁有控制權 一致的風格 錯誤預防
+易於識別 有彈性及有效率的使用 優雅簡潔的設計 清楚的錯誤處理 適當的說明
+Nielsen Principle
+49\n\n--- PAGE 50 ---\n互動原型\n\n--- PAGE 51 ---\nhttps://free.com.tw/balsamiq-mockups/
+https://balsamiq.com/
+https://www.uxpin.com/
+https://proto.io/
+https://www.figma.com/
+https://www.framer.com/\n\n--- PAGE 52 ---\n介面設計 - Figma
+\n\n--- PAGE 53 ---\n使用者流程 - Figma
+\n\n--- PAGE 54 ---\n實作時間\n\n--- PAGE 55 ---\nMore…
+https://courses.openedu.tw/courses/course-v1:IGER+T+22001/course/
+10 Usability Heuristics with Examples | by SaiChandan Duggirala | Prototypr
+2022 ui/ux design trends. Design inspirations for your next… | by Manan Gupta | 
+Bootcamp
+https://medium.com/swlh/10-usability-heuristics-exemplified-57bbfdfd663e
+55

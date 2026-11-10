@@ -1,0 +1,232 @@
+--- PAGE 1 ---\nIntroduction to 
+User Experience Design
+李文廷
+高雄師範大學軟體工程與管理學系\n\n--- PAGE 2 ---\n我們在生活的每一天，不斷的
+體驗 各種 設計
+2\n\n--- PAGE 3 ---\n3
+https://www.buzznicked.com/bad-builder/\n\n--- PAGE 4 ---\n生活中處處是 UX
+好的 UX 讓你的生活有效率，舒
+服，愉快
+不好的 UX 讓你生氣惱怒
+4
+https://www.reddit.com/r/CrappyDesign/comments/5wolzl/a_n
+orman_door_at_the_apple_store/
+Norman’s Door\n\n--- PAGE 5 ---\n5
+“We must design for the way people behave, 
+not for how we would wish them to behave.”
+― Don Norman
+\n\n--- PAGE 6 ---\n7
+“People Ignore Design that Ignore People”
+― Frank Chimero
+\n\n--- PAGE 7 ---\nWhy UX is important
+8\n\n--- PAGE 8 ---\nBad system makes you angry 
+9
+https://www.pinterest.com/debuchita/ux-fails/
+https://www.buzznicked.com/bad-builder/\n\n--- PAGE 9 ---\nUX 為何如此困難
+● 只有模組思考，沒有系統思考
+○ 疊床架屋，來一個做一個
+● 只有系統思考，沒有使用者思考
+○ 同理心思考
+● 沒有使用者研究，沒有需求分析
+● 沒有設計就施工
+● 沒有測試反饋修正
+10\n\n--- PAGE 10 ---\n11
+\n\n--- PAGE 11 ---\n12
+https://www.buzznicked.com/bad-builder/
+\n\n--- PAGE 12 ---\nExercise 
+13
+生活中充滿對不同事物的使用體驗，有好的
+也有不好的。
+● 自我介紹
+● 說故事
+● 使用體驗
+● 可能的改善\n\n--- PAGE 13 ---\n使用者體驗 (User Experience)
+The user experience (UX) is how a 
+user interacts with and experiences 
+a product, system or service. It 
+includes a person's perceptions of 
+utility, ease of use, and efficiency (wiki)
+14
+使用者體驗 (UX) 是 使用者 與產品、
+系統或服務 互動和體驗 的方式。
+它包括一個人對效用、易用性和效
+率的感受。\n\n--- PAGE 14 ---\n使用介面 與 使用體驗 (User Interface vs. User Experience)
+15
+使用介面 是你使用時的所有外在部分，
+使用體驗 是在你使用時的內在感受。
+使用介面 設計師關注按鈕的顏色，考慮
+的是視覺的部分，是產品看起來如何。
+使用體驗 設計師則關注按鈕放置的位置
+是否合適，最終出發點是用戶的感受，
+想要弄清楚使用者想要使用的是什麼，
+解決並改善使用者所有的不便。
+ https://digitalsynopsis.com/design/graphic-design-memes/\n\n--- PAGE 15 ---\n16
+16
+規格 vs. 使用體驗\n\n--- PAGE 16 ---\n使用者體驗設計 (User experience design)
+Is the process that design teams use to 
+create products that provide meaningful 
+and relevant experiences to users. 
+UX design involves the design of the 
+entire process of acquiring and 
+integrating the product, including 
+aspects of branding, design, usability 
+and function. (What is User Experience (UX) Design?)
+17
+設計團隊用來創建為使用者提供有意義
+和相關體驗的產品的流程。
+UX 設計包含開發和整合產品的整個過程
+的設計，包括品牌、設計、可用性和功
+能等方面。\n\n--- PAGE 17 ---\n⇒
+UXD 的原則與樣式
+Bad UX Good UX
+練習: UXD * CODE
+19\n\n--- PAGE 18 ---\n20
+探索
+Research users to 
+understand why they do 
+what they do.
+確認
+Test design solutions with 
+actual users. Do they 
+support user goals?
+分析
+Uncover key user goals 
+and pain-points from 
+research findings.
+構思
+Create design 
+requirements from user 
+goals, business goals and 
+tech. requirements
+設計
+Create and communicate 
+possible solution for 
+requirements
+流程\n\n--- PAGE 19 ---\nUXD 原則與樣式- Nielson Principle
+清楚的系統狀態
+與真實世界的對應 使用者擁有控制權 一致的風格 錯誤預防
+易於識別 有彈性及有效率的使用 優雅簡潔的設計 清楚的錯誤處理 適當的說明
+21\n\n--- PAGE 20 ---\n輸入
+TW10.1 寬容格式
+TW10.2 結構化格式
+TW10.3 填入空白
+TW10.4 輸入線索
+TW10.5 輸入提示
+TW10.6 密碼強度顯示器
+TW10.7 自動完成
+TW10.8 下拉式選擇器
+TW10.9 清單建構器
+TW10.10 良好的預設值與智慧預填
+TW10.11 錯誤訊息
+一般
+TW1.1 安全探索
+TW1.2 立即喜悅
+TW1.3 足夠滿足
+TW1.4 中途改變
+TW1.5 延遲選擇
+TW1.6 漸進建構
+TW1.7 積習難改
+TW1.8 零碎空檔
+TW1.9 空間記憶
+TW1.10 預期記憶
+TW1.11 流暢重複
+TW1.12 只用鍵盤
+TW1.13 社群媒體
+組織內容
+TW2.1 凸顯、搜尋與瀏覽
+TW2.2 移動裝置直接存取
+TW2.3 串流與訊息來源
+TW2.4 媒體瀏覽器
+TW2.5 儀表板
+TW2.6 畫布加工具盤
+TW2.7 Wizard 精靈
+TW2.8  設定編輯器
+TW2.9 切換檢視
+TW2.10 多工作空間
+TW2.11 協助系統
+TW2.12 標記
+到處走走
+TW3.1 清楚地進入點
+TW3.2 選單頁面
+TW3.3 金字塔
+TW3.4 強制回應面板
+TW3.5 深連接
+TW3.6 逃生門
+TW3.7 寬選單
+TW3.8 網站地圖頁尾
+TW3.9 登入工具
+TW3.10 進度指示器
+TW3.11 麵包屑記號
+TW3.12 註解式捲軸
+TW3.13 動畫轉場效果
+網頁元素排版
+TW4.1 視覺框架
+TW4.2 中央舞台
+TW4.3 同質性網格
+TW4.4 標題分區
+TW4.5 模組化分頁
+TW4.6 手風琴模式
+TW4.7 可折疊面板
+TW4.8 可移動面板
+移動裝置介面
+TW6.1 垂直堆疊
+TW6.2 幻燈片
+TW6.3 觸控工具
+TW6.4 底部導航
+TW6.5 集合與卡片
+TW6.6 無限清單
+TW6.7 寬廣的邊緣
+TW6.8 載入或進度指示器
+TW6.9 高度聯通的應用程式
+清單
+TW7.1 雙面板選擇器
+TW7.2 單視窗深入
+TW7.3 清單嵌板
+TW7.4 卡片
+TW7.5 縮圖網格
+TW7.6 轉盤
+TW7.7 頁碼標註
+TW7.8 跳至項目
+TW7.9 字母/數字 標記捲軸
+TW7.10 新項目預備列
+動作與命令
+TW8.1 按鈕群組
+TW8.2 游標懸停或彈出工具
+TW8.3 動作面板
+TW8.4 醒目的完成按鈕
+TW8.5 智慧型選單項目
+TW8.6 預覽
+TW8.7 旋轉與載入指示器
+TW8.8 可取消性
+TW8.9 多層復原
+TW8.10 命令歷史
+TW8.11 巨集
+顯示複雜資料
+TW9.1 資料提示
+TW9.2 資料聚焦
+TW9.3 動態查詢
+TW9.4 資料刷色
+TW9.5 多 Y 圖
+TW9.6 多幅小圖
+22
+UXD 原則與樣式- Tidwell UXD Patterns\n\n--- PAGE 21 ---\n23
+UI vs. UX
+UX
+● 使用者研究
+● 使用案例研究
+● 可用性測試
+UI
+● 排版
+● 視覺設計
+● 美工
+23
+https://digitalsynopsis.com/design/graphic-design-memes/
+ https://i.pinimg.com/originals/dd/57/96/dd5796b8515d5b1cc19290b1c9ae84f7.jpg\n\n--- PAGE 22 ---\n小結
+24
+● 生活中充滿對各式物品的使用體驗
+● 不好的設計導致不好的使用體驗
+● 使用體驗在意的是使用物品時的感受，而非他的功能規格
+● 使用介面 (UI) 僅是使用體驗的一部分
+● 使用體驗設計是為達到「好的體驗設計」的過程\n\n--- PAGE 23 ---\nReference
+● https://courses.openedu.tw/courses/course-v1:IGER+T+22001/course/
+25

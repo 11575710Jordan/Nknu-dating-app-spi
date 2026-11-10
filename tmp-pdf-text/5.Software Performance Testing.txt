@@ -1,0 +1,1144 @@
+--- PAGE 1 ---\n效能測試
+李文廷
+軟體工程與管理學系
+國立高雄師範大學
+1\n\n--- PAGE 2 ---\n企業需求文件
+軟體測試V模型
+使用者需求擷取
+系統需求分析
+系統需求文件
+架構設計
+架構文件
+系統介面協定文件
+系統設計
+軟體模組
+設計文件
+軟體開發
+程式碼
+單元測試
+結果報告
+整合測試
+結果報告
+單元測試計畫
+與測試案例
+整合測試計畫
+與測試案例
+系統測試
+結果報告
+使用者代表驗收
+測試結果報告
+系統測試計畫
+與測試案例
+驗收準則
+程序(Process)
+驗證(Verification)
+確認(Validation)
+測試元件整合
+與軟體特性
+測試系統特性
+系統安裝與部署
+使用者需求
+2\n\n--- PAGE 3 ---\n• 測試目的
+• 測試系統軟體與硬體整體功能是否協調
+• 測試方法：驗證系統需求文件所描述功能都正確無誤實做，以驗證系統內部功能。可
+使用模擬器。
+• 注意事項：若自己實作的模組由自己測試，可能因盲點而找不到問題
+• 參與人員
+• 由測試人員進行系統測試。
+• 系統測試包含多種測試
+• 效能測試(負載測試load testing、壓力測試stress testing)
+• 安全性測試(security testing)
+• 可靠性測試(reliability testing)
+• 可使用性測試(usability testing)
+• 容量測試(volume testing)
+• …
+系統測試 (System Testing)
+3\n\n--- PAGE 4 ---\n軟體系統缺失
+• 2007
+• 台灣高鐵售票系統上線後當機連連，系統無法應付突然湧現的購票人潮
+• 台灣彩劵系統：十億獎金引爆人潮，當機連連。
+• 2014
+• 新戶政系統頻出包，引爆民怨
+• 行政院科技會報辦公室調查報告直指內政部涉四大疏失，包括要求測試水準偏低
+• 程式設計未考量既有軟硬體資源的限制與有效應用，部分程式設計方式嚴重影響系
+統效能
+4\n\n--- PAGE 5 ---\n何謂效能測試？
+• 效能測試
+• 著重在軟體可以處理"多少"資料量和可以處理"多快"
+• 推測出整合系統的極限
+• 嘗試破壞子系統
+• 測試系統在超載時會如何反應
+• 效能測試的工具
+• 模擬大量的使用者
+5\n\n--- PAGE 6 ---\nFunctional vs Performance Testing
+面向 Functional Performance
+問題 做對了嗎？ 做得夠快、夠穩嗎？
+輸入 功能案例 workload model
+輸出 pass/fail behavior latency/throughput/errors
+失敗 邏輯錯誤 飽和、排隊、資源耗盡
+6\n\n--- PAGE 7 ---\nLoad / Stress / Spike / Soak / Scalability
+測試 目的 典型問題
+Load 預期負載 Service Level Objective 是否達成？
+Stress 超過容量 何時開始崩？
+Spike 瞬間尖峰 能否快速吸收？
+Soak 長時間 memory leak / resource leak？
+Scalability 增加資源 吞吐是否接近線性？
+7\n\n--- PAGE 8 ---\n負載(Load)測試
+• 負載(Load)測試為一種效能測試。
+• 測試電腦、周邊設備、伺服器、網路的規格工作限制，藉以找出元件的
+限制、瓶頸或錯誤。
+• 提供使用者瞭解，在固定的性能下，最多可以同時執行多少工作、程序或應
+用程式。分為兩種情況
+• Longevity testing: 評估系統在長時間中的一般工作負載。
+• Volume testing: 評估系統在限制的時間內高負載情況。
+• 在實驗室控制環境下比較不同系統的能力，或精確量測單一系統的能力，或
+量測系統在真實世界的功能理想值。
+• 從網路上下載大量的檔案。
+• 在一台電腦、或伺服器上同時執行多個應用程式。
+• 給予伺服器大量的EMAIL。
+• 從硬碟持續的存取資料。
+• 測試具有高速處理器卻有限的RAM
+8\n\n--- PAGE 9 ---\n• 一種效能測試。測試在極端工作負載，仍然能正常工作的情況。
+• 測試電腦、網路、程式、設備在不適當的狀態下仍具有一定的效用。
+• 量化評估：量測系統錯誤的頻率或在甚麼情況、甚麼時間當機。
+• 質性評估：測試是否可以抵擋denial-of-service (DoS)攻擊。
+• 測試必須控制在一個不利的執行環境，直到系統當機或性能低於一
+定程度，包括
+• 在一台電腦同時執行許多高資源要求的應用程式
+• 使用大量的垃圾郵件侵襲伺服器
+• 針對一個網站同時製造大量的服務要求 
+• 嘗試使用病毒、木馬、間諜程式感染系統
+壓力(Stress)測試
+9\n\n--- PAGE 10 ---\n負載測試 vs. 壓力測試
+• 負載測試
+• 使用預先定義的負載等級來評估系統效能
+• 在一般條件或者預定的條件下，測量一個系統需要花多長的時間執行各
+種程式、任務以及功能
+• 壓力測試
+• 評估一個系統在超出其能力範圍時產生的反應
+• 效能測試是為了在不同的負載等級下判定系統效能
+10\n\n--- PAGE 11 ---\n壓力測試的重要
+• 假設網站目前的資訊處理量為一天300,000筆
+• 300,000/(24*60*60) = 3.47 transactions per second (TPS)
+• 市場調查使用者可接受的回應時間
+• <4 sec：可接受
+• 4-8 sec：30% 取消資訊處理
+• 8-10 sec：60% 取消資訊處理
+• >10 sec：90% 取消資訊處理
+• 預期將增加25%-75%的資訊處理量
+• 假設每一筆資料傳輸是$1元
+• 基於"讀取資訊的回應時間"，這間公司將面臨每天潛在的損失約$112,500 ~ $472,500
+• 300,000*1.25*0.3 = 112,500 
+• 300,000*1.75*0.9 = 472,500 
+11\n\n--- PAGE 12 ---\n基本概念
+• 測試的種類
+• 模組測試：著重於演算法
+• 迴圈，重複計算
+• 其他的演算法，複雜度
+• 系統測試：著重於系統部署
+• 伺服器數量
+• 資料結構
+• 快取
+• 網路連接
+• 瓶頸
+• 效能測試是一種系統測試
+12\n\n--- PAGE 13 ---\n效能測試需有規劃及預算
+• 商業效能測試的工具是昂貴的
+• 準備資料需耗費時間成本
+• 設置基礎架構需耗費時間
+• 在測試中，需要使用特別的基礎架構
+• 需要技術人員的支援，例如：資料庫架構師、網管人員等
+• 視為”Business Effort”，而不是”Testing Effort”
+• 做測試的主要原因? 須能提供價值給利害關係人
+• 老闆，使用者，開發者等.
+13\n\n--- PAGE 14 ---\n效能測試的複雜度
+• 測試的建立
+• 決定要模擬哪些情況
+• 工作負載 (Workload): 使用者的工作數量等
+• 決定哪些是效能的關鍵因素
+• 了解所需的結果
+• 現實生活的情境
+• 有可能模擬人類的行為嗎？
+• 什麼時候執行這些情境？
+• 外部影響如何干擾結果
+• 找出影響的因子
+• 結果
+• 如何讀取、解釋與傳送這些結果
+14\n\n--- PAGE 15 ---\n典型的相互作用
+瀏覽器 網路 伺服器
+典型的資源瓶頸 典型的資源瓶頸 典型的資源瓶頸
+CPU time 網路設備以及資料佇列帶
+來的潛在延遲
+CPU time
+頻寬 I/O access time： I/O bus， 
+disk controller and disk 
+access
+常見的活動 常見的活動 常見的活動
+接收/傳送 資料 將封包從客戶端路由到伺
+服器
+接受要求 (Requests)
+格式化資料 將封包從伺服器路由到伺
+服器
+執行腳本，函式庫，預存
+的程序， 可執行程序， 等
+展示資料， 執行腳本和動
+態內容
+將封包從伺服器路由到客
+戶端
+ 交易 時間                            →  
+ 用 戶 端 的 處 理 時 間 →  連接+傳送+接收時間 →  回應時間     → 15\n\n--- PAGE 16 ---\n效能測試術語
+• 連接時間 (Connection time)
+• 所需時間為客戶端與伺服器端建立連結的時間
+• 在網路所花費的時間
+• 傳送時間 (Send time)
+• 所需時間為客戶端傳送資料到伺服器的時間
+• 在網路所花費的時間
+• 接收時間 (Receive time)
+• 所需時間為伺服器傳送回應到客戶端所需的時間
+• 在網路所花費的時間
+16\n\n--- PAGE 17 ---\n效能測試術語 (續)
+• 回應時間 (Response time)
+• 所需時間為完成一個特定的傳輸所需的時間
+• 在伺服器所花費的時間
+• 交易時間 (Transaction time)
+• 所需的時間為客戶端處理接收到的資料的時間
+• 完成傳輸在網路、客戶端、伺服器上所花費的所有時間總和
+• 每個工具供應商使用稍有不同的術語來描述相同的概念
+• 哪個術語才是正確的並不重要
+17\n\n--- PAGE 18 ---\n效能衡量標準
+• 每秒傳輸量 (Transaction per second, TPS)
+• 每秒伺服器處理的資料傳輸 (T/sec)
+• 每秒要求數 (Hit per second, Hit/sec)
+• 吞吐量 (Throughput)
+• 在一段給定的時間內可以處理多少、多大量的”工作"？
+• 伺服器處理的資料量 (KB/sec)
+• 回應時間 (Response time)
+• 使用者需要等待多久的時間？
+• 不同使用案例下所花費的時間？
+• 使用者的數量 (Number of users)
+• 特別是網站
+• 同步回應時間 (Simultaneous Response time)
+• 註冊的資料庫大小 (Registered Database size) 18\n\n--- PAGE 19 ---\n效能衡量標準 (續)
+• 並行連線 (Concurrent connections)
+• 並行開啟連結的數量
+• 可用性
+• 對使用者而言是否有可用性
+• 嘗試執行不正常的操作順序，例如：在send()之前呼叫
+receive()
+• 過慢與當機有時是沒什麼兩樣的
+19\n\n--- PAGE 20 ---\n吞吐量(Throughput)的例子
+• 若要支援10,000個並行使用者，在每3.5分鐘時，可要求1
+份平均大小2K的不同文件
+• 因此為能處理該負載量，至少要在T1頻寬的環境下
+10,000 concurrent users * 
+2K * 1024 byte/K * 8 bits/byte
+(3.5 min * 60 s/min)
+= 780，190 bps
+T1       1.544 Mbps
+T2       6.312 Mbps
+T3     44.736 Mbps
+T4   274.176 Mbps
+20\n\n--- PAGE 21 ---\n效能測試的種類
+• 有效性測試 (Availability testing)：系統或元件正常運行，沒有當機
+時間的百分比
+• 基準測試 (Baseline Testing)：將新的伺服器與已知的參考標準比較，
+例如現存的軟體或量測數據
+• 失效點 (Breakpoint)：增加負載直到系統失效。或在限制的測試環
+境下，盡可能增加負載直到系統失效
+• 元件角度 (Component-Specific)：檢測系統元件的效能和強健度，
+可在元件完成後執行。
+• 校驗 (Calibration)：檢測系統是否符合政府法規授權訂定需求。
+• 能力測試 (Capacity testing)：系統未使用的能力，或可以支援額外
+工作的能力。
+• 達成目標型測試 (Goal-reaching test)：設定一個負載目標門檻，
+當達成時，停止測試並蒐集數據、分析結果。例如 response time 
+超過10秒。
+21\n\n--- PAGE 22 ---\n效能測試的種類 (續)
+• 長時間測試 (Duration or Endurance or Longevity Testing)：在測試
+實驗室日夜(24x7)操作系統，偵測長時期執行的錯誤，如slow 
+memory leaks；或重複持續增加系統存取交易一段時間，找出問題。
+• 死結測試 (Deadlock testing)：執行容量測試，偵測系統是否有資源
+競爭，例如多個要求者嘗試存取相同的資料庫；由於資料庫記錄鎖住
+造成衝突，引起系統鎖住使用者要求。
+• 降級作業模式 (Degraded Mode of Operation)：測試當並非所有資
+源都在工作時，是否系統仍然提供/降低期望的服務等級，例如在一個
+有多餘應用程式伺服器的伺服器群組中，嘗試關閉其中一個伺服器，
+讓系統仍然能夠繼續操作。
+• 錯誤率測量 (Error rate measurement)：當系統在正常或高負載的情
+況，功能或特性的錯誤率。若使用者無法正確完成任務，快速反應與
+高處理速度都沒用。 22\n\n--- PAGE 23 ---\n效能測試的種類 (續)
+• 熱點 (Hot Spot)：在一個系統特定限定的部分，著重於高負載，以
+偵測系統的脆弱點。
+• 負載變化 (Load Variation)：測試不同負載以反應真實使用負載的
+典型樣式和一段時間資料流情形。
+• 負載測試 (Load Testing)：放入真實系統執行時的資料量以測試服
+務等級，如反應時間等
+• 網路測試 (Network Testing)：找出可以量測系統負載的策略網路點、
+連網設備的數量等等。
+• 峰值測試 (Peak test)：在尖峰時期的負載，例如股票交易系統在一
+開始和結束時。
+• Ramp-Up：測量啟始程序的時間，例如一個閒置的網路設備，當需
+要工作時，必須在50 milliseconds啟動。
+• 資源運用度 (Resource utilization)：系統資源運用的程度。
+23\n\n--- PAGE 24 ---\n效能測試的種類 (續)
+• 規模 (Scalability)：系統成長的能力，包括增加每一位使用者的
+工作負載、並行使用者的數量、資料庫大小。
+• 激盪測試 (Spike Testing)：突然增加許多並行的使用者登入系統，
+以測定伺服器行為。在很短時間，針對工作負載，決定系統如何
+處理意外增加的需求。系統是否能針對快速有意義的改變做出反
+應，重導資源使用，例如透過負載平衡。
+• Standard Benchmark：當難以辨識系統真實使用情形，則使用
+標準的工作負載，而非特定使用者的工作負載。
+• 壓力測試 (Stress Testing)：測試最大量使用者或存取交易的負載，
+直到系統當機的點
+• 根據使用情況 (Usage-Based)：根據作業情況，模擬真實環境的
+操作測試。
+• 大量測試 (Volume Testing)：處理大量的資料的測試。
+24\n\n--- PAGE 25 ---\n效能測試的種類 (續)
+• 壓力測試 (Stress Testing)
+– 網站逐漸加壓，目的是確保原先成功運作的功能仍正確運作，但更應注重網
+站所有功能完整性(functional integrity)。例如某網站能提供某股票獲利百分
+比，但當該網站被加壓時，應確保該網站仍能正確計算各種股票獲利百分比。
+– 資料完整性(data integrity)是任何交易網站重要特性之一。當超過負載時，
+網站會發生什麼情況？其影響會隨所處環境而異，可能輕微也可能是災難性
+的。
+– 壓力測試可防止潛在災難性危險情況，尤其透過負載平衡主機(load balancer)
+或資料複製伺服器(data replication server)改善網站性能時，實施壓力測試
+常能找到無法預期的問題。
+– 執行壓力測試的測試案例必需包含可能會發生的所有衝突，網站管理者需瞭
+解若某衝突發生，要採取的動作。
+– 壓力測試的交易通常包含需要大量計算、或較為重要的資料處理工作，設法
+達到較有效率顯示網站資源耗用之表徵。測試案例需包含有關資料庫系統的
+增加、修改、刪除等作業，以對資料庫網站實施輸入、輸出及例行性服務項
+目等的壓力。
+25\n\n--- PAGE 26 ---\n效能測試的種類 (續)
+• Spike test
+– 預測網站什麼時候會遭遇像暴風雨之類的大災難，這種預測
+是否正確？什麼時候會發生？從那裡發生？災難有多嚴重？
+傷害的程度？
+– 電子商務網站，假日時段、頭號電腦病毒、特殊號外新聞、
+有關產品優惠消息都可能成為激盪事件。
+– 激盪測試也被稱為超負載測試(overload test)、浸蝕測試
+(soak test)或浪濤測試(surge test)。
+– 另一種變化是彈跳測試(bounce/elasticity testing)，將激
+盪負載之大小稍作調整，在適當範圍內上下彈跳，以觀察某
+一網站是否能適應負載變化、及是否能自行控制資源運用，
+需要資源時能提出要求，不用時能立即釋放，達到資源運用
+的最佳效益。
+26\n\n--- PAGE 27 ---\n效能測試的種類 (續)
+• 激盪測試的執行，是由超出正常平均值的大量隨機需求驅
+動，讓網站在非常短時間內經歷異乎尋常的負載成長。
+• 網站能適應負載逐漸增強變化，但突襲性激盪事件有可能引起相
+當嚴重問題。
+• 例如樂透網站通常會在使用者下注後經歷一波浪濤洶湧，有些網
+站無法處理這種浪濤式負載，造成網站當機；因此能預估某些激
+盪事件，則可針對此事件腳本設計測試案例，透過激盪測試檢查
+分析網站調適能力。
+• 美國股市行情即時網站，經過歷史資料分析發現，最有可
+能發生激盪事件時機是在股市剛開盤、或將收盤時。
+27\n\n--- PAGE 28 ---\n常見的問題來源
+• 常見的硬體問題
+• Memory
+• CPU time
+• TCP/IP
+• Network bandwidth
+• File handles
+• 常見的軟體問題
+• 硬體中斷造成的軟體錯誤
+• 記憶體執行階段錯誤 (leakage, pointer errors)
+• 資料庫問題 (deadlock, number of connections)
+• 多執行緒問題
+• 檔案系統的問題
+28\n\n--- PAGE 29 ---\nApplication Server
+Issues
+Threading issues
+Memory leaks
+Large log file
+Connection pool
+management
+Network Issues
+Packet loss
+Excessive network usage
+“chatty饒舌” 
+applications
+Hardware related
+DB Server Issues
+Slow Query response
+Query and stored procedure 
+cache related issues
+Deadlocks
+Temp DB issues
+Web server issues
+Ineffective Caching
+Connection Pool 
+management
+Keep –Alive Connections 
+Flushed
+Content compression
+configuration
+跨 Servers 低 CPU 使
+用，但整體效能低
+Application Server
+40%
+Network
+20%
+Database Server
+30%
+Web Server
+10%
+典型的效能議題
+29\n\n--- PAGE 30 ---\nMemory Leak
+• Memory Leak (記憶體漏洩)：記憶體的使用量隨著時間慢慢增加直到消
+耗殆盡。
+• Memory Leak造成原因：某個被配置的記憶體無法再被參照，也無法被
+釋放；無法被系統再使用。
+• 作業系統或Application Server實體記憶體使用圖，若隨時間增加，記憶
+體使用量呈現明顯增加趨勢，程式極有潛在此問題。
+– Java程式，一個宣告static 的Array A儲存已開啟的視窗JFrame物件 。若使用者開啟
+一個視窗W1，W1會被存入Array A中，當W1關閉，沒有把W1從Array A移除，雖
+然W1被指到null，Garbage Collector卻不會回收W1。因為Array A仍保有W1參照，
+GC假設W1之後有被使用的機會，所以沒有回收W1。若程式持續開關大量視窗，它
+所用記憶體會呈現增加趨勢，造成典型Memory Leak狀況。
+• 解決的方式，在W1關閉時同時把W1從Array A裡移除即可。
+30\n\n--- PAGE 31 ---\n效能測試原則
+• 瞭解測試的限制
+• 規劃效能目標與設計測試案例
+• 使用對的工具
+• 了解有哪幾類的使用者，以及他們的使用行為
+• 了解需要量測哪些效能數據
+• 考慮軟硬體環境的限制
+• 執行基準線測試，以及重複多次測試
+• 以專業角度解釋測量的結果數據
+31\n\n--- PAGE 32 ---\n效能測試的流程
+計畫階段
+測試階段
+分析階段
+工具介紹
+32\n\n--- PAGE 33 ---\n效能測試流程
+1. 計畫階段
+• 定義目標和預交付的成果，並且設定期望
+• 蒐集系統和測試需求
+• 定義工作負載
+• 選擇要蒐集的效能衡量標準(metrics)
+• 確認要執行的測試，並決定什麼時候執行
+• 決定工具選項和生成負載
+• 撰寫測試計畫、設計使用者情境(User scenarios)並且建立測
+試腳本(Test scripts)
+33\n\n--- PAGE 34 ---\n效能測試流程 (續)
+2. 測試階段
+• 準備:  設置測試環境平台以及效能監控器
+• 執行測試
+• 蒐集資料
+3. 分析階段
+• 分析結果
+• 調校系統以優化效能
+• 設計新的測試
+34\n\n--- PAGE 35 ---\n設定目標
+• 效能測試中常見的議題
+• 網頁應用程式是否有能力可以承受預估的使用者數量，並且同
+時保留可接受的效能，和需要多少成本？
+• 到達多少負載量時，網頁應用程式的負載能力會開始降低？
+• 當效能衰退會對財務的損害有多大？
+• 要如何增加網頁應用程式的處理負載能力？以及需要多少成本？
+• 系統在設置完成後如何監測，如此我們可以在系統資源飽和之
+前採取適當的行動？
+計畫階段 >> 設定目標
+35\n\n--- PAGE 36 ---\n• 必須了解測試的需求以及範圍
+• 效能測試的目標是什麼
+• 管理階層必須設定目標
+• 測試者必須執行測試並且回報發現的錯誤
+• 為什麼要測量系統效能？
+• 有充分的時間與資源預算嗎？
+• 許多和效能相關的問題都是很複雜的
+• 對於組織的期望有充分的準備
+設定目標 (續)
+36\n\n--- PAGE 37 ---\nPerformance Requirements & SLAs
+指標 說明 範例通過標準
+Response Time 請求回應時間 p95 ≤ 500 ms
+Tail Latency 高百分位延遲 p99 ≤ 1,000 ms
+Throughput 系統處理能力 ≥ 500 requests/s
+Error Rate 請求失敗比例 ≤ 0.1%
+Concurrent Users 同時活動使用者 1,000 users
+CPU Utilization CPU 使用率 平均 ≤ 70%
+Memory Utilization 記憶體使用情形 不持續增長，且不觸發 
+Out Of Memory (OOM)
+37
+•SLA（Service Level Agreement）：對外服務承諾。
+•SLO（Service Level Objective）：服務目標。
+•Acceptance Criteria：本次測試的驗收門檻。\n\n--- PAGE 38 ---\n定義交付成果
+• 測試計畫是最重要的交付成果
+• 測試計畫內應該包含 
+• 效能測試的目標
+• 工作負載的定義
+• 使用者情境的設計
+• 效能測試的設計
+• 測試程序
+• 受測系統的環境配置
+• 要蒐集的衡量標準
+計畫階段 >> 定義成果
+38\n\n--- PAGE 39 ---\n其他的交付成果
+• 工具的評估以及選擇的報告
+• 測試腳本
+• 測試執行結果
+• 針對蒐集資料的分析報告
+• 效能相關的錯誤報告 
+• 功能性錯誤的報告
+• 定期狀態報告
+• 最終結果報告
+39\n\n--- PAGE 40 ---\n蒐集需求
+• 效能測試的需求
+• 環境與資源
+• 定義環境/資源以便模擬應用程式在作業環境下的效能來
+執行測試
+• 工作負載
+• 以市場行銷和(或)過去的經驗定義工作負載
+• 回應時間
+• 在一個特定的環境、資源和給定的工作負載下，定義可以
+接受的回應時間
+計畫階段 >> 蒐集需求
+40\n\n--- PAGE 41 ---\nTest Environment
+類別 必要資訊
+Hardware CPU 型號、核心數、RAM、磁碟
+Infrastructure VM、Bare Metal、Cloud、Kubernetes
+Software OS、Runtime、Framework、Database 版本
+Deployment Replica 數量、CPU/Memory requests 與 limits
+Network Bandwidth、Latency、Load Generator 位置
+Configuration JVM Heap、Connection Pool、Cache、
+Autoscaling
+Monitoring Prometheus、Grafana、APM、Logs、Tracing
+41\n\n--- PAGE 42 ---\n定義工作負載
+• 工作負載
+• 一個系統被要求承受的處理程序數量以及流量管理
+• 也可定義為特定使用者的負載(User specific)和特定
+應用程式的負載(Application specific)
+• 使用者數量和活動類型對系統整體帶來的工作負載
+• 不同的使用者執行不同的活動
+• 例如系統管理員、管理者、資料輸入員等..
+計畫階段 >> 定義工作負載
+42\n\n--- PAGE 43 ---\n工作負載類型的定義
+• 如何定義工作負載？ 
+• 使用者角度 (User specific)
+• 每一種類型使用者的數量
+• 每一種類型並行使用者的最大數量
+• 在一特定時間內，每一類型並行使用者的比率
+• 每一種使用者session長度
+• 每一種個別操作活動，被使用者實現的數量
+• 應用程式角度 (Application specific)
+• 每秒交易次數, 吞吐量 (throughput), 或資料傳輸率 (data transfer rate 
+(Kbps))
+• 使用者特定頁面需求的比例
+• 使用者特定交易存取的要求
+• 任何其他使用者，對系統或應用程式之特定要求
+43\n\n--- PAGE 44 ---\n如何估算工作負載
+1. 在系統設置好之前，參閱任何可用的效能需求文件
+2. 成立一個小型的使用者小組來模擬真實的使用者，並且執行相
+關的活動
+3. 估算系統將要處理的並行使用者數量
+4. 在系統被設置好之後，使用日誌(log)分析工具來蒐集工作負載
+的資料
+44\n\n--- PAGE 45 ---\nWorkload Model
+Workload Model 描述系統實際會承受什麼樣的負載，而不只是指定一
+個使用者數量。
+應包含：
+• Arrival Rate：每秒到達的請求或交易數。
+• Concurrent Users：同時執行中的使用者數。
+• Transaction Mix：不同 API 或業務交易的比例。
+• Think Time：使用者操作間隔。
+• Payload Size：Request / Response 大小。
+• Data Volume：資料庫資料量及資料分布。
+• Ramp-up / Ramp-down：負載增加與降低方式。
+45\n\n--- PAGE 46 ---\nTransaction Mix
+交易類型 流量比例 範例
+查詢商品 50% GET /products
+查詢訂單 25% GET /orders
+建立訂單 15% POST /orders
+更新資料 10% PUT /orders/
+46
+要特別注意：1,000 Concurrent Users 不等於 1,000 requests/s。 實際
+吞吐量取決於使用者行為、回應時間、Think Time 及負載產生器模型。\n\n--- PAGE 47 ---\n範例: URL Shortening Service1
+• 流量估算(Traffic estimates)
+• 500M new URL shortenings per month
+• 500 million / (30 days * 24 hours * 3600 seconds) = ~200 
+URLs/s
+• URLs redirections per second: 100 * 200 URLs/s = 20K/s 
+(100:1 read/write ratio)
+• 儲存空間估算(Storage estimates)
+• 500 million * 5 years * 12 months = 30 billion (objects)
+• Total storage: 30 billion * 500 bytes = 15 TB
+47\n\n--- PAGE 48 ---\n範例: URL Shortening Service2
+• 頻寬估算 (Bandwidth estimates)
+• write requests,  200 new URLs every second:
+200 * 500 bytes = 100 KB/s
+• read requests, ~20K URLs redirections every second:
+20K * 500 bytes = ~10 MB/s
+• 為能處理該負載量，至少要在T3頻寬的環境下
+48\n\n--- PAGE 49 ---\n範例: URL Shortening Service3
+• 記憶體估算(Memory estimates):
+• 80-20 rule: 20% of URLs generate 80% of traffic => cache these 
+20% hot URLs.
+• 20K requests per second => 1.7 billion requests per day:
+20K * 3600 seconds * 24 hours = ~1.7 billion
+• To cache 20% of these requests, we will need 170GB of memory.
+0.2 * 1.7 billion * 500 bytes = ~170GB
+• there will be many duplicate requests (of the same URL), actual 
+memory usage will be less than 170GB.
+49\n\n--- PAGE 50 ---\n效能衡量標準
+• 每秒傳輸量 (Transaction per second, TPS)
+• 每秒伺服器處理的資料傳輸 (T/sec)
+• 每秒要求數 (Hit per second, Hit/sec)
+• 吞吐量 (Throughput)
+• 在一段給定的時間內可以處理多少、多大量的”工作"？
+• 伺服器處理的資料量 (KB/sec)
+• 回應時間 (Response time)
+• 使用者需要等待多久的時間？
+• 不同使用案例下所花費的時間？
+• 使用者的數量 (Number of users)
+• 特別是網站
+• 同步回應時間 (Simultaneous Response time)
+• 註冊的資料庫大小 (Registered Database size)
+計畫階段 >> 選擇效能指標
+50\n\n--- PAGE 51 ---\n效能衡量標準 (續)
+• 並行連線 (Concurrent connections)
+• 並行開啟連結的數量
+• 可用性
+• 對使用者而言是否有可用性
+• 嘗試執行不正常的操作順序，例如：在send()之前呼叫receive()
+• 過慢與當機有時是沒什麼兩樣的
+51\n\n--- PAGE 52 ---\n四個核心量測：
+Latency、Throughput、Concurrency、Errors
+Latency/
+Response time
+p95 420 ms
+單一 request 等多久
+Throughput
+850 req/s
+單位時間完成量
+Concurrency
+300 users
+同時在系統中的工作
+Error Rate
+0.4%
+失敗或逾時比例
+52\n\n--- PAGE 53 ---\n常見瓶頸：CPU、Memory、I/O、DB
+瓶頸 情況 驗證方法
+CPU util 高、queue 增 profile / flame graph
+Memory GC / swap / OOM heap / RSS (Resident Set Size) / GC
+Disk/I/O iowait 高 disk latency / fs （File System Metrics) 
+metrics
+DB connection/lock slow query / pool
+Network retransmit / bandwidth RTT（往返時間）、Packet（封包） 與 NIC
+（網路介面卡）
+53\n\n--- PAGE 54 ---\n分散式系統的 Latency Budget
+Client→
+Gateway
+45ms
+Gateway
+35ms
+App
+120ms
+DB
+180ms
+External
+90ms
+Return
+30ms
+End-to-end latency 是所有同步依賴與 queueing 的總和；
+Trace 可以指出時間花在哪一個 span。
+54\n\n--- PAGE 55 ---\nPerformance Budget：把延遲分配給各層
+Component Budget 觀察
+Gateway 40 ms routing/auth
+Application 120 ms business logic
+Database 180 ms query/lock
+External API 100 ms network/provider
+Reserve 60 ms jitter
+55\n\n--- PAGE 56 ---\n測試項目與衡量標準
+• (1) 測試同時上線登入系統之效能。
+• 系統線上人數：50、100、200、500、1000 人。
+• 期望回應時間：平均小於2 秒。
+• (2) 測試最大上線人數瞬間登入系統之效能。
+• 系統線上人數：5000 users。
+• 期望回應時間：平均2 秒。
+• (3) 測試最大上線人數批次登入系統之效能。
+• 系統線上人數：每10 秒遞增1000 至5000 users。
+• 期望回應時間：平均2 秒。
+56\n\n--- PAGE 57 ---\n57
+案例探討：網頁效能測試
+• 以AdventNet 工具為例，說明測試的程序
+• 第1步：錄製使用者情境 
+• 第2步：將測試腳本參數化 
+• 第3步：以使用者 Profile 與工作負載的關係百分比作為分組依據
+• 第4步：模擬負載
+• 第5步：建立負載測試案例 
+• 第6步：執行負載測試案例 
+• 第7步：分析測試結果\n\n--- PAGE 58 ---\n58
+第2步： 將測試腳本參數化
+• 例如，將登入腳本的使用者名稱和密碼參數化，並在每次測試時
+藉由Dataset所提供的資料登入不同的使用者
+• 這些參數值可以從外部的資料庫擷取 (CSV or database) 
+• 或者從cookie
+• 或者從previous response body
+• 或者從隱藏欄位(hidden field)
+• 或者從先前的連結 (previous URL)
+• 或者執行 JavaScript 或使用固定的參數值\n\n--- PAGE 59 ---\n59
+第3步：以使用者 Profiles 與工作負
+載的關係百分比作為分組依據
+User Profile User Scenarios User Profile Settings
+Test profile
+Users browsing home page
+Business case name – testbc1
+Percentage Load - 60%
+User Agent – Mozilla
+Modem Simulation – 64
+Kbps (ISDN)
+Users purchasing items from the 
+shopping cart
+Business case name – testbc2
+Percentage Load - 20%
+User Agent – Internet
+Explorer
+Modem Simulation – 56
+Kbps (Analog Modem)
+Users searching the site
+Business case name – testbc3
+Percentage Load - 20%
+User Agent – Firefox
+Modem Simulation – 512
+Kbps (DSL)\n\n--- PAGE 60 ---\n60
+第4步：模擬負載
+• 測驗網頁應用程式在模擬負載條件下的行為
+• 這將幫助你辨別應用程式是趨近或遠離其所定義的效能目標
+• 依據步驟4所計畫的負載測試，一但確定了要模擬的負載類型，
+選擇適當的負載類型並且設定工作負載的詳細資料
+• 例如：
+• 負載種類 - 一般
+• 使用者數量 - 100 個使用者
+• 取樣週期 - 60 秒
+• 測試時間 - 120 秒\n\n--- PAGE 61 ---\n61
+第4步：模擬負載 (續)
+使用者情境
+使用者所
+佔的百
+分比
+在所有的使用者中模擬情境
+的使用者所佔的數量
+使用者瀏覽首頁 60% 60位使用者
+使用者從購物車購
+買物品 20% 20位使用者
+使用者搜尋物品 20% 20位使用者\n\n--- PAGE 62 ---\n62
+第5步：建立負載測試案例
+• 依步驟3的一或多個相關使用者profile，和步驟4建立的工作負載
+量，製作負載測試案例，每個測試包含： 
+• 使用者profile與其關鍵使用者情境，和各個特定情境的獨特設定
+• 工作負載的細節包含負載的類型，欲模擬的使用者，取樣週期和測試期
+間
+• 報告取樣週期\n\n--- PAGE 63 ---\n63
+第7步：分析測試結果
+• 平均Hits/sec或對Server產生的負載測試：20 hits per second.
+• 平均頁面下載時間：4,371 milliseconds.
+• 平均吞吐量或資料傳輸率：83,552 bytes per second. 
+• 平均回應時間或者伺服器回應速度：4,334 milliseconds 
+response time. 
+• 平均錯誤率：在30秒過去後，120個進行測試的使用者中，有
+25%回報錯誤
+• 伺服器監測結果： 
+• CPU使用率：40%
+• 記憶體使用率：60%\n\n--- PAGE 64 ---\nLab: Performance Test Plan
+• 目前開發維護的系統/線上購票系統
+• 設計架構圖
+• 找出重要關鍵的使用流程/模組
+• 建立要模擬的Workload
+• 定義衡量標準
+64\n\n--- PAGE 65 ---\n65
+工具選擇
+• 工具選擇
+• 可以模擬夠多的使用者
+• 可以提供腳本錄製
+• 支援使用者思考時間
+• 支援 HTTPS、java、ActiveX、scripts 以及cookies
+• 現有的工具
+• 可能很昂貴
+• 需要學習
+• 可能不符合你的需求
+計畫階段 >> 決定使用的工具\n\n--- PAGE 66 ---\n66
+工具選擇 (續)
+• 工具選擇
+• 自行開發的工具
+• 可能很昂貴 (開發成本)
+• 可正確地符合你的需求
+• 最好的方法是結合現有的工具以及自行開發的工具
+• 越早評估測試的需求越好
+• 是否可提供結果分析\n\n--- PAGE 67 ---\n67
+產生負載
+• 兩種類型
+• 硬體密集 (Hardware-intensive)方法和軟體密集 
+(software intensive)方法
+• 硬體密集方法
+• 多個使用者在多個工作站，對應用程式產生負載
+• 允許從不同種類的機器和瀏覽器產生負載
+• 簡單的要求：允許機器以及使用者
+• 擴展性差
+計畫階段 >> 決定產生負載的方法\n\n--- PAGE 68 ---\n68
+產生負載 (續)
+• 軟體密集方法
+• 使用工具模擬多個使用者
+• 通常這個工具是執行在單一台機器
+• 工具
+• 支援 DOM 來解析HTML頁面
+• 功能性驗證的功能
+• 模擬不同的瀏覽器
+• 支援 cookies、session state、java、ActiveX
+• 彙整報告功能
+• 整合伺服器的效能監控\n\n--- PAGE 69 ---\n69
+產生負載 (續)
+• 以Application service provider (ASP)產生負載
+• 你不需要特地投入資源(電腦以及頻寬)來產生負載
+• 允許你在世界各地以不同的速度產生負載
+• 可能會缺少彈性\n\n--- PAGE 70 ---\n70
+產生負載 (續)
+• 自行建置負載產生工具
+• 使用支援TCP/IP的語言，例如：Perl、Python或Java
+• 需要人力資源
+• 在使用前你必須先測試過
+• 較差的報告彙整能力\n\n--- PAGE 71 ---\n71
+關於工作負載的問題
+• 不切實際的負載
+• 不準確的使用者負載模擬
+• 將使用者負載曲解成系統負載
+• 不準確的測量
+• 從7秒到8秒，1秒的回應時間之差，可能損失30%的生意
+• 回應時間從9秒減少1秒，與從24秒減少1秒比起來，效能的進步
+是非常巨大的
+• 曲解結果
+• 處理時間與回應時間的差異為何？\n\n--- PAGE 72 ---\n需要考慮的事情
+• 工具可以產生所需的工作負載嗎？
+• 硬體需求為何？
+• 工具可以產生所需的負載類型嗎？
+• 能否模擬情境？
+• 能否產生所需的報告？
+• 需要花多少時間學習？
+• 工具需要多少額外的成本？
+• 工具需要在何種平台上執行？
+• 關於產生工作負載，我們有多少的成本許可？
+• 工具是否支援錄製與播放情境？
+72\n\n--- PAGE 73 ---\n什麼時候開始效能測試？
+• 效能測試應該盡可能的早一點執行
+• 應該盡可能的多次重複執行
+• 執行效能測試的需求
+• 硬體必須安裝並可運作
+• 網路必須功能齊全
+• 應用程式應該安裝好並可操作
+• 應完成功能的單元測試
+計畫階段 >> 決定什麼時候開始測試
+73\n\n--- PAGE 74 ---\n測試階段
+• 產生測試資料
+• 設定資料的測試環境
+• 設定測試套件的參數
+• 執行測試
+• 調整測試
+• 再次執行測試
+測試階段
+74\n\n--- PAGE 75 ---\n產生測試資料
+• 例如：可能需要一組使用名稱及密碼用來登入
+• 手動的建立他們
+• 自動化的建立他們
+• 初始成本
+• 從現有的待測系統取得
+• 當系統已經發佈上線
+75\n\n--- PAGE 76 ---\n設定測試環境
+• 當測試資料準備好之後，應該做一些最後的準
+備工作
+• SUT的設定
+• 測試環境的設定
+• 網路資源的準備
+• 效能監控器的設定
+• 監控和蒐集的衡量指標的決定
+76\n\n--- PAGE 77 ---\n設定測試套件的參數
+• 使用多個執行緒和socket模擬多個使用者
+• 測試執行時程表以及測試持續時間
+• 模擬的使用者的人數分佈以及地理位置
+• 要求的延遲因素
+• Ramp up speed
+• Cool down speed
+• 蒐集伺服器的衡量標準
+• 負載目標，例如：交易處理失敗的門檻、回應時間的門檻…等
+77\n\n--- PAGE 78 ---\n分析階段
+• 效能測試可以產生很大量的資料
+• 需要大量的技術知識
+• 知道這些結果是被什麼所影響
+• 知道哪些結果是相關的
+• 將這些蒐集起來的資料轉成資訊
+• 解釋這些結果是最困難的
+分析階段
+78\n\n--- PAGE 79 ---\n分析和報告
+• 使結果可以容易且快速的理解
+• 將資訊以圖形或表格化表示，可以幫助他人理解分析結果所傳達
+的訊息
+• 什麼是利害關係人(Stakeholders)想要的
+• 簡明扼要的摘要和結論
+• 提議和建議的選項
+• 可快速的做決策，並有充分的資訊支持這些決策
+79\n\n--- PAGE 80 ---\n常見的問題來源
+• 常見的硬體問題
+• Memory
+• CPU time
+• TCP/IP
+• Network bandwidth
+• File handles
+• 常見的軟體問題
+• 硬體中斷造成的軟體錯誤
+• 記憶體執行階段錯誤 (leakage, pointer errors)
+• 資料庫問題 (deadlock, number of connections)
+• 多執行緒問題
+• 檔案系統的問題
+80\n\n--- PAGE 81 ---\n效能測試練習
+• 了解將會有哪些測試限制
+• 投入更多的時間到前置準備作業上
+• 使用正確的工具
+• 只在軟體的最終版本上做測試
+• 了解使用者並且知道他們如何使用軟體
+• 了解你需要測量什麼來確定系統的效能
+• 考慮環境的限制
+• 制定基準並多次執行
+• 專業的詮釋測試結果
+• 對結果持保留態度
+81\n\n--- PAGE 82 ---\n工具介紹
+• Apache JMeter
+• 免費軟體。完全以Java開發，設計為功能性和效能測試的桌面應用程式 
+• 原本是設計為測試網頁應用程式，但現在已經擴展出其他測試功能 
+• 功能：支援 HTTP、JDBC、FTP、MQ、SOAP/REST… 幾乎所有常見協
+定。能錄製瀏覽器操作、模擬多用戶併發、生成漂亮的圖表報告。
+• 優點：完全免費、社群龐大、資源超多；從 API 到整個網站都能壓。
+• 台灣現況：仍是最多 QA 與 DevOps 使用的壓測工具。銀行、電商、政
+府專案、甚至大專院校課程都以它為教學標準。
+• 價格：免費開源。
+• 相關網頁： jmeter.apache.org 
+82\n\n--- PAGE 83 ---\n工具介紹(續)
+• IBM Rational performance tester
+• 效能測試的工具，用來找出存在系統中的效能瓶頸
+• 提供測試者自動化的效能測試能力去驗證網頁和伺服器應用程式的擴展性
+• 相關網頁： https://www.ibm.com/products/ibm-rational-performance-
+tester
+• Parasoft SOATest
+• 提供自動化網頁應用程式測試，訊息/通訊協定測試，雲端和安全測試
+• 相關網頁： https://www.parasoft.com/solutions/
+83\n\n--- PAGE 84 ---\n工具介紹(續)
+Grafana k6 – 開發者最愛的壓測神器
+• 功能：用 JavaScript 寫測試腳本，支援 HTTP、WebSocket、gRPC，整合 Grafana 
+Dashboard，能即時看延遲、錯誤率、CPU 使用率。
+• 優點：開發者導向，能融入 CI/CD pipeline，自建或雲端皆可執行。
+• 台灣現況：寫起來像程式、容易整合 GitHub Actions 或 Jenkins。
+• 價格：開源版免費；雲端版（k6 Cloud）按使用量付費。
+• https://k6.io
+Gatling – 高併發系統的救星
+• 功能：用 Scala/Java/Kotlin 撰寫腳本，支援 HTTP、WebSocket、JMS，並提供精細
+統計與圖表報告。
+• 優點：高效能、可分散式執行，常用於金融、票務等高流量 API。
+• 台灣現況：在雲端服務與金融業逐漸被採用，尤其是要壓超過萬級併發時，Gatling 的
+穩定度讓人安心。
+• 價格：開源版免費；企業版（Gatling Enterprise）付費，支援雲端與團隊管理功能。
+• https://gatling.io
+84\n\n--- PAGE 85 ---\n工具介紹(續)
+Artillery – 端到端壓測的輕量高手
+• 功能：使用 YAML + JS 寫腳本，支援 HTTP、WebSocket、GraphQL、甚至整合 
+Playwright 模擬真實瀏覽器操作。
+• 優點：簡潔又靈活，能同時測後端 API 與前端互動；雲端可自動擴容。
+• 台灣現況：能壓測真實使用路徑，例如整個購物流程或訂票流程。
+• 價格：開源版免費；雲端版 Team $199/月起。
+• https//artillery.io
+BlazeMeter – JMeter 的雲端升級版
+• 功能：完全相容 JMeter/Taurus/Gatling 腳本，可做分佈式壓測、生成高階報表、整
+合 CI/CD 與 Slack 通知。
+• 優點：免安裝、免維運，只要上傳腳本就能在全球多區同時壓測。
+• 台灣現況：企業級團隊最常用的雲端方案之一，許多外包／政府專案使用它讓客戶直
+接看報表。
+• 價格：Basic 約 $149/月起，也有免費方案。
+• https://blazemeter.com
+85\n\n--- PAGE 86 ---\n效能測試工具JMeter
+86\n\n--- PAGE 87 ---\n• Lab. 1: Basic
+• Lab. 2: Listener
+• Lab. 3: Stress Testing
+• Lab. 4: Recorder I
+• Lab. 5: Recorder II
+• Lab. 6: Remote Testing
+Outline
+87\n\n--- PAGE 88 ---\n• JMeter完全以Java開發，是用於功能性和效能測試的桌面應用程
+式。
+• 原本設計為測試網頁應用程式，現在已擴展出其他測試功能。 
+• 相關網頁： http://jmeter.apache.org/ 
+• 下載：http://jmeter.apache.org/download_jmeter.cgi 
+• 使用者手冊： 
+http://jmeter.apache.org/usermanual/index.html 
+JMeter 簡介
+88\n\n--- PAGE 89 ---\n點選此處下載
+89\n\n--- PAGE 90 ---\nLab 1. Basic
+90\n\n--- PAGE 91 ---\n• 使用Apache JMeter測試網頁
+目的
+91\n\n--- PAGE 92 ---\n• Count
+• 此為一個簡易的加法程式
+• http://140.127.74.140:8090/sqt/Count.jsp
+受測網站
+92\n\n--- PAGE 93 ---\n• 下載後解壓縮，點選bin資料夾內的jmeter.bat
+步驟 – 開啟JMeter
+93\n\n--- PAGE 94 ---\n• 新增執行緒群組並開始新的測試工作
+• 測試計畫右鍵新增Threads(Users): 執行緒群組
+步驟 – 新增執行緒群組
+94\n\n--- PAGE 95 ---\n• 於執行緒群組上點選右鍵，
+新增HTTP要求並設定測試
+動作
+步驟 – 新增兩個HTTP要求
+95\n\n--- PAGE 96 ---\n建立第一個HTTP要求 - getform
+sqt/Count.jsp
+140.127.74.140
+96\n\n--- PAGE 97 ---\n• 在”送出含參數的要求”
+內新增
+• summandField:12
+• addendField: 13
+• submit: Submit
+建立第二個HTTP要求- submit request
+97\n\n--- PAGE 98 ---\n步驟-新增檢視結果樹
+• 新增”檢視結果樹”以
+觀察結果
+• 在執行緒群組上點
+選右鍵，選擇新增->
+接聽-> 檢視結果樹
+98\n\n--- PAGE 99 ---\n• 點選執行
+• 執行結束後，
+點選檢視結果
+樹觀看測試結
+果
+步驟-測試結果
+99\n\n--- PAGE 100 ---\nLab2. Listener
+100\n\n--- PAGE 101 ---\n• 實作Listener
+• 接聽並驗證測試結果
+目的
+101\n\n--- PAGE 102 ---\n• GuessGame
+• 為一個簡易猜數字遊戲
+• http://140.127.74.140:8090/sqt/GuessGame.jsp
+受測網站
+102\n\n--- PAGE 103 ---\n步驟-新增HTTP要求預設值
+• 新增執行緒群組
+• 新增”HTTP要求預設
+值”，讓建立測試案例時
+更容易且更有修改彈性
+103\n\n--- PAGE 104 ---\n步驟-設定HTTP要求預設值
+104
+140.127.74.233\n\n--- PAGE 105 ---\n步驟-新增5個HTTP要求
+1. Get form
+2. guessField-12, submit- Submit, gc- 1
+3. guessField-98, submit- Submit, gc- 2
+4. guessField-56, submit- Submit, gc- 3
+5. guessField-87, submit- Submit, gc- 4
+105\n\n--- PAGE 106 ---\n步驟-新增get form
+/GuessGame.jsp
+106\n\n--- PAGE 107 ---\n步驟-新增submit guess number
+/GuessGame.jsp
+107\n\n--- PAGE 108 ---\n步驟-新增兩種檢視方式
+1. 新增檢視結果樹
+2. 新增檢視表格式結果
+108\n\n--- PAGE 109 ---\n步驟-執行結果
+109\n\n--- PAGE 110 ---\n步驟-驗證回覆結果
+• 在”submit 12” 要求項目下，新增驗證: 驗證回覆，
+並在測試用樣式處新增”Congratulations
+• 在”submit 98” 項目下，新增驗證：驗證回覆-
+Try
+• 在”submit 87” 項目下，新增驗證：驗證回覆-
+Congratulations
+• 在執行緒群組下，新增接聽：驗證結果可以看到驗
+證回覆
+110\n\n--- PAGE 111 ---\n步驟-驗證回覆
+111\n\n--- PAGE 112 ---\n步驟-驗證結果
+112\n\n--- PAGE 113 ---\nLab3. Stress Testing
+113\n\n--- PAGE 114 ---\n• 實作壓力測試
+目的
+114\n\n--- PAGE 115 ---\n• 延續Lab2，比較兩種測試方式的效能
+1. 將執行緒數量設為100，迴圈次數設為1
+2. 將執行緒數量設為1，迴圈次數設為100
+實驗說明
+115\n\n--- PAGE 116 ---\n步驟-建立兩個執行緒群組
+• 第一個執行緒群組內執行緒數量為100、迴圈次數為1，並新增與
+Lab2相同之5個HTTP要求
+116\n\n--- PAGE 117 ---\n• 第二個執行緒群組內執行緒數量為1、迴圈次數為
+100，並新增與Lab2相同之5個HTTP要求
+117\n\n--- PAGE 118 ---\n步驟-檢視Report
+• 分別在兩個執行緒內
+建立Summary Report
+118\n\n--- PAGE 119 ---\nLab4. Recorder I
+119\n\n--- PAGE 120 ---\n目的
+• 延續Lab 1，實做Recorder
+• 錄製並重播執行測試案例
+120\n\n--- PAGE 121 ---\n步驟-錄製前設定(新增Http Proxy)
+• 工作台右鍵新增非測試元素: 
+HTTP代理伺服器
+121\n\n--- PAGE 122 ---\n步驟-錄製前設定(設定Port 和啟動Proxy)
+8888
+(設定時要注意本機上
+8888埠是否有其他軟體
+占用)
+122\n\n--- PAGE 123 ---\n設定瀏覽器使用Proxy 伺服器
+123\n\n--- PAGE 124 ---\n步驟-新增錄製控制器
+• 新增錄製控制器以錄製
+測試動作
+124\n\n--- PAGE 125 ---\n步驟-設定完成開始錄製
+• 使用瀏覽器，於
+http://140.127.74.14
+0:8090/sqt/Count.jsp
+進行兩次加法運算
+• Proxy將會自動錄製加
+法運算過程的Http要
+求
+125\n\n--- PAGE 126 ---\nLab5. Recorder II
+126\n\n--- PAGE 127 ---\n目的
+• 實做進階的Recorder
+• 擷取在網站中進行各種活動的動作
+127\n\n--- PAGE 128 ---\n步驟-設定
+• 同Lab. 4 Recorder I，
+設定Proxy與Port。
+• 新增執行緒群組後，
+設定需要的HTTP要
+求
+128\n\n--- PAGE 129 ---\n• 使用瀏覽器瀏覽網頁(如www.udn.com)，Http Proxy將會錄製我
+們在網頁所操作的Http要求內容到錄製控制器
+129\n\n--- PAGE 130 ---\n步驟-篩選檔案
+• 在HTTP代理伺服器中要包含的型式欄位填入” .*\.( jpe?g|gif)$”
+130\n\n--- PAGE 131 ---\n步驟-篩選檔案
+• 篩選出 .jpg 和 .gif 的檔案
+131\n\n--- PAGE 132 ---\nLab6. Remote Testing
+132\n\n--- PAGE 133 ---\n目的
+• 實做Remote testing
+• 設定各個伺服器電腦(不同客戶端使用相同版本Java, JMeter)，則
+測試使用的資料檔案，不需要送到不同的客戶端 
+133\n\n--- PAGE 134 ---\n步驟-啟動伺服器
+• 執行JMETER_HOME/bin/jmeter-server.bat啟動所有JMeter伺
+服器電腦，遠端控制使用RMI溝通。
+134\n\n--- PAGE 135 ---\n步驟-加入遠端遙控電腦
+• 開啟/bin/jmeter.properties檔案，找到remote_hosts，加入要
+受遠端遙控的JMeter 伺服器IP，多的IP使用逗號隔開，例如
+127.0.0.1,140.124.100.100。
+• IP請視現場環境自行調整
+135\n\n--- PAGE 136 ---\n步驟-啟動遠端電腦
+• 從控制端JMeter 介面啟動遠端電腦
+136\n\n--- PAGE 137 ---\n• 受控端會出現執行訊息
+137\n\n--- PAGE 138 ---\nk6：以程式碼描述 Workload 與 Threshold
+• k6 使用 JavaScript 撰寫測試腳本，適合版本控制與 CI。
+• 可定義 VUs、duration、scenarios、stages 與 thresholds。
+• built-in metrics 可直接量測 HTTP latency、failed rate 等。
+138\n\n--- PAGE 139 ---\nThank You
+139\n\n--- PAGE 140 ---\n效能工程 (Performance Engineering)
+• 效能工程 (Performance engineering)是一種流程，探討哪一個軟體
+需要被檢視、測試、調整，以符合原先的效能需求。其目標是最佳化
+大部分重要的應用程式效能和使用者經驗。
+效能工程 (Performance Engineering)
+效能目標
+Response time, throughput, resource utilization, workload
+效能模型
+Scenarios, objectives, workloads, requirements, budgets, metrics
+架構與設計指導原則
+設計指導原則, 最佳實務, 設計樣式與風格
+測量(Response time, throughput, resource utilization)
+測試(Load Testing, Stress Testing, Capacity Planning)
+調整(Network, System, Application, Platform)
+角色 (Architects, Developers, DBS, 
+Tester, Network engineers, Admin)
+生命週期 (Requirement, Design, 
+Develop, Test, Deploy, Maintain)
+140
