@@ -19,6 +19,27 @@
   var aiList = document.getElementById("chat-ai-list");
   var aiClose = document.getElementById("chat-ai-close");
   var currentId = "zhe";
+  // 新增：安全文字偵測的模擬接收者視角（不是真實雙向同步）。
+  var receiverToggle = document.getElementById("chat-safety-receiver-toggle");
+  var receiverPanel = document.getElementById("chat-safety-receiver-panel");
+  var receiverExpanded = false;
+  var emotionToggle = document.getElementById("chat-emotion-toggle");
+  var emotionPanel = document.getElementById("chat-emotion-panel");
+  var emotionLive = document.getElementById("chat-emotion-live");
+  var emotionExpanded = false;
+  // 照片：先檢查指定圖片清單，通過後才建立本機的縮圖與模擬聊天訊息。
+  var photoButton = document.getElementById("chat-photo-button");
+  var photoInput = document.getElementById("chat-photo-input");
+  var photoPending = document.getElementById("chat-photo-pending");
+  var photoPreview = document.getElementById("chat-photo-preview");
+  var photoName = document.getElementById("chat-photo-name");
+  var photoRemove = document.getElementById("chat-photo-remove");
+  var photoFeedback = document.getElementById("chat-photo-feedback");
+  var sendButton = document.getElementById("chat-send-button");
+  var pendingPhoto = null;
+  var photoChecking = false;
+  var photoRevision = 0;
+
 
   var tones = ["chat-tone-plum", "chat-tone-sage", "chat-tone-apricot"];
 
@@ -104,8 +125,8 @@
 
   function lastPreview(items) {
     for (var i = items.length - 1; i >= 0; i--) {
-      if (items[i].kind === "in") return items[i].text;
-      if (items[i].kind === "out") return "你：" + items[i].text;
+      if (items[i].kind === "in") return items[i].text || (items[i].image ? "[照片]" : "");
+      if (items[i].kind === "out") return "你：" + (items[i].text || (items[i].image ? "[照片]" : ""));
     }
     return "傳送第一則訊息";
   }
@@ -118,6 +139,7 @@
   function renderThread(id) {
     var peer = threads[id];
     if (!peer) return;
+    if (currentId !== id) clearPendingPhoto(true);
     currentId = id;
 
     peerName.textContent = peer.name;
@@ -162,8 +184,37 @@
       col.className = "chat-msg__col";
       var bubble = document.createElement("div");
       bubble.className = "dp-bubble dp-bubble--" + item.kind;
-      bubble.textContent = item.text;
+      if (item.image && item.image.src) {
+        var img = document.createElement("img");
+        img.className = "chat-photo-image";
+        img.src = item.image.src;
+        img.alt = "聊天室照片：" + (item.image.name || "使用者上傳");
+        bubble.appendChild(img);
+        if (item.text) {
+          var caption = document.createElement("p");
+          caption.className = "chat-photo-caption";
+          caption.textContent = item.text;
+          bubble.appendChild(caption);
+        }
+      } else {
+        bubble.textContent = item.text || "";
+      }
       col.appendChild(bubble);
+      // 新增：對已顯示的每一則聊天文字做本機規則式情緒判斷。
+      if (window.ChatEmotion && item.text) {
+        var emotion = window.ChatEmotion.analyzeText(item.text);
+        var badge = document.createElement("span");
+        badge.className = "chat-emotion-badge";
+        badge.textContent = emotion.emoji + " " + emotion.label;
+        badge.title = "本機關鍵字規則推測，並非真正 AI 模型，可能誤判。";
+        col.appendChild(badge);
+      }
+      if (item.safety && item.safety.flagged) {
+        var safetyTag = document.createElement("p");
+        safetyTag.className = "chat-safety-tag";
+        safetyTag.textContent = "⚠ 安全提醒｜" + item.safety.summary + "（" + item.safety.reasons.join("；") + "）";
+        col.appendChild(safetyTag);
+      }
       if (item.meta) {
         var meta = document.createElement("span");
         meta.className = "chat-msg__meta";
@@ -188,7 +239,214 @@
     page.classList.add("chat-page--thread");
     thread.scrollTop = thread.scrollHeight;
     closeAi();
+    renderReceiverPanel();
+    renderEmotionPanel();
   }
+
+  // 這是單機教學展示版：照片保存在此頁的記憶體，重新整理頁面即重設。
+  function showPhotoFeedback(text, kind) {
+    if (!photoFeedback) return;
+    photoFeedback.hidden = !text;
+    photoFeedback.textContent = text || "";
+    photoFeedback.className = "chat-photo-feedback" + (kind ? " is-" + kind : "");
+  }
+
+  function clearPendingPhoto(alsoMessage) {
+    photoRevision++;
+    pendingPhoto = null;
+    photoChecking = false;
+    if (photoPending) photoPending.hidden = true;
+    if (photoPreview) photoPreview.removeAttribute("src");
+    if (photoName) photoName.textContent = "";
+    if (photoInput) photoInput.value = "";
+    if (photoButton) photoButton.disabled = false;
+    if (sendButton) sendButton.disabled = false;
+    if (alsoMessage) showPhotoFeedback("", "");
+  }
+
+  function compressChatPhoto(file) {
+    return new Promise(function(resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var image = new Image();
+      image.onload = function() {
+        URL.revokeObjectURL(url);
+        if (!image.width || !image.height || image.width * image.height > 50000000) {
+          reject(new Error("圖片像素尺寸異常，請改用較小的照片。"));
+          return;
+        }
+        try {
+          var scale = Math.min(1, 900 / Math.max(image.width, image.height));
+          var canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          var ctx = canvas.getContext("2d");
+          if (!ctx) throw new Error("無法建立圖片預覽。 ");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL("image/jpeg", 0.76));
+        } catch(err) { reject(err); }
+      };
+      image.onerror = function() { URL.revokeObjectURL(url); reject(new Error("無法讀取圖片內容。")); };
+      image.src = url;
+    });
+  }
+
+  if (photoButton && photoInput && photoPending) {
+    photoButton.addEventListener("click", function() { if (!photoChecking) photoInput.click(); });
+    photoRemove.addEventListener("click", function() { clearPendingPhoto(true); });
+    photoInput.addEventListener("change", async function() {
+      var file = photoInput.files && photoInput.files[0];
+      if (!file) return;
+      clearPendingPhoto(true);
+      var version = ++photoRevision;
+      photoChecking = true;
+      photoButton.disabled = true;
+      sendButton.disabled = true;
+      showPhotoFeedback("正在檢查圖片，請稍候…", "loading");
+      try {
+        if (!window.ImageSafety) throw new Error("圖片安全偵測程式尚未載入。 ");
+        var verdict = await window.ImageSafety.analyzeFile(file);
+        if (version !== photoRevision) return;
+        if (verdict.status === "blocked") {
+          var category = verdict.match && verdict.match.category ? verdict.match.category : "指定測試圖片";
+          var warning = "⚠️ 已攔截圖片：" + category + "。這張照片屬於預先登錄的測試圖，無法在聊天室傳送。";
+          showPhotoFeedback(warning, "error");
+          window.alert(warning);
+          return;
+        }
+        var src = await compressChatPhoto(file);
+        if (version !== photoRevision) return;
+        pendingPhoto = {src: src, name: file.name};
+        photoPreview.src = src;
+        photoName.textContent = file.name;
+        photoPending.hidden = false;
+        showPhotoFeedback("✓ 未命中指定圖片，可按『傳送』送出照片。（尚未進行 AI 內容安全審查）", "");
+      } catch(err) {
+        if (version === photoRevision) showPhotoFeedback("照片無法上傳：" + (err.message || "未知錯誤"), "error");
+      } finally {
+        if (version === photoRevision) {
+          photoChecking = false;
+          photoButton.disabled = false;
+          sendButton.disabled = false;
+          photoInput.value = "";
+        }
+      }
+    });
+  }
+
+  // 模擬接收者視角：僅讀取本頁使用者剛送出的風險訊息。
+  // 不代表另一台手機／真實帳號已經收到訊息或警告。
+  function renderReceiverPanel() {
+    if (!receiverPanel || !receiverToggle) return;
+    receiverPanel.hidden = !receiverExpanded;
+    receiverToggle.textContent = receiverExpanded ? "收起模擬接收方提醒" : "模擬接收方提醒";
+    receiverToggle.setAttribute("aria-expanded", String(receiverExpanded));
+    receiverPanel.replaceChildren();
+    if (!receiverExpanded) return;
+    var peer = threads[currentId];
+    var riskItems = peer.items.filter(function(item) {
+      return item.kind === "out" && item.safety && item.safety.flagged;
+    });
+    var heading = document.createElement("strong");
+    heading.textContent = "接收者安全提示（本機模擬）";
+    receiverPanel.appendChild(heading);
+    if (!riskItems.length) {
+      var empty = document.createElement("p");
+      empty.textContent = "目前這段對話尚無本次操作送出的可疑訊息。";
+      receiverPanel.appendChild(empty);
+      return;
+    }
+    riskItems.forEach(function(item) {
+      var card = document.createElement("div");
+      card.className = "chat-safety-receiver-message";
+      var content = document.createElement("p");
+      content.textContent = "收到訊息：「" + item.text + "」";
+      var warning = document.createElement("p");
+      warning.className = "chat-safety-receiver-warning";
+      warning.textContent = "⚠ 收件者提醒：" + item.safety.summary + "｜" + item.safety.reasons.join("；");
+      card.append(content, warning);
+      receiverPanel.appendChild(card);
+    });
+  }
+
+  if (receiverToggle) {
+    receiverToggle.addEventListener("click", function () {
+      receiverExpanded = !receiverExpanded;
+      renderReceiverPanel();
+    });
+  }
+
+  // 情緒摘要：統計目前聊天室的訊息；不傳資料到外部伺服器。
+  function renderEmotionPanel() {
+    if (!emotionPanel || !emotionToggle || !window.ChatEmotion) return;
+    emotionToggle.setAttribute("aria-expanded", String(emotionExpanded));
+    emotionToggle.textContent = emotionExpanded ? "收起聊天情緒" : "聊天情緒偵測";
+    emotionPanel.hidden = !emotionExpanded;
+    emotionPanel.replaceChildren();
+    if (!emotionExpanded) return;
+    var summary = window.ChatEmotion.analyzeConversation(threads[currentId].items);
+    var title = document.createElement("strong");
+    title.textContent = "📊 聊天情緒分析（規則式展示）";
+    var counts = document.createElement("div");
+    counts.className = "chat-emotion-counts";
+    counts.textContent = "共 " + summary.total + " 則文字｜😊 開心 " + summary.counts.happy +
+      "｜😢 難過 " + summary.counts.sad + "｜😠 生氣 " + summary.counts.angry +
+      "｜😐 中性 " + summary.counts.neutral + "｜🤔 混合 " + summary.counts.mixed;
+    var latest = document.createElement("div");
+    latest.textContent = summary.latest ? ("最近一則：" + summary.latest.emoji + " " + summary.latest.label) : "目前沒有聊天文字。";
+    var note = document.createElement("p");
+    note.className = "chat-emotion-note";
+    note.textContent = "依訊息文字中的情緒詞推測；不代表真實心理狀態，雙關或反話容易誤判。本頁不需 API 或網路。";
+    var quick = document.createElement("div");
+    quick.className = "chat-emotion-quick-test";
+    var examples = [
+      ["😊 開心", "今天真的很開心，認識你真好！"],
+      ["😢 難過", "我今天心情很不好，真的很難過。"],
+      ["😠 生氣", "你怎麼可以這樣？我真的很生氣！"],
+      ["😐 中性", "我們明天下午三點見。"]
+    ];
+    examples.forEach(function (entry) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.textContent = entry[0] + "測試";
+      button.addEventListener("click", function () {
+        input.value = entry[1];
+        input.dispatchEvent(new Event("input", {bubbles:true}));
+        input.focus();
+      });
+      quick.appendChild(button);
+    });
+    var recentTitle = document.createElement("div");
+    recentTitle.textContent = "最近幾則訊息的分類：";
+    var recent = document.createElement("ol");
+    recent.className = "chat-emotion-recent";
+    threads[currentId].items.filter(function(x){return (x.kind === 'in' || x.kind === 'out') && x.text;})
+      .slice(-6).forEach(function(x){
+        var li = document.createElement("li");
+        var r = window.ChatEmotion.analyzeText(x.text);
+        li.textContent = r.emoji + " " + r.label + "｜" + x.text;
+        recent.appendChild(li);
+      });
+    emotionPanel.append(title, counts, latest, note, quick, recentTitle, recent);
+  }
+  if (emotionToggle) {
+    emotionToggle.addEventListener("click", function () {
+      emotionExpanded = !emotionExpanded;
+      renderEmotionPanel();
+    });
+  }
+  function refreshEmotionLive() {
+    if (!emotionLive || !window.ChatEmotion) return;
+    var text = input.value.trim();
+    if (!text) {
+      emotionLive.textContent = "輸入訊息即可預覽情緒分類（關鍵字規則展示版）。";
+      return;
+    }
+    var r = window.ChatEmotion.analyzeText(text);
+    emotionLive.textContent = "目前文字情緒預測：" + r.emoji + " " + r.label + "（僅供展示）";
+  }
+  input.addEventListener("input", refreshEmotionLive);
 
   function updateListPreview(id) {
     var peer = threads[id];
@@ -242,6 +500,7 @@
         useBtn.textContent = "填入輸入框";
         useBtn.addEventListener("click", function () {
           input.value = row.text;
+          input.dispatchEvent(new Event("input", {bubbles:true}));
           input.focus();
           closeAi();
         });
@@ -317,13 +576,27 @@
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var text = input.value.trim();
-    if (!text) return;
+    if (photoChecking) {
+      showPhotoFeedback("圖片正在檢查中，請稍候。", "loading");
+      return;
+    }
+    if (!text && !pendingPhoto) return;
     var peer = threads[currentId];
-    peer.items.push({ kind: "out", text: text, meta: "已送出 剛剛" });
+    // 新增：送出前先比對文字風險；只有使用者確認後才送出。
+    // 若風險訊息被送出，將標記存在這則模擬聊天資料內，切換對話後仍能顯示。
+    var safety = window.ChatTextSafety ? window.ChatTextSafety.analyzeText(text) : null;
+    if (safety && safety.flagged) {
+      var proceed = window.confirm("⚠ 文字安全提醒：" + safety.summary + "\n" + safety.reasons.join("\n") + "\n\n仍要傳送這則訊息嗎？");
+      if (!proceed) return;
+    }
+    peer.items.push({ kind: "out", text: text, image: pendingPhoto, meta: "已送出 剛剛", safety: safety });
     peer.preview = lastPreview(peer.items);
     peer.time = "剛剛";
     updateListPreview(currentId);
     input.value = "";
+    clearPendingPhoto(false);
+    showPhotoFeedback("", "");
+    refreshEmotionLive();
     renderThread(currentId);
   });
 

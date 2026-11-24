@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NKNu Dating App｜三項功能測試</title>
+<style>
+:root{font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;color:#312b3c;background:#f7f6fa}
+*{box-sizing:border-box}body{margin:0}main{max-width:1100px;margin:0 auto;padding:24px 18px 42px}
+a{color:#67508b}h1{font-size:30px;margin:6px 0}h2{font-size:22px;margin:0 0 12px}p{line-height:1.65}
+.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.brow{font-size:13px;letter-spacing:1px;color:#8a668f;font-weight:700}
+.gr{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0}
+section{background:#fff;border-radius:16px;border:1px solid #eae5ef;padding:20px;box-shadow:0 5px 18px #22131d0a}
+section.full{grid-column:1/-1}textarea{width:100%;min-height:105px;resize:vertical;border:1px solid #c6bfda;border-radius:9px;padding:12px;font:inherit}button,input[type=file]{font:inherit}
+button{border:0;border-radius:9px;padding:9px 14px;background:#6d508d;color:#fff;cursor:pointer}
+button:hover{background:#563772}.examples{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.examples button{background:#f2eef7;color:#5e4671;font-size:12px;border:1px solid #dacfe5}
+.out{white-space:pre-wrap;border-radius:10px;background:#f5f1f9;padding:12px 15px;line-height:1.7;margin-top:14px;min-height:60px}
+.out.warn{background:#fff0e8;color:#8d3e2d}.out.ok{background:#eaf6ed;color:#206543}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 20px}.photo{padding:10px;background:#faf8fb;border:1px solid #f0ecf4;border-radius:12px}
+.photo img{width:100%;max-height:260px;aspect-ratio:4/5;object-fit:contain;border-radius:9px;background:#fff}.photo b{display:block;font-size:13px;margin-top:8px}.photo p{font-size:11px;margin:2px 0}
+.note{color:#777082;font-size:13px}input[type=file]{max-width:100%}footer{color:#716b7c;font-size:13px;padding:12px 2px}
+@media(max-width:760px){.gr{grid-template-columns:1fr}.photos{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:540px){.photos{grid-template-columns:1fr}}
+</style>
+</head><body><main>
+<div class="top"><div><div class="brow">NKNu DATING APP / TEST LAB</div><h1>三項安全功能測試</h1></div><a href="chat.html">進入原本聊天室</a>　<a href="profile-settings.html">進入個人資料頁</a></div>
+<p>這個頁面直接放在原本的 <code>pages</code> 資料夾內，雙擊即可開啟。文字與情緒是本機規則式示範，圖片使用固定原檔 SHA-256 比對。</p>
+<div class="gr">
+<section><h2>① 文字安全偵測</h2><p>輸入聊天文字，檢查有無可疑詐騙或手機號碼。</p><textarea id="textInput" placeholder="例如：保 證 獲 利，請先匯款"></textarea><div class="examples" id="textCases"></div><button type="button" id="textCheck">分析文字</button><div class="out" id="textResult" role="status">尚未分析</div></section>
+<section><h2>② 聊天情緒偵測</h2><p>辨識開心、難過、生氣、中性及混合情緒（不是訓練模型）。</p><textarea id="emotionInput" placeholder="例如：今天真的很開心，認識你真好！"></textarea><div class="examples" id="emotionCases"></div><button type="button" id="emotionCheck">分析情緒</button><div class="out" id="emotionResult" role="status">尚未分析</div></section>
+<section class="full"><h2>③ 三張指定圖片安全偵測</h2><p>這三張測試圖片已預先設定為警告圖片，請用檔案選擇器上傳 <b>data 資料夾的原始 PNG 檔</b>，不需登錄。</p>
+<div class="photos">
+<div class="photo"><img src="../data/scam_investment.png" alt="假投資詐騙"><b>假投資詐騙</b><p>檔名：scam_investment.png</p></div>
+<div class="photo"><img src="../data/scam_fake_support.png" alt="假客服驗證"><b>假客服驗證</b><p>檔名：scam_fake_support.png</p></div>
+<div class="photo"><img src="../data/scam_romance.png" alt="戀愛借款詐騙"><b>戀愛借款詐騙</b><p>檔名：scam_romance.png</p></div>
+</div>
+<label for="photoInput">選擇要測試的圖片：</label> <input type="file" id="photoInput" accept="image/png,image/jpeg,image/webp">
+<div class="out" id="photoResult" role="status">尚未選擇圖片</div><p class="note">提示：在 Windows 檔案選擇器進入本專案的 <code>data</code> 資料夾，選擇上述原始 PNG；一般照片不應命中。重新壓縮或截圖可能無法比對。</p></section>
+</div><footer>教學示範：圖片「未命中」不代表真實安全；文字規則與情緒詞彙不等同 AI 辨識，不能作為正式風險審核或心理判斷。</footer>
+</main>
+<script src="../chat/text-safety.js"></script><script src="../chat/emotion-detect.js"></script><script src="../js/image-safety.js"></script>
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ const textCases=[['手機號碼','我的手機是0912345678'],['日常匯款','我昨天去銀行匯款繳學費'],['空格詐騙','保 證 獲 利，請先匯款'],['正常邀約','週末想一起去看電影嗎？']];
+ const emotionCases=[['開心','今天真的很開心，認識你真好！'],['難過','我今天心情很不好，真的很難過。'],['生氣','你怎麼可以這樣？我真的很生氣！'],['中性','我們明天下午三點見。']];
+ function addExamples(parent,input,cases){cases.forEach(([title,text])=>{const b=document.createElement('button');b.type='button';b.textContent=title;b.addEventListener('click',()=>{input.value=text;input.focus();});parent.appendChild(b);});}
+ addExamples($('textCases'),$('textInput'),textCases);addExamples($('emotionCases'),$('emotionInput'),emotionCases);
+ $('textCheck').addEventListener('click',()=>{const r=ChatTextSafety.analyzeText($('textInput').value),el=$('textResult');el.className='out '+(r.flagged?'warn':'ok');el.textContent=r.flagged?'⚠️ 文字警告：'+r.summary+'\n'+r.reasons.join('\n'):'✓ 未命中已設定的風險文字';});
+ $('emotionCheck').addEventListener('click',()=>{const r=ChatEmotion.analyzeText($('emotionInput').value),el=$('emotionResult');el.className='out ok';el.textContent=r.emoji+' 情緒預測：'+r.label+'\n'+(r.reasons.length?'參考詞：'+r.reasons.join('、'):'沒有明確情緒詞，僅作中性或資料不足判斷。');});
+ $('photoInput').addEventListener('change',async (e)=>{const file=e.target.files&&e.target.files[0],el=$('photoResult');if(!file)return;el.className='out';el.textContent='正在比對原始檔案…';try{const r=await ImageSafety.analyzeFile(file);el.className='out '+(r.status==='blocked'?'warn':'ok');el.textContent=r.status==='blocked'?'⚠️ 偵測到指定圖片！\n類型：'+r.match.category+'\n圖片：'+r.match.name:'✓ 未命中三張指定圖片（不代表已經通過真正安全審核）';}catch(err){el.className='out warn';el.textContent='圖片讀取失敗：'+err.message;}});
+})();
+</script></body></html>

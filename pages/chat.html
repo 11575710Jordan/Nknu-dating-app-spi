@@ -9,6 +9,35 @@
 <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../theme_guide/theme.css">
 <link rel="stylesheet" href="../chat/chat.css">
+<style>
+  /* 新增：聊天室風險標籤與接收方模擬視角（不變更其他共用 CSS） */
+  .chat-safety-tag { margin:5px 0 2px; padding:7px 9px; max-width:350px; border-radius:9px;
+    font-size:12px; line-height:1.5; background:#fff2e2; color:#914722; overflow-wrap:anywhere; }
+  .chat-safety-demo-button { margin-left:12px; border:1px solid #caa6aa; border-radius:10px;
+    padding:6px 11px; background:#fff; color:#803c52; cursor:pointer; font-size:13px; }
+  .chat-safety-demo-button:hover { background:#fff0f4; }
+  .chat-safety-receiver-panel { padding:12px 15px; background:#fff7e9; color:#533f3d;
+    border:1px solid #efd9bc; border-radius:12px; font-size:13px; line-height:1.6; }
+  .chat-safety-receiver-message { border-top:1px solid #ebd7bd; padding:8px 0 0; margin:8px 0 0; }
+  .chat-safety-receiver-message p { margin:5px 0; overflow-wrap:anywhere; }
+  .chat-safety-receiver-warning { color:#9b4130; font-weight:600; }
+
+  /* 聊天情緒偵測：同一個 chat.html，不新增畫面資料夾 */
+  .chat-emotion-toggle { margin-left:8px; border:1px solid #9bb8da; border-radius:10px;
+    padding:6px 10px; color:#28557f; background:#fff; cursor:pointer; font-size:13px; }
+  .chat-emotion-panel { margin:8px 0; padding:14px 16px; border:1px solid #d3d9eb;
+    border-radius:12px; background:#f7f9ff; color:#354364; font-size:13px; line-height:1.7; }
+  .chat-emotion-panel[hidden] { display:none!important; }
+  .chat-emotion-counts { font-weight:600; padding:8px 0; }
+  .chat-emotion-note { color:#6d778d; font-size:12px; margin:5px 0; }
+  .chat-emotion-badge { font-size:12px; color:#5b6085; background:#eef0fb;
+    display:inline-block; padding:2px 8px; border-radius:12px; margin-top:4px; }
+  .chat-emotion-quick-test button { border:1px solid #c9cee5; background:white; border-radius:8px;
+    color:#4f5879; padding:6px 8px; margin:4px 4px 4px 0; cursor:pointer; font-size:12px; }
+  .chat-emotion-live { padding:5px 15px; font-size:12px; color:#69718b; min-height:28px; }
+  .chat-emotion-recent { margin:6px 0 0; padding-left:20px; }
+  .chat-emotion-recent li { margin:3px 0; word-break:break-word; }
+</style>
 </head>
 <body class="chat-body">
 
@@ -122,7 +151,12 @@
           </div>
         </header>
 
-        <div class="dp-alert dp-alert--info chat-notice">先在公開場合見面。不要分享帳號密碼或轉帳。</div>
+        <div class="dp-alert dp-alert--info chat-notice">先在公開場合見面。不要分享帳號密碼或轉帳。
+          <button id="chat-safety-receiver-toggle" type="button" class="chat-safety-demo-button" aria-expanded="false">模擬接收方提醒</button>
+          <button id="chat-emotion-toggle" type="button" class="chat-emotion-toggle" aria-expanded="false">聊天情緒偵測</button>
+        </div>
+        <div id="chat-safety-receiver-panel" class="chat-safety-receiver-panel" hidden aria-live="polite"></div>
+        <div id="chat-emotion-panel" class="chat-emotion-panel" hidden aria-live="polite"></div>
 
         <aside class="chat-ai-sheet" id="chat-ai-sheet" hidden>
           <header class="chat-ai-sheet__head">
@@ -141,12 +175,21 @@
           <div class="dp-chat" id="chat-stream"></div>
         </div>
 
+        <div id="chat-emotion-live" class="chat-emotion-live" role="status" aria-live="polite">輸入訊息即可預覽情緒分類（關鍵字規則展示版）。</div>
         <form class="chat-composer" id="chat-form">
+          <div id="chat-photo-pending" class="chat-photo-pending" hidden>
+            <img id="chat-photo-preview" alt="準備傳送的照片">
+            <div class="chat-photo-pending__label"><strong>已選擇照片</strong><span id="chat-photo-name"></span></div>
+            <button id="chat-photo-remove" type="button" aria-label="取消附加照片">✕ 移除</button>
+          </div>
+          <div id="chat-photo-feedback" class="chat-photo-feedback" role="status" aria-live="polite" hidden></div>
+          <button type="button" id="chat-photo-button" class="chat-photo-button" title="傳送照片" aria-label="選擇照片上傳">🖼️<span class="chat-sr-only">上傳照片</span></button>
+          <input id="chat-photo-input" class="chat-sr-only" type="file" accept="image/jpeg,image/png,image/webp" aria-label="選擇要傳送的圖片">
           <div class="chat-composer__field">
             <label class="chat-sr-only" for="chat-input">訊息內容</label>
-            <textarea class="dp-input" id="chat-input" rows="1" placeholder="寫一則訊息" maxlength="500" required></textarea>
+            <textarea class="dp-input" id="chat-input" rows="1" placeholder="寫一則訊息或選擇照片" maxlength="500"></textarea>
           </div>
-          <button class="dp-btn dp-btn--primary" type="submit">
+          <button class="dp-btn dp-btn--primary" type="submit" id="chat-send-button">
             傳送
             <svg aria-hidden="true"><use href="#i-send"/></svg>
           </button>
@@ -165,6 +208,9 @@
 
 <script src="../data/mock-data.js"></script>
 <script src="../chat/chat-ai.js"></script>
+<script src="../chat/text-safety.js"></script>
+<script src="../chat/emotion-detect.js"></script>
+<script src="../js/image-safety.js"></script>
 <script src="../chat/chat.js"></script>
 </body>
 </html>
