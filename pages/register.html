@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>註冊帳號 - 交友 App</title>
+
+  <!-- 引入 Google 品牌字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 版面沿用登入頁 -->
+  <link rel="stylesheet" href="../theme_guide/theme.css">
+  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../css/register.css">
+</head>
+<body>
+
+  <div class="dp-card">
+    <div class="dp-header">
+      <h1>建立新帳號</h1>
+      <p>註冊後就可以開始認識新朋友</p>
+    </div>
+
+    <form id="registerForm" novalidate>
+      <div class="dp-field">
+        <label class="dp-label" for="email">電子郵件<span class="required">*</span></label>
+        <input type="email" class="dp-input" id="email" placeholder="name@example.com" autocomplete="email">
+        <p class="dp-help dp-help--error" id="emailError" aria-live="polite"></p>
+      </div>
+
+      <div class="dp-field">
+        <label class="dp-label" for="password">密碼<span class="required">*</span></label>
+        <input type="password" class="dp-input" id="password" placeholder="至少 8 碼，英數混合" autocomplete="new-password">
+        <p class="dp-help dp-help--error" id="passwordError" aria-live="polite"></p>
+      </div>
+
+      <div class="dp-field">
+        <label class="dp-label" for="confirm">確認密碼<span class="required">*</span></label>
+        <input type="password" class="dp-input" id="confirm" placeholder="再輸入一次密碼" autocomplete="new-password">
+        <p class="dp-help dp-help--error" id="confirmError" aria-live="polite"></p>
+      </div>
+
+      <div class="dp-field">
+        <label class="dp-label" for="nickname">暱稱<span class="required">*</span></label>
+        <input type="text" class="dp-input" id="nickname" maxlength="20" placeholder="其他人會看到的名字" autocomplete="nickname">
+        <p class="dp-help dp-help--error" id="nicknameError" aria-live="polite"></p>
+      </div>
+
+      <div class="dp-alert" id="alertMessage" aria-live="polite"></div>
+      <button type="submit" class="dp-btn-submit" id="submitBtn">註冊</button>
+    </form>
+
+    <div class="dp-footer-link register-footer">
+      <span>已經有帳號了？</span>
+      <a href="login.html" class="dp-signup-link">直接登入</a>
+    </div>
+  </div>
+
+  <script src="../data/mock-data.js"></script>
+  <script src="../js/register-logic.js"></script>
+  <script src="../js/register.js"></script>
+</body>
+</html>

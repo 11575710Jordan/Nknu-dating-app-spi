@@ -60,6 +60,28 @@ if (typeof module !== 'undefined') {
   module.exports = Session;
 } else {
   /* ---------- 瀏覽器用 ---------- */
+  // 舊版註冊資料只有帳密和暱稱，補齊配對與聊天需要的欄位。
+  if (typeof Register !== 'undefined' && typeof MOCK_DB !== 'undefined') {
+    const registered = Register.loadUsers(localStorage).map((user) => ({
+      ...user,
+      age: 18,
+      gender: 'other',
+      area: '',
+      lat: MOCK_DB.users[0].lat,
+      lng: MOCK_DB.users[0].lng,
+      school: '',
+      job: '',
+      jobCategory: '',
+      interests: [],
+      pets: [],
+      photos: [{ src: null, caption: '' }],
+      prompts: [],
+      moments: [],
+      points: 0,
+      photoTone: 0,
+    }));
+    MOCK_DB.users.push(...registered);
+  }
   Session.login = (userId, remember) => Session.start(localStorage, sessionStorage, userId, remember, new Date().toISOString());
   Session.logout = () => Session.end(localStorage, sessionStorage);
   Session.currentUser = (users) => {

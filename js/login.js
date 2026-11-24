@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
+    const password = passwordInput.value;
 
     if (!email || !password) {
       showAlert('請填寫完整帳號與密碼。', 'error');

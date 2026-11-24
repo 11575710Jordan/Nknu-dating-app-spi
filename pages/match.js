@@ -36,7 +36,7 @@
 
   const state = {
     meId: loginUser.id,
-    ratings: saved ? saved.ratings : structuredClone(MOCK_DB.ratings),
+    ratings: saved?.ratings ?? structuredClone(MOCK_DB.ratings),
     petOverrides: (saved && saved.petOverrides) || {}, // { userId: 完整寵物清單 }，有改過寵物的用戶才會有
     wallets: (saved && saved.wallets) || {},           // { userId: { points, unlocked[] } }，有動過點數的用戶才會有
     mode: 'person',
